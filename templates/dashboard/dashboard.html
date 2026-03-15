@@ -1,0 +1,16 @@
+<h1>Dashboard</h1>
+
+<a href="/projects/create/">+ Create New Project</a>
+
+<h2>My Projects</h2>
+
+<ul>
+{% for project in projects %}
+    <li>
+        <a href="/projects/{{ project.id }}/">{{ project.name }}</a>
+        - {{ project.calculator_type }}
+    </li>
+{% empty %}
+    <li>No projects yet.</li>
+{% endfor %}
+</ul>
