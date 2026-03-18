@@ -1,0 +1,53 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Budget Calculator</title>
+</head>
+<body>
+
+    <h1>Personal Budget Calculator</h1>
+
+    <p><strong>Project:</strong> {{ project.name }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Monthly Income</label><br>
+        <input type="number" name="income" value="{{ form_data.income }}" required><br><br>
+
+        <label>Housing</label><br>
+        <input type="number" name="housing" value="{{ form_data.housing }}"><br><br>
+
+        <label>Food</label><br>
+        <input type="number" name="food" value="{{ form_data.food }}"><br><br>
+
+        <label>Transport</label><br>
+        <input type="number" name="transport" value="{{ form_data.transport }}"><br><br>
+
+        <label>Utilities</label><br>
+        <input type="number" name="utilities" value="{{ form_data.utilities }}"><br><br>
+
+        <label>Other Expenses</label><br>
+        <input type="number" name="other" value="{{ form_data.other }}"><br><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if result %}
+        <hr>
+
+        {% if result.error %}
+            <p><strong>{{ result.error }}</strong></p>
+        {% else %}
+            <h2>Results</h2>
+            <p><strong>Income:</strong> {{ result.income }}</p>
+            <p><strong>Total Expenses:</strong> {{ result.total_expenses }}</p>
+            <p><strong>Monthly Savings:</strong> {{ result.monthly_savings }}</p>
+            <p><strong>Yearly Savings:</strong> {{ result.yearly_savings }}</p>
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>

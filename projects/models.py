@@ -10,7 +10,6 @@ class Project(models.Model):
         ('mortgage', 'Mortgage Calculator'),
         ('rent_vs_own', 'Rent vs Own'),
         ('budget', 'Personal Budget'),
-        ('real_estate', 'Real Estate Simulator'),
     ]
 
     project_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)

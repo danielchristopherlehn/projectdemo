@@ -39,7 +39,7 @@ def project_detail(request, project_id):
     project = get_object_or_404(Project, id=project_id)
 
 
-    # First calculator: LOAN
+    # First calculator: Loan
   
     if project.calculator_type == "loan":
         result = None
@@ -96,8 +96,63 @@ def project_detail(request, project_id):
         )
 
    
-    # Second calculator: MORTGAGE
-  
+ 
+    # Second calculator: Personal Budget 
+
+    if project.calculator_type == "budget":
+        result = None
+
+        form_data = {
+            "income": "",
+            "housing": "",
+            "food": "",
+            "transport": "",
+            "utilities": "",
+            "other": "",
+        }
+
+        if request.method == "POST":
+            form_data["income"] = request.POST.get("income", "")
+            form_data["housing"] = request.POST.get("housing", "")
+            form_data["food"] = request.POST.get("food", "")
+            form_data["transport"] = request.POST.get("transport", "")
+            form_data["utilities"] = request.POST.get("utilities", "")
+            form_data["other"] = request.POST.get("other", "")
+
+            try:
+                income = float(form_data["income"] or 0)
+                housing = float(form_data["housing"] or 0)
+                food = float(form_data["food"] or 0)
+                transport = float(form_data["transport"] or 0)
+                utilities = float(form_data["utilities"] or 0)
+                other = float(form_data["other"] or 0)
+
+                total_expenses = housing + food + transport + utilities + other
+                monthly_savings = income - total_expenses
+                yearly_savings = monthly_savings * 12
+
+                result = {
+                    "income": round(income, 2),
+                    "total_expenses": round(total_expenses, 2),
+                    "monthly_savings": round(monthly_savings, 2),
+                    "yearly_savings": round(yearly_savings, 2),
+                }
+
+            except ValueError:
+                result = {
+                    "error": "Please enter valid numbers in all fields."
+                }
+
+        return render(
+            request,
+            "calculators/budget.html",
+            {
+                "project": project,
+                "result": result,
+                "form_data": form_data,
+            },
+        )
+  # Third calculator: Mortgage
     if project.calculator_type == "mortgage":
         result = None
 
@@ -157,7 +212,7 @@ def project_detail(request, project_id):
         )
 
  
-    # Third calculator: RENT VS OWN
+    # Fourth calculator: Rent vs Own
    
     if project.calculator_type == "rent_vs_own":
         result = None
@@ -225,7 +280,8 @@ def project_detail(request, project_id):
                 "form_data": form_data,
             },
         )
-
+    
+    
   
     # Default fallback
  
