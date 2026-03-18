@@ -1,7 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 from .forms import ProjectForm
 from .models import Project
 
+@require_POST
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    project.delete()
+    return redirect("dashboard")
 
 def create_project(request):
     if request.method == "POST":
@@ -9,7 +15,10 @@ def create_project(request):
 
         if form.is_valid():
             project = form.save(commit=False)
-            project.user = request.user
+
+            if request.user.is_authenticated:
+                project.user = request.user
+
             project.save()
             return redirect("dashboard")
     else:
@@ -24,40 +33,62 @@ def project_detail(request, project_id):
     if project.calculator_type == "rent_vs_own":
         result = None
 
+        form_data = {
+            "rent": "",
+            "rent_increase": "",
+            "price": "",
+            "down_payment": "",
+            "rate": "",
+        }
+
         if request.method == "POST":
-            rent = float(request.POST.get("rent") or 0)
-            rent_increase = float(request.POST.get("rent_increase") or 0)
-            price = float(request.POST.get("price") or 0)
-            down_payment = float(request.POST.get("down_payment") or 0)
-            rate = float(request.POST.get("rate") or 0)
+            form_data["rent"] = request.POST.get("rent", "")
+            form_data["rent_increase"] = request.POST.get("rent_increase", "")
+            form_data["price"] = request.POST.get("price", "")
+            form_data["down_payment"] = request.POST.get("down_payment", "")
+            form_data["rate"] = request.POST.get("rate", "")
 
-            years = 10
+            try:
+                rent = float(form_data["rent"] or 0)
+                rent_increase = float(form_data["rent_increase"] or 0)
+                price = float(form_data["price"] or 0)
+                down_payment = float(form_data["down_payment"] or 0)
+                rate = float(form_data["rate"] or 0)
 
-            total_rent = 0
-            current_rent = rent
+                years = 10
 
-            for year in range(years):
-                total_rent += current_rent * 12
-                current_rent *= (1 + rent_increase / 100)
+                total_rent = 0
+                current_rent = rent
 
-            loan = max(price - down_payment, 0)
-            monthly_rate = (rate / 100) / 12
-            number_of_payments = years * 12
+                for _ in range(years):
+                    total_rent += current_rent * 12
+                    current_rent *= (1 + rent_increase / 100)
 
-            if monthly_rate > 0 and loan > 0:
-                monthly_payment = loan * (
-                    monthly_rate * (1 + monthly_rate) ** number_of_payments
-                ) / ((1 + monthly_rate) ** number_of_payments - 1)
-            else:
-                monthly_payment = loan / number_of_payments if number_of_payments > 0 else 0
+                loan = max(price - down_payment, 0)
+                monthly_rate = (rate / 100) / 12
+                number_of_payments = years * 12
 
-            total_buy_cost = down_payment + (monthly_payment * number_of_payments)
+                if monthly_rate > 0 and loan > 0:
+                    monthly_payment = loan * (
+                        monthly_rate * (1 + monthly_rate) ** number_of_payments
+                    ) / ((1 + monthly_rate) ** number_of_payments - 1)
+                else:
+                    monthly_payment = (
+                        loan / number_of_payments if number_of_payments > 0 else 0
+                    )
 
-            result = {
-                "rent_cost": round(total_rent, 2),
-                "buy_cost": round(total_buy_cost, 2),
-                "monthly_payment": round(monthly_payment, 2),
-            }
+                total_buy_cost = down_payment + (monthly_payment * number_of_payments)
+
+                result = {
+                    "rent_cost": round(total_rent, 2),
+                    "buy_cost": round(total_buy_cost, 2),
+                    "monthly_payment": round(monthly_payment, 2),
+                }
+
+            except ValueError:
+                result = {
+                    "error": "Please enter valid numbers in all fields."
+                }
 
         return render(
             request,
@@ -65,6 +96,7 @@ def project_detail(request, project_id):
             {
                 "project": project,
                 "result": result,
+                "form_data": form_data,
             },
         )
 

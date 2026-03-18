@@ -6,11 +6,15 @@
 
 <ul>
 {% for project in projects %}
-    <li>
+    <div style="margin-bottom: 10px;">
         <a href="/projects/{{ project.id }}/">{{ project.name }}</a>
-        - {{ project.calculator_type }}
-    </li>
-{% empty %}
-    <li>No projects yet.</li>
+
+        <form action="/projects/{{ project.id }}/delete/" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('Delete this project?');">
+                Delete
+            </button>
+        </form>
+    </div>
 {% endfor %}
 </ul>
