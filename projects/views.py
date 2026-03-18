@@ -3,6 +3,12 @@ from django.views.decorators.http import require_POST
 from .forms import ProjectForm
 from .models import Project
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
+from .forms import ProjectForm
+from .models import Project
+
+
 def create_project(request):
     if request.method == "POST":
         form = ProjectForm(request.POST)
@@ -21,7 +27,7 @@ def create_project(request):
     return render(request, "projects/create_project.html", {"form": form})
 
 
-# We use the next code lines to create a delete button right next to the old projects
+# Delete project
 @require_POST
 def delete_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
@@ -29,11 +35,69 @@ def delete_project(request, project_id):
     return redirect("dashboard")
 
 
-# First calculator: rent vs own
-# Second calculator: mortgage
 def project_detail(request, project_id):
     project = get_object_or_404(Project, id=project_id)
 
+
+    # First calculator: LOAN
+  
+    if project.calculator_type == "loan":
+        result = None
+
+        form_data = {
+            "principal": "",
+            "rate": "",
+            "years": "",
+        }
+
+        if request.method == "POST":
+            form_data["principal"] = request.POST.get("principal", "")
+            form_data["rate"] = request.POST.get("rate", "")
+            form_data["years"] = request.POST.get("years", "")
+
+            try:
+                principal = float(form_data["principal"] or 0)
+                rate = float(form_data["rate"] or 0)
+                years = int(form_data["years"] or 0)
+
+                monthly_rate = (rate / 100) / 12
+                number_of_payments = years * 12
+
+                if monthly_rate > 0 and number_of_payments > 0:
+                    monthly_payment = principal * (
+                        monthly_rate * (1 + monthly_rate) ** number_of_payments
+                    ) / ((1 + monthly_rate) ** number_of_payments - 1)
+                else:
+                    monthly_payment = (
+                        principal / number_of_payments if number_of_payments > 0 else 0
+                    )
+
+                total_paid = monthly_payment * number_of_payments
+                total_interest = total_paid - principal
+
+                result = {
+                    "principal": round(principal, 2),
+                    "monthly_payment": round(monthly_payment, 2),
+                    "total_paid": round(total_paid, 2),
+                    "total_interest": round(total_interest, 2),
+                }
+
+            except ValueError:
+                result = {"error": "Please enter valid numbers in all fields."}
+
+        return render(
+            request,
+            "calculators/loan.html",
+            {
+                "project": project,
+                "result": result,
+                "form_data": form_data,
+            },
+        )
+
+   
+    # Second calculator: MORTGAGE
+  
     if project.calculator_type == "mortgage":
         result = None
 
@@ -80,9 +144,7 @@ def project_detail(request, project_id):
                 }
 
             except ValueError:
-                result = {
-                    "error": "Please enter valid numbers in all fields."
-                }
+                result = {"error": "Please enter valid numbers in all fields."}
 
         return render(
             request,
@@ -94,6 +156,9 @@ def project_detail(request, project_id):
             },
         )
 
+ 
+    # Third calculator: RENT VS OWN
+   
     if project.calculator_type == "rent_vs_own":
         result = None
 
@@ -120,7 +185,6 @@ def project_detail(request, project_id):
                 rate = float(form_data["rate"] or 0)
 
                 years = 10
-
                 total_rent = 0
                 current_rent = rent
 
@@ -150,9 +214,7 @@ def project_detail(request, project_id):
                 }
 
             except ValueError:
-                result = {
-                    "error": "Please enter valid numbers in all fields."
-                }
+                result = {"error": "Please enter valid numbers in all fields."}
 
         return render(
             request,
@@ -164,4 +226,7 @@ def project_detail(request, project_id):
             },
         )
 
+  
+    # Default fallback
+ 
     return render(request, "projects/project_detail.html", {"project": project})
