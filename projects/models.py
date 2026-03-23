@@ -20,3 +20,14 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Report(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reports")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="reports")
+    generated_at = models.DateTimeField(auto_now_add=True)
+    file_path = models.CharField(max_length=255, blank=True)
+    email_sent = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Report for {self.project.name}"

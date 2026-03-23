@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Glossary Editor Hub{% endblock %}
+
+{% block content %}
+<section class="hero card">
+    <div class="hero-copy">
+        <span class="page-kicker">Permissions Demo</span>
+        <h1>Glossary Editor Hub</h1>
+        <p>This page is protected with Django's <code>@permission_required</code> decorator and is only available to users who have the custom <code>main.manage_glossary</code> permission.</p>
+    </div>
+    <div class="hero-actions">
+        <a class="button-link" href="/admin/main/glossaryterm/">Open Glossary In Admin</a>
+        <p class="hero-note">This gives you a concrete groups-and-permissions example for the course demo.</p>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-card">
+        <span class="stat-label">Glossary terms</span>
+        <span class="stat-value">{{ glossary_count }}</span>
+    </article>
+    <article class="stat-card">
+        <span class="stat-label">Signed-in user</span>
+        <span class="stat-value">{{ request.user.username }}</span>
+    </article>
+    <article class="stat-card">
+        <span class="stat-label">Permission used</span>
+        <span class="stat-value">manage_glossary</span>
+    </article>
+</section>
+
+<section class="feature-grid">
+    <article class="feature-card">
+        <h3>Decorator Protection</h3>
+        <p class="muted">The route is blocked unless the user is logged in and has the custom permission attached to their account or group.</p>
+    </article>
+    <article class="feature-card">
+        <h3>Group Ready</h3>
+        <p class="muted">Users can inherit this access through a group, which matches the lecture's recommended Django authorization flow.</p>
+    </article>
+    <article class="feature-card">
+        <h3>Admin Workflow</h3>
+        <p class="muted">Editors can use Django admin to maintain glossary content without needing a separate custom CRUD page.</p>
+    </article>
+</section>
+
+<section class="glossary-card">
+    <h2>Current Group Membership</h2>
+    {% if user_groups %}
+        <ul class="glossary-list">
+            {% for group in user_groups %}
+                <li>
+                    <strong>{{ group.name }}</strong>
+                    <p class="muted">This group can be used to assign glossary-management access to multiple users at once.</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">This user does not belong to any group yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

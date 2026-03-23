@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+    <div class="auth-layout">
+        <div class="auth-copy">
+            <span class="page-kicker">Welcome Back</span>
+            <h1>Log In</h1>
+            <p class="muted">Access your personal dashboard, project workspaces, and glossary-linked calculators.</p>
+        </div>
+
+        <form method="post" class="stack-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Log In</button>
+        </form>
+    </div>
+
+    <p class="muted">Need an account? <a href="{% url 'register' %}">Create one</a>.</p>
+</section>
+{% endblock %}

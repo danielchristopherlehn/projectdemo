@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ term.term }}{% endblock %}
+
+{% block content %}
+<section class="card">
+    <span class="page-kicker">Glossary Entry</span>
+    <p class="muted"><a href="{% url 'glossary_list' %}">Back to glossary</a></p>
+    <h1>{{ term.term }}</h1>
+    <div class="detail-meta">
+        <span class="meta-pill">{{ term.get_term_type_display }}</span>
+        <span class="meta-pill">Educational term reference</span>
+    </div>
+    <p class="glossary-definition">{{ term.definition }}</p>
+</section>
+
+{% if related_terms %}
+    <section class="glossary-card glossary-section">
+        <h2>Related Terms</h2>
+        <ul class="glossary-list">
+            {% for related in related_terms %}
+                <li>
+                    <a class="glossary-term-link" href="{% url 'glossary_detail' related.slug %}">{{ related.term }}</a>
+                    <p class="muted">{{ related.definition|truncatewords:16 }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endif %}
+{% endblock %}
