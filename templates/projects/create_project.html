@@ -1,7 +1,17 @@
-<h1>Create Project</h1>
+{% extends "base.html" %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Create Project</button>
-</form>
+{% block title %}Create Project{% endblock %}
+
+{% block content %}
+<section class="card project-form-card">
+    <span class="page-kicker">New Workspace</span>
+    <h1>Create Project</h1>
+    <p class="muted">Choose a calculator type and create a polished private workspace under your account.</p>
+
+    <form method="post" class="stack-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Project</button>
+    </form>
+</section>
+{% endblock %}

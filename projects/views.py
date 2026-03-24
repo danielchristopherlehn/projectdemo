@@ -1,24 +1,25 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
+from main.models import GlossaryTerm
 from .forms import ProjectForm
 from .models import Project
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST
-from .forms import ProjectForm
-from .models import Project
 
+def get_glossary_terms(*slugs):
+    glossary_by_slug = {
+        term.slug: term for term in GlossaryTerm.objects.filter(slug__in=slugs)
+    }
+    return {slug.replace("-", "_"): glossary_by_slug.get(slug) for slug in slugs}
 
+@login_required
 def create_project(request):
     if request.method == "POST":
         form = ProjectForm(request.POST)
 
         if form.is_valid():
             project = form.save(commit=False)
-
-            if request.user.is_authenticated:
-                project.user = request.user
-
+            project.user = request.user
             project.save()
             return redirect("dashboard")
     else:
@@ -29,14 +30,15 @@ def create_project(request):
 
 # Delete project
 @require_POST
+@login_required
 def delete_project(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
+    project = get_object_or_404(Project, id=project_id, user=request.user)
     project.delete()
     return redirect("dashboard")
 
-
+@login_required
 def project_detail(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
+    project = get_object_or_404(Project, id=project_id, user=request.user)
 
 
     # First calculator: Loan
@@ -92,6 +94,13 @@ def project_detail(request, project_id):
                 "project": project,
                 "result": result,
                 "form_data": form_data,
+                "glossary_terms": get_glossary_terms(
+                    "principal",
+                    "interest-rate",
+                    "loan-term",
+                    "monthly-payment",
+                    "total-interest",
+                ),
             },
         )
 
@@ -150,6 +159,13 @@ def project_detail(request, project_id):
                 "project": project,
                 "result": result,
                 "form_data": form_data,
+                "glossary_terms": get_glossary_terms(
+                    "monthly-income",
+                    "total-expenses",
+                    "monthly-savings",
+                    "yearly-savings",
+                    "utilities",
+                ),
             },
         )
   # Third calculator: Mortgage
@@ -208,6 +224,14 @@ def project_detail(request, project_id):
                 "project": project,
                 "result": result,
                 "form_data": form_data,
+                "glossary_terms": get_glossary_terms(
+                    "house-price",
+                    "down-payment",
+                    "interest-rate",
+                    "loan-term",
+                    "monthly-payment",
+                    "mortgage",
+                ),
             },
         )
 
@@ -278,6 +302,16 @@ def project_detail(request, project_id):
                 "project": project,
                 "result": result,
                 "form_data": form_data,
+                "glossary_terms": get_glossary_terms(
+                    "monthly-rent",
+                    "rent-increase",
+                    "house-price",
+                    "down-payment",
+                    "mortgage",
+                    "monthly-payment",
+                    "total-rent-cost",
+                    "total-buy-cost",
+                ),
             },
         )
     

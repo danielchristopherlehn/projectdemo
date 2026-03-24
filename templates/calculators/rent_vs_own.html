@@ -1,58 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rent vs Own Calculator</title>
-</head>
-<body>
-    <h1>Rent vs Own Calculator</h1>
+{% extends "base.html" %}
 
-    <p><strong>Project:</strong> {{ project.name }}</p>
+{% block title %}Rent vs Own Calculator{% endblock %}
 
-    <form method="post">
-        {% csrf_token %}
+{% block content %}
+<section class="card calculator-shell">
+    <div class="calculator-head">
+        <div>
+            <span class="page-kicker">Calculator</span>
+            <h1>Rent vs Own Calculator</h1>
+        </div>
+        <span class="project-badge">Project: {{ project.name }}</span>
+    </div>
 
-        <h3>Rent Scenario</h3>
+    <div class="calculator-grid">
+        <div class="form-panel">
+            <h2>Compare Renting and Buying</h2>
+            <form method="post" class="stack-form">
+                {% csrf_token %}
 
-        <label for="rent">Monthly Rent</label><br>
-        <input type="number" id="rent" name="rent" value="{{ form_data.rent }}" required><br><br>
+                <h3>Rent Scenario</h3>
 
-        <label for="rent_increase">Rent Increase %</label><br>
-        <input type="number" step="0.01" id="rent_increase" name="rent_increase" value="{{ form_data.rent_increase }}" required><br><br>
+                <label for="rent">
+                    {% if glossary_terms.monthly_rent %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_rent.slug %}">Monthly Rent</a>
+                    {% else %}
+                        Monthly Rent
+                    {% endif %}
+                </label>
+                <input type="number" id="rent" name="rent" value="{{ form_data.rent }}" required>
 
-        <h3>Buy Scenario</h3>
+                <label for="rent_increase">
+                    {% if glossary_terms.rent_increase %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.rent_increase.slug %}">Rent Increase %</a>
+                    {% else %}
+                        Rent Increase %
+                    {% endif %}
+                </label>
+                <input type="number" step="0.01" id="rent_increase" name="rent_increase" value="{{ form_data.rent_increase }}" required>
 
-        <label for="price">House Price</label><br>
-        <input type="number" id="price" name="price" value="{{ form_data.price }}" required><br><br>
+                <h3>Buy Scenario</h3>
 
-        <label for="down_payment">Down Payment</label><br>
-        <input type="number" id="down_payment" name="down_payment" value="{{ form_data.down_payment }}" required><br><br>
+                <label for="price">
+                    {% if glossary_terms.house_price %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.house_price.slug %}">House Price</a>
+                    {% else %}
+                        House Price
+                    {% endif %}
+                </label>
+                <input type="number" id="price" name="price" value="{{ form_data.price }}" required>
 
-        <label for="rate">Mortgage Rate (%)</label><br>
-        <input type="number" step="0.01" id="rate" name="rate" value="{{ form_data.rate }}" required><br><br>
+                <label for="down_payment">
+                    {% if glossary_terms.down_payment %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.down_payment.slug %}">Down Payment</a>
+                    {% else %}
+                        Down Payment
+                    {% endif %}
+                </label>
+                <input type="number" id="down_payment" name="down_payment" value="{{ form_data.down_payment }}" required>
 
-        <button type="submit">Calculate</button>
-    </form>
+                <label for="rate">
+                    {% if glossary_terms.mortgage %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.mortgage.slug %}">Mortgage Rate (%)</a>
+                    {% else %}
+                        Mortgage Rate (%)
+                    {% endif %}
+                </label>
+                <input type="number" step="0.01" id="rate" name="rate" value="{{ form_data.rate }}" required>
+
+                <button type="submit">Compare Outcomes</button>
+            </form>
+        </div>
+
+        <aside class="sidebar-panel">
+            <h2>Planning Focus</h2>
+            <ul>
+                <li>See whether renting or buying is cheaper over a 10-year horizon.</li>
+                <li>Compare rising rent against mortgage repayment costs.</li>
+                <li>Use glossary-linked housing terms to strengthen the educational angle.</li>
+            </ul>
+        </aside>
+    </div>
 
     {% if result %}
-        <hr>
-
-        {% if result.error %}
-            <p><strong>{{ result.error }}</strong></p>
-        {% else %}
-            <h2>Results</h2>
-
-            <p><strong>Monthly Mortgage Payment:</strong> {{ result.monthly_payment }}</p>
-            <p><strong>Total Rent Cost (10 years):</strong> {{ result.rent_cost }}</p>
-            <p><strong>Total Buy Cost (10 years):</strong> {{ result.buy_cost }}</p>
-
-            {% if result.rent_cost < result.buy_cost %}
-                <p><strong>Renting is cheaper.</strong></p>
+        <div class="results-panel">
+            {% if result.error %}
+                <p><strong>{{ result.error }}</strong></p>
             {% else %}
-                <p><strong>Buying is cheaper.</strong></p>
+                <h2>Results</h2>
+
+                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Mortgage Payment</a>{% else %}Monthly Mortgage Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }}</span></p>
+                <p><strong>{% if glossary_terms.total_rent_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_rent_cost.slug %}">Total Rent Cost (10 years)</a>{% else %}Total Rent Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.rent_cost }}</span></p>
+                <p><strong>{% if glossary_terms.total_buy_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_buy_cost.slug %}">Total Buy Cost (10 years)</a>{% else %}Total Buy Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.buy_cost }}</span></p>
+
+                {% if result.rent_cost < result.buy_cost %}
+                    <p><strong>Renting is cheaper.</strong></p>
+                {% else %}
+                    <p><strong>Buying is cheaper.</strong></p>
+                {% endif %}
             {% endif %}
-        {% endif %}
+        </div>
     {% endif %}
-</body>
-</html>
+</section>
+{% endblock %}

@@ -1,8 +1,21 @@
-<h1>Project Detail</h1>
+{% extends "base.html" %}
 
-<p><strong>Name:</strong> {{ project.name }}</p>
-<p><strong>Calculator Type:</strong> {{ project.calculator_type }}</p>
-<p><strong>Project ID:</strong> {{ project.project_id }}</p>
-<p><strong>Created:</strong> {{ project.created_at }}</p>
+{% block title %}Project Detail{% endblock %}
 
-<a href="/">Back to Dashboard</a>
+{% block content %}
+<section class="card">
+    <span class="page-kicker">Project Overview</span>
+    <h1>Project Detail</h1>
+
+    <div class="detail-meta">
+        <span class="meta-pill">{{ project.get_calculator_type_display }}</span>
+        <span class="meta-pill">Created {{ project.created_at|date:"M d, Y" }}</span>
+    </div>
+
+    <p><strong>Name:</strong> {{ project.name }}</p>
+    <p><strong>Project ID:</strong> {{ project.project_id }}</p>
+    <p class="muted">This page acts as the home for the selected project and can grow into a richer workspace as your group adds saved inputs and reports.</p>
+
+    <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
+</section>
+{% endblock %}

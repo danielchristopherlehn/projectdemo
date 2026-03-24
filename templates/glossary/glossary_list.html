@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Glossary{% endblock %}
+
+{% block content %}
+<section class="hero card">
+    <div class="hero-copy">
+        <span class="page-kicker">Reference Library</span>
+        <h1>Financial Glossary</h1>
+        <p>Definitions for the finance and housing terms used across your calculators, reports, and project pages.</p>
+    </div>
+    <div class="hero-actions">
+        <p class="hero-note">Use this like a built-in finance wiki for the project.</p>
+    </div>
+</section>
+
+<section class="glossary-grid">
+    {% for type_label, terms in grouped_terms.items %}
+        <section class="glossary-card">
+            <h2>{{ type_label }}</h2>
+            <ul class="glossary-list">
+                {% for term in terms %}
+                    <li>
+                        <a class="glossary-term-link" href="{% url 'glossary_detail' term.slug %}">{{ term.term }}</a>
+                        <p class="muted">{{ term.definition|truncatewords:22 }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% empty %}
+        <section class="card empty-state">
+            <h3>No glossary terms yet</h3>
+            <p class="muted">Add glossary entries in the admin panel to turn this into a richer reference library.</p>
+        </section>
+    {% endfor %}
+</section>
+{% endblock %}

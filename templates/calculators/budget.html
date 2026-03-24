@@ -1,53 +1,79 @@
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Budget Calculator</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Personal Budget Calculator</h1>
+{% block title %}Personal Budget Calculator{% endblock %}
 
-    <p><strong>Project:</strong> {{ project.name }}</p>
+{% block content %}
+<section class="card calculator-shell">
+    <div class="calculator-head">
+        <div>
+            <span class="page-kicker">Calculator</span>
+            <h1>Personal Budget Calculator</h1>
+        </div>
+        <span class="project-badge">Project: {{ project.name }}</span>
+    </div>
 
-    <form method="post">
-        {% csrf_token %}
+    <div class="calculator-grid">
+        <div class="form-panel">
+            <h2>Plan Monthly Cash Flow</h2>
+            <form method="post" class="stack-form">
+                {% csrf_token %}
 
-        <label>Monthly Income</label><br>
-        <input type="number" name="income" value="{{ form_data.income }}" required><br><br>
+                <label>
+                    {% if glossary_terms.monthly_income %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_income.slug %}">Monthly Income</a>
+                    {% else %}
+                        Monthly Income
+                    {% endif %}
+                </label>
+                <input type="number" name="income" value="{{ form_data.income }}" required>
 
-        <label>Housing</label><br>
-        <input type="number" name="housing" value="{{ form_data.housing }}"><br><br>
+                <label>Housing</label>
+                <input type="number" name="housing" value="{{ form_data.housing }}">
 
-        <label>Food</label><br>
-        <input type="number" name="food" value="{{ form_data.food }}"><br><br>
+                <label>Food</label>
+                <input type="number" name="food" value="{{ form_data.food }}">
 
-        <label>Transport</label><br>
-        <input type="number" name="transport" value="{{ form_data.transport }}"><br><br>
+                <label>Transport</label>
+                <input type="number" name="transport" value="{{ form_data.transport }}">
 
-        <label>Utilities</label><br>
-        <input type="number" name="utilities" value="{{ form_data.utilities }}"><br><br>
+                <label>
+                    {% if glossary_terms.utilities %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.utilities.slug %}">Utilities</a>
+                    {% else %}
+                        Utilities
+                    {% endif %}
+                </label>
+                <input type="number" name="utilities" value="{{ form_data.utilities }}">
 
-        <label>Other Expenses</label><br>
-        <input type="number" name="other" value="{{ form_data.other }}"><br><br>
+                <label>Other Expenses</label>
+                <input type="number" name="other" value="{{ form_data.other }}">
 
-        <button type="submit">Calculate</button>
-    </form>
+                <button type="submit">Calculate Budget</button>
+            </form>
+        </div>
+
+        <aside class="sidebar-panel">
+            <h2>Budget Advice</h2>
+            <ul>
+                <li>Use this view to estimate disposable income each month.</li>
+                <li>It works well as the first saved-data calculator your team can expand.</li>
+                <li>Linked glossary terms make the budgeting logic easier to explain in demos.</li>
+            </ul>
+        </aside>
+    </div>
 
     {% if result %}
-        <hr>
-
-        {% if result.error %}
-            <p><strong>{{ result.error }}</strong></p>
-        {% else %}
-            <h2>Results</h2>
-            <p><strong>Income:</strong> {{ result.income }}</p>
-            <p><strong>Total Expenses:</strong> {{ result.total_expenses }}</p>
-            <p><strong>Monthly Savings:</strong> {{ result.monthly_savings }}</p>
-            <p><strong>Yearly Savings:</strong> {{ result.yearly_savings }}</p>
-        {% endif %}
+        <div class="results-panel">
+            {% if result.error %}
+                <p><strong>{{ result.error }}</strong></p>
+            {% else %}
+                <h2>Results</h2>
+                <p><strong>Income:</strong> <span class="result-highlight">{{ result.income }}</span></p>
+                <p><strong>{% if glossary_terms.total_expenses %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_expenses.slug %}">Total Expenses</a>{% else %}Total Expenses{% endif %}:</strong> <span class="result-highlight">{{ result.total_expenses }}</span></p>
+                <p><strong>{% if glossary_terms.monthly_savings %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_savings.slug %}">Monthly Savings</a>{% else %}Monthly Savings{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_savings }}</span></p>
+                <p><strong>{% if glossary_terms.yearly_savings %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.yearly_savings.slug %}">Yearly Savings</a>{% else %}Yearly Savings{% endif %}:</strong> <span class="result-highlight">{{ result.yearly_savings }}</span></p>
+            {% endif %}
+        </div>
     {% endif %}
-
-</body>
-</html>
+</section>
+{% endblock %}

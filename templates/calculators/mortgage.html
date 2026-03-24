@@ -1,45 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mortgage Calculator</title>
-</head>
-<body>
-    <h1>Mortgage Calculator</h1>
+{% extends "base.html" %}
 
-    <p><strong>Project:</strong> {{ project.name }}</p>
+{% block title %}Mortgage Calculator{% endblock %}
 
-    <form method="post">
-        {% csrf_token %}
+{% block content %}
+<section class="card calculator-shell">
+    <div class="calculator-head">
+        <div>
+            <span class="page-kicker">Calculator</span>
+            <h1>Mortgage Calculator</h1>
+        </div>
+        <span class="project-badge">Project: {{ project.name }}</span>
+    </div>
 
-        <label for="price">House Price</label><br>
-        <input type="number" id="price" name="price" value="{{ form_data.price }}" required><br><br>
+    <div class="calculator-grid">
+        <div class="form-panel">
+            <h2>Enter Property Details</h2>
+            <form method="post" class="stack-form">
+                {% csrf_token %}
 
-        <label for="down_payment">Down Payment</label><br>
-        <input type="number" id="down_payment" name="down_payment" value="{{ form_data.down_payment }}" required><br><br>
+                <label for="price">
+                    {% if glossary_terms.house_price %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.house_price.slug %}">House Price</a>
+                    {% else %}
+                        House Price
+                    {% endif %}
+                </label>
+                <input type="number" id="price" name="price" value="{{ form_data.price }}" required>
 
-        <label for="rate">Interest Rate (%)</label><br>
-        <input type="number" step="0.01" id="rate" name="rate" value="{{ form_data.rate }}" required><br><br>
+                <label for="down_payment">
+                    {% if glossary_terms.down_payment %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.down_payment.slug %}">Down Payment</a>
+                    {% else %}
+                        Down Payment
+                    {% endif %}
+                </label>
+                <input type="number" id="down_payment" name="down_payment" value="{{ form_data.down_payment }}" required>
 
-        <label for="years">Loan Term (Years)</label><br>
-        <input type="number" id="years" name="years" value="{{ form_data.years }}" required><br><br>
+                <label for="rate">
+                    {% if glossary_terms.interest_rate %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.interest_rate.slug %}">Interest Rate (%)</a>
+                    {% else %}
+                        Interest Rate (%)
+                    {% endif %}
+                </label>
+                <input type="number" step="0.01" id="rate" name="rate" value="{{ form_data.rate }}" required>
 
-        <button type="submit">Calculate</button>
-    </form>
+                <label for="years">
+                    {% if glossary_terms.loan_term %}
+                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.loan_term.slug %}">Loan Term (Years)</a>
+                    {% else %}
+                        Loan Term (Years)
+                    {% endif %}
+                </label>
+                <input type="number" id="years" name="years" value="{{ form_data.years }}" required>
+
+                <button type="submit">Calculate</button>
+            </form>
+        </div>
+
+        <aside class="sidebar-panel">
+            <h2>Use Cases</h2>
+            <ul>
+                <li>Estimate mortgage affordability before buying.</li>
+                <li>Compare house price and down payment tradeoffs.</li>
+                <li>Follow linked glossary terms for a clearer course demo.</li>
+            </ul>
+        </aside>
+    </div>
 
     {% if result %}
-        <hr>
-
-        {% if result.error %}
-            <p><strong>{{ result.error }}</strong></p>
-        {% else %}
-            <h2>Results</h2>
-            <p><strong>Loan Amount:</strong> {{ result.loan }}</p>
-            <p><strong>Monthly Payment:</strong> {{ result.monthly_payment }}</p>
-            <p><strong>Total Paid:</strong> {{ result.total_paid }}</p>
-            <p><strong>Total Interest:</strong> {{ result.total_interest }}</p>
-        {% endif %}
+        <div class="results-panel">
+            {% if result.error %}
+                <p><strong>{{ result.error }}</strong></p>
+            {% else %}
+                <h2>Results</h2>
+                <p><strong>Loan Amount:</strong> <span class="result-highlight">{{ result.loan }}</span></p>
+                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Payment</a>{% else %}Monthly Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }}</span></p>
+                <p><strong>Total Paid:</strong> <span class="result-highlight">{{ result.total_paid }}</span></p>
+                <p><strong>Total Interest:</strong> <span class="result-highlight">{{ result.total_interest }}</span></p>
+            {% endif %}
+        </div>
     {% endif %}
-</body>
-</html>
+</section>
+{% endblock %}
