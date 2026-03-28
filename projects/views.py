@@ -1,6 +1,11 @@
+from decimal import Decimal, InvalidOperation
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
+from calculators.models import Budget, Expense, Income
 from main.models import GlossaryTerm
 from .forms import ProjectForm
 from .models import Project
@@ -11,6 +16,34 @@ def get_glossary_terms(*slugs):
         term.slug: term for term in GlossaryTerm.objects.filter(slug__in=slugs)
     }
     return {slug.replace("-", "_"): glossary_by_slug.get(slug) for slug in slugs}
+
+
+def build_budget_form_data(budget):
+    form_data = {
+        "income": "",
+        "housing": "",
+        "food": "",
+        "transport": "",
+        "utilities": "",
+        "other": "",
+    }
+
+    if not budget:
+        return form_data
+
+    income = budget.incomes.filter(category="Monthly Income").first()
+    if income:
+        form_data["income"] = income.amount
+
+    expense_map = {
+        expense.category: expense.amount for expense in budget.expenses.all()
+    }
+    form_data["housing"] = expense_map.get("Housing", "")
+    form_data["food"] = expense_map.get("Food", "")
+    form_data["transport"] = expense_map.get("Transport", "")
+    form_data["utilities"] = expense_map.get("Utilities", "")
+    form_data["other"] = expense_map.get("Other Expenses", "")
+    return form_data
 
 @login_required
 def create_project(request):
@@ -110,15 +143,13 @@ def project_detail(request, project_id):
 
     if project.calculator_type == "budget":
         result = None
-
-        form_data = {
-            "income": "",
-            "housing": "",
-            "food": "",
-            "transport": "",
-            "utilities": "",
-            "other": "",
-        }
+        saved_budget = (
+            Budget.objects.filter(user=request.user, project=project)
+            .prefetch_related("incomes", "expenses")
+            .order_by("-created_at")
+            .first()
+        )
+        form_data = build_budget_form_data(saved_budget)
 
         if request.method == "POST":
             form_data["income"] = request.POST.get("income", "")
@@ -129,16 +160,58 @@ def project_detail(request, project_id):
             form_data["other"] = request.POST.get("other", "")
 
             try:
-                income = float(form_data["income"] or 0)
-                housing = float(form_data["housing"] or 0)
-                food = float(form_data["food"] or 0)
-                transport = float(form_data["transport"] or 0)
-                utilities = float(form_data["utilities"] or 0)
-                other = float(form_data["other"] or 0)
+                income_value = Decimal(form_data["income"] or "0")
+                housing_value = Decimal(form_data["housing"] or "0")
+                food_value = Decimal(form_data["food"] or "0")
+                transport_value = Decimal(form_data["transport"] or "0")
+                utilities_value = Decimal(form_data["utilities"] or "0")
+                other_value = Decimal(form_data["other"] or "0")
+
+                income = float(income_value)
+                housing = float(housing_value)
+                food = float(food_value)
+                transport = float(transport_value)
+                utilities = float(utilities_value)
+                other = float(other_value)
 
                 total_expenses = housing + food + transport + utilities + other
                 monthly_savings = income - total_expenses
                 yearly_savings = monthly_savings * 12
+
+                with transaction.atomic():
+                    budget, created = Budget.objects.get_or_create(
+                        user=request.user,
+                        project=project,
+                        defaults={"name": f"{project.name} Budget"},
+                    )
+                    if not created and budget.name != f"{project.name} Budget":
+                        budget.name = f"{project.name} Budget"
+                        budget.save(update_fields=["name"])
+
+                    budget.incomes.all().delete()
+                    budget.expenses.all().delete()
+
+                    Income.objects.create(
+                        budget=budget,
+                        category="Monthly Income",
+                        amount=income_value,
+                    )
+
+                    expense_rows = [
+                        ("Housing", housing_value),
+                        ("Food", food_value),
+                        ("Transport", transport_value),
+                        ("Utilities", utilities_value),
+                        ("Other Expenses", other_value),
+                    ]
+                    Expense.objects.bulk_create(
+                        [
+                            Expense(budget=budget, category=category, amount=amount)
+                            for category, amount in expense_rows
+                        ]
+                    )
+
+                messages.success(request, "Budget data saved to the database for this project.")
 
                 result = {
                     "income": round(income, 2),
@@ -147,7 +220,7 @@ def project_detail(request, project_id):
                     "yearly_savings": round(yearly_savings, 2),
                 }
 
-            except ValueError:
+            except (ValueError, InvalidOperation):
                 result = {
                     "error": "Please enter valid numbers in all fields."
                 }
