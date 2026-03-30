@@ -3,75 +3,165 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<section class="hero card">
-    <div class="hero-copy">
-        <span class="page-kicker">Personal Workspace</span>
-        <h1>Your Dashboard</h1>
-        <p>Build private finance projects, compare scenarios, and keep every calculator tied to your own account and glossary-aware workflow.</p>
+<div class="dashboard-container" style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+
+    <header
+        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; gap: 2rem; flex-wrap: wrap;">
+        <div class="hero-copy">
+            <span class="page-kicker"
+                style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; font-weight: 700; color: #6366f1; display: block; margin-bottom: 0.5rem;">
+                Personal Workspace
+            </span>
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin: 0; color: #1e293b; letter-spacing: -1px;">
+                Your Dashboard
+            </h1>
+            <p style="color: #64748b; font-size: 1.1rem; max-width: 600px; margin-top: 0.5rem;">
+                Master your finances with glossary-aware workflows and private scenario modeling.
+            </p>
+        </div>
+        <div class="hero-actions">
+            <a class="button-link" href="{% url 'create_project' %}"
+                style="background: #6366f1; color: white; padding: 0.8rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 600; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); transition: all 0.2s ease; display: inline-block;">
+                + Create New Project
+            </a>
+        </div>
+    </header>
+
+    <div class="balance-status"
+        style="background: white; border-radius: 16px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        {% if is_balanced %}
+        <div
+            style="background: #dcfce7; color: #15803d; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold;">
+            ✓</div>
+        <span style="font-weight: 600; color: #1e293b;">Accounting Equation: <span
+                style="color: #16a34a;">Balanced</span></span>
+        {% else %}
+        <div
+            style="background: #fee2e2; color: #b91c1c; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold;">
+            !</div>
+        <span style="font-weight: 600; color: #1e293b;">Accounting Equation: <span
+                style="color: #dc2626;">Unbalanced</span></span>
+        {% endif %}
+        <span style="color: #94a3b8; margin-left: auto; font-size: 0.9rem; font-weight: 500;">Assets = Liabilities +
+            Equity</span>
     </div>
-    <div class="hero-actions">
-        <a class="button-link" href="{% url 'create_project' %}">Create New Project</a>
-        <p class="hero-note">Start with a budget, loan, mortgage, or rent-vs-own simulation.</p>
+
+    <section class="stats-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <article class="stat-card"
+            style="background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.2s ease;">
+            <span class="stat-label"
+                style="display: block; color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">Net
+                Worth</span>
+            <span class="stat-value" style="font-size: 1.75rem; font-weight: 800; color: #0f172a;">${{
+                net_worth|floatformat:2 }}</span>
+        </article>
+
+        <article class="stat-card"
+            style="background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.2s ease;">
+            <span class="stat-label"
+                style="display: block; color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">Active
+                Projects</span>
+            <span class="stat-value" style="font-size: 1.75rem; font-weight: 800; color: #0f172a;">{{ projects|length
+                }}</span>
+        </article>
+
+        <article class="stat-card"
+            style="background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.2s ease;">
+            <span class="stat-label"
+                style="display: block; color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">Glossary
+                Knowledge</span>
+            <span class="stat-value" style="font-size: 1.75rem; font-weight: 800; color: #0f172a;">17 Terms</span>
+        </article>
+    </section>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="section-title" style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin: 0;">Recent
+            Projects</h2>
+        <a href="#" style="color: #6366f1; text-decoration: none; font-size: 0.9rem; font-weight: 600;">View All
+            Activity</a>
     </div>
-</section>
 
-<section class="stats-grid">
-    <article class="stat-card">
-        <span class="stat-label">Active projects</span>
-        <span class="stat-value">{{ projects|length }}</span>
-    </article>
-    <article class="stat-card">
-        <span class="stat-label">Calculators available</span>
-        <span class="stat-value">4</span>
-    </article>
-    <article class="stat-card">
-        <span class="stat-label">Glossary terms</span>
-        <span class="stat-value">17</span>
-    </article>
-</section>
-
-<section class="feature-grid">
-    <article class="feature-card">
-        <h3>Structured for coursework</h3>
-        <p class="muted">Authentication, templates, database models, admin access, and finance calculators are all connected in one project.</p>
-    </article>
-    <article class="feature-card">
-        <h3>Private by design</h3>
-        <p class="muted">Each project belongs to the signed-in user, which supports the personalized dashboard requirement in your proposal.</p>
-    </article>
-    <article class="feature-card">
-        <h3>Glossary-linked terms</h3>
-        <p class="muted">Key finance terms on the calculators lead directly to your glossary, which makes the site more educational and polished.</p>
-    </article>
-</section>
-
-<h2 class="section-title">My Projects</h2>
-
-{% if projects %}
-    <ul class="project-list">
+    {% if projects %}
+    <div class="project-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem;">
         {% for project in projects %}
-            <li class="project-item">
-                <div>
-                    <h3><a href="{% url 'project_detail' project.id %}">{{ project.name }}</a></h3>
-                    <p class="muted">Open this workspace to continue your calculations and finance planning.</p>
-                    <div class="project-meta">
-                        <span class="meta-pill">{{ project.get_calculator_type_display }}</span>
-                        <span class="meta-pill">Created {{ project.created_at|date:"M d, Y" }}</span>
-                    </div>
+        <article class="project-item"
+            style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 1.5rem; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <span class="meta-pill"
+                        style="background: #f1f5f9; color: #475569; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                        {{ project.get_calculator_type_display }}
+                    </span>
+
+                    <form action="{% url 'delete_project' project.id %}" method="post" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Delete this project?');"
+                            style="background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1.5rem; line-height: 1; padding: 0; transition: color 0.2s;">×</button>
+                    </form>
                 </div>
 
-                <form class="inline-form" action="{% url 'delete_project' project.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Delete this project?');">Delete</button>
-                </form>
-            </li>
+                <h3 style="margin: 0 0 0.5rem 0;">
+                    <a href="{% url 'project_detail' project.id %}"
+                        style="text-decoration: none; color: #1e293b; font-size: 1.25rem; font-weight: 700; display: block;">
+                        {{ project.name }}
+                    </a>
+                </h3>
+                <p style="color: #64748b; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                    Workspace for active calculations and long-term finance planning.
+                </p>
+            </div>
+
+            <div
+                style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f1f5f9; margin-top: 1rem; padding-top: 1rem;">
+                <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 500;">
+                    Added {{ project.created_at|date:"M d, Y" }}
+                </span>
+                <a href="{% url 'project_detail' project.id %}"
+                    style="color: #6366f1; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+                    Open Workspace →
+                </a>
+            </div>
+        </article>
         {% endfor %}
-    </ul>
-{% else %}
-    <section class="card empty-state">
-        <h3>No projects yet</h3>
-        <p class="muted">Create your first project to start exploring budgets, mortgages, loans, and housing comparisons.</p>
-        <a class="button-link" href="{% url 'create_project' %}">Create Your First Project</a>
+    </div>
+    {% else %}
+    <section class="card empty-state"
+        style="text-align: center; padding: 4rem 2rem; background: #f8fafc; border-radius: 24px; border: 2px dashed #e2e8f0;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+        <h3 style="font-size: 1.5rem; color: #1e293b;">No projects yet</h3>
+        <p style="color: #64748b; margin-bottom: 2rem;">Ready to run some numbers? Start your first simulation today.
+        </p>
+        <a class="button-link" href="{% url 'create_project' %}"
+            style="background: #1e293b; color: white; padding: 0.8rem 2rem; border-radius: 12px; text-decoration: none; font-weight: 600; display: inline-block;">
+            Create Your First Project
+        </a>
     </section>
-{% endif %}
+    {% endif %}
+</div>
+
+<style>
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    .project-item:hover {
+        border-color: #6366f1;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+
+    .project-item button:hover {
+        color: #ef4444 !important;
+    }
+
+    .button-link:hover {
+        background: #4f46e5 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 20px -3px rgba(99, 102, 241, 0.4);
+    }
+</style>
 {% endblock %}

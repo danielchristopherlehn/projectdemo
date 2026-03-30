@@ -40,6 +40,9 @@ INSTALLED_APPS = [
 
     'main',
     'accounts',
+    'assets',
+    'liabilities',
+    'equity',
     'dashboard',
     'projects',
     'calculators',
