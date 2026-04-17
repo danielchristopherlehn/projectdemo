@@ -41,7 +41,6 @@ def manage_liabilities(request):
 # NEW VIEWS FOR EDITING AND DELETING
 # -------------------------------------------------------------------
 
-
 @login_required
 def edit_liability(request, pk):
     # This ensures a user can only edit THEIR OWN liabilities

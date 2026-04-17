@@ -1,35 +1,138 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EZ Household SaaS{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <style>
+        /* Minimal additions for professional SaaS feel without breaking your site.css */
+        body {
+            background-color: #f8fafc;
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .site-header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+            position: sticky;
+            /* Note: I fixed a tiny typo here from 'sticky: top;' to 'position: sticky; top: 0;' just in case! */
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #6366f1;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-item {
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: #6366f1;
+        }
+
+        .nav-chip {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0;
+        }
+
+        .logout-btn:hover {
+            color: #dc2626;
+        }
+
+        .page-content {
+            padding-top: 2rem;
+        }
+    </style>
 </head>
+
 <body>
     <header class="site-header">
-        <div class="site-shell nav-row">
+        <div class="nav-row">
             <div class="brand-wrap">
-                <a class="brand" href="{% url 'dashboard' %}">EZ Household SaaS</a>
-                <p class="brand-subtitle">Household finance and real estate planning workspace</p>
+                <a class="brand" href="{% url 'dashboard' %}">EZ HOUSEHOLD</a>
+                <p class="brand-subtitle">Finance Workspace</p>
             </div>
+
             <nav class="nav-links">
                 {% if user.is_authenticated %}
-                    <span class="nav-chip">Signed in as {{ user.username }}</span>
-                    <a class="nav-action" href="{% url 'create_project' %}">New Project</a>
-                    <a class="nav-action nav-secondary" href="{% url 'glossary_list' %}">Glossary</a>
-                    {% if perms.main.manage_glossary %}
-                        <a class="nav-action nav-secondary" href="{% url 'glossary_editor_hub' %}">Editor Hub</a>
-                    {% endif %}
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="link-button">Log Out</button>
-                    </form>
+                <a class="nav-item" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="nav-item" href="/assets/">Assets</a>
+                <a class="nav-item" href="/liabilities/">Liabilities</a>
+                <a class="nav-item" href="/equity/">Equity</a>
+
+                <a class="nav-item" href="{% url 'transactions_diary' %}">Budget</a>
+
+                <div style="height: 20px; width: 1px; background: #e2e8f0; margin: 0 0.5rem;"></div>
+
+                <span class="nav-chip">{{ user.username }}</span>
+
+                <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Log Out</button>
+                </form>
                 {% else %}
-                    <a class="nav-action nav-secondary" href="{% url 'glossary_list' %}">Glossary</a>
-                    <a class="nav-action nav-secondary" href="/admin/login/">Log In</a>
-                    <a class="nav-action" href="{% url 'register' %}">Register</a>
+                <a class="nav-item" href="/admin/login/">Log In</a>
+                <a class="btn-primary" href="{% url 'register' %}">Get Started</a>
                 {% endif %}
             </nav>
         </div>
@@ -37,11 +140,18 @@
 
     <main class="site-shell page-content">
         {% if messages %}
+        <div style="max-width: 1200px; margin: 0 auto 1rem auto; padding: 0 2rem;">
             {% for message in messages %}
-                <div class="message">{{ message }}</div>
+            <div
+                style="padding: 1rem; border-radius: 8px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
+                {{ message }}
+            </div>
             {% endfor %}
+        </div>
         {% endif %}
+
         {% block content %}{% endblock %}
     </main>
 </body>
+
 </html>

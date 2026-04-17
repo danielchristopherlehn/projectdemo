@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Budget Command Center</h2>
+        <span class="badge bg-secondary p-2">{{ user.username }}'s Portfolio</span>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100"
+                style="background-color: #f8f9fa; border-left: 5px solid #0d6efd !important;">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small fw-bold">Net Liquidity</h6>
+                    <h2 class="display-6 fw-bold {% if net_worth < 0 %}text-danger{% else %}text-primary{% endif %}">
+                        ${{ net_worth|floatformat:2|intcomma }}
+                    </h2>
+                    <p class="small text-muted mb-0">Combined value of all accounts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100"
+                style="background-color: #e6fffa; border-left: 5px solid #38b2ac !important;">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small fw-bold">Total Liquidity</h6>
+                    <h2 class="display-6 fw-bold text-success">
+                        ${{ liquid_total|floatformat:2|intcomma }}
+                    </h2>
+                    <p class="small text-muted mb-0">Cash, Bank & E-Wallets</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100"
+                style="background-color: #fff5f5; border-left: 5px solid #e53e3e !important;">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small fw-bold">Total Liabilities</h6>
+                    <h2 class="display-6 fw-bold text-danger">
+                        ${{ debt_total|floatformat:2|intcomma }}
+                    </h2>
+                    <p class="small text-muted mb-0">Credit Cards & Overdrafts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0 p-3">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-wallet2 display-4 text-primary"></i>
+                    </div>
+                    <h4>Accounts & Wallets</h4>
+                    <p class="text-muted">Register new bank accounts, credit cards, or cash reserves.</p>
+                    <a href="{% url 'manage_accounts' %}" class="btn btn-primary w-100 py-2 fw-bold">
+                        Manage Liquidity & Debt
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0 p-3">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-journal-text display-4 text-success"></i>
+                    </div>
+                    <h4>Transaction Diary</h4>
+                    <p class="text-muted">Log your daily expenses and income. Balances sync automatically.</p>
+                    <a href="{% url 'transactions_diary' %}" class="btn btn-success w-100 py-2 fw-bold">
+                        Open Transaction Diary
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h4 class="mb-3">Account Overviews</h4>
+        <div class="table-responsive bg-white rounded shadow-sm">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Class</th>
+                        <th>Type</th>
+                        <th class="text-end">Current Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for acc in accounts %}
+                    <tr>
+                        <td class="fw-bold">{{ acc.name }}</td>
+                        <td>
+                            <span
+                                class="badge {% if acc.account_class == 'LIQUID' %}bg-info{% else %}bg-warning{% endif %} text-dark">
+                                {{ acc.get_account_class_display }}
+                            </span>
+                        </td>
+                        <td>{{ acc.get_account_type_display }}</td>
+                        <td class="text-end fw-bold {% if acc.balance < 0 %}text-danger{% endif %}">
+                            ${{ acc.balance|floatformat:2|intcomma }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No accounts registered yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

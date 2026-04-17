@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 # <-- Import the list from your new file
-from .countries import COUNTRY_CHOICES
+from assets.countries import COUNTRY_CHOICES
 
 
 class Asset(models.Model):
     ASSET_TYPE_CHOICES = [
+
+        # Permafrost assets / FIXED ASSETS
         ('Property & Land', 'Property & Land'),
         ('Equipment & Machinery', 'Equipment & Machinery'),
         ('Furniture', 'Furniture'),

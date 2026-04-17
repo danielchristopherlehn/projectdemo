@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Budget, Expense, Income
+from .models import LoanData, MortgageData, RentVsOwnData
 
-
-admin.site.register(Budget)
-admin.site.register(Income)
-admin.site.register(Expense)
+# Register your models here so they appear in the Django admin panel
+admin.site.register(LoanData)
+admin.site.register(MortgageData)
+admin.site.register(RentVsOwnData)

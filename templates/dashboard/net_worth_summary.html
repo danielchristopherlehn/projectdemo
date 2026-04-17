@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #333;">
+
+    <a href="{% url 'dashboard' %}" style="color:#002D62; font-weight:700; text-decoration:none; font-size:0.9rem;">←
+        Back to Command Center</a>
+
+    <!-- HEADER -->
+    <div
+        style="background:#002D62; color:white; border-radius:15px; padding:30px; margin:20px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+        <div>
+            <p style="margin:0; opacity:0.7; font-size:0.8rem; text-transform:uppercase;">Current Net Worth</p>
+            <h1 style="margin:5px 0 0; font-size:2.8rem;">{{ current_nw|floatformat:0 }} NOK</h1>
+        </div>
+        <div style="display:flex; gap:30px; flex-wrap:wrap;">
+            <div style="text-align:center;">
+                <p style="margin:0; opacity:0.7; font-size:0.75rem; text-transform:uppercase;">Total Assets</p>
+                <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#4ade80;">{{
+                    property_value|floatformat:0 }} NOK</p>
+            </div>
+            <div style="text-align:center;">
+                <p style="margin:0; opacity:0.7; font-size:0.75rem; text-transform:uppercase;">Total Liabilities</p>
+                <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#f87171;">{{ total_debt|floatformat:0
+                    }} NOK</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BALANCE SHEET CARDS -->
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:30px;">
+        <div
+            style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#888;">Property & Land</p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">{{ property_value|floatformat:0 }}
+                NOK</p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#aaa;">{{ properties.count }} asset(s)</p>
+        </div>
+        <div
+            style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#888;">Investments</p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">{{ investment_value|floatformat:0 }}
+                NOK</p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#aaa;">{{ investments.count }} asset(s)</p>
+        </div>
+        <div
+            style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#888;">Liquid (Cash & Bank)</p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">{{ liquid_value|floatformat:0 }} NOK
+            </p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#aaa;">{{ liquid_accounts.count }} account(s)</p>
+        </div>
+    </div>
+
+    <!-- SIMULATION FORM -->
+    <div
+        style="background:white; border-radius:15px; border:1px solid #eee; padding:30px; margin-bottom:30px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+        <h2 style="margin:0 0 5px; color:#002D62;">Net Worth Simulator</h2>
+        <p style="margin:0 0 25px; color:#888; font-size:0.9rem;">Monte Carlo simulation using Geometric Brownian Motion
+            across 1,000 stochastic paths.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
+
+                <div>
+                    <label style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Time
+                        Horizon (years)</label>
+                    <select name="horizon"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                        <option value="5" {% if form_data.horizon==5 %}selected{% endif %}>5 years</option>
+                        <option value="10" {% if form_data.horizon==10 %}selected{% endif %}>10 years</option>
+                        <option value="15" {% if form_data.horizon==15 %}selected{% endif %}>15 years</option>
+                        <option value="20" {% if form_data.horizon==20 %}selected{% endif %}>20 years</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Annual
+                        Income (NOK)</label>
+                    <input type="number" name="annual_income" value="{{ form_data.annual_income }}" step="10000"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Income
+                        Growth Rate (%/yr)</label>
+                    <input type="number" name="income_growth_rate" value="{{ form_data.income_growth_rate }}" step="0.5"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Savings
+                        Rate (% of income)</label>
+                    <input type="number" name="savings_rate" value="{{ form_data.savings_rate }}" step="1"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Property
+                        Appreciation (%/yr)</label>
+                    <input type="number" name="property_drift" value="{{ form_data.property_drift }}" step="0.5"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Property
+                        Volatility (%/yr)</label>
+                    <input type="number" name="property_volatility" value="{{ form_data.property_volatility }}"
+                        step="0.5"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Investment
+                        Return (%/yr)</label>
+                    <input type="number" name="investment_drift" value="{{ form_data.investment_drift }}" step="0.5"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Investment
+                        Volatility (%/yr)</label>
+                    <input type="number" name="investment_volatility" value="{{ form_data.investment_volatility }}"
+                        step="0.5"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:0.8rem; font-weight:700; color:#555; display:block; margin-bottom:5px;">Inflation
+                        Rate (%/yr)</label>
+                    <input type="number" name="inflation_rate" value="{{ form_data.inflation_rate }}" step="0.1"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95rem; box-sizing:border-box;">
+                </div>
+
+            </div>
+
+            <button type="submit"
+                style="margin-top:25px; width:100%; background:#002D62; color:white; padding:14px; border:none; border-radius:8px; font-size:1rem; font-weight:700; cursor:pointer;"
+                onmouseover="this.style.background='#00408a'" onmouseout="this.style.background='#002D62'">
+                Run Simulation →
+            </button>
+        </form>
+    </div>
+
+    <!-- RESULTS -->
+    {% if result %}
+
+    <!-- CHART -->
+    <div
+        style="background:white; border-radius:15px; border:1px solid #eee; padding:30px; margin-bottom:25px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="margin:0 0 20px; color:#002D62;">Net Worth Projection — {{ form_data.horizon }} Year Horizon</h3>
+        <canvas id="nwChart" height="120"></canvas>
+        <p style="margin:15px 0 0; font-size:0.8rem; color:#aaa; text-align:center;">
+            Shaded band = 25th–75th percentile. Lines = 10th (pessimistic), 50th (median), 90th (optimistic) percentile
+            across 1,000 simulated paths.
+        </p>
+    </div>
+
+    <!-- SUMMARY TABLE -->
+    <div
+        style="background:white; border-radius:15px; border:1px solid #eee; padding:30px; margin-bottom:25px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="margin:0 0 20px; color:#002D62;">Scenario Summary</h3>
+        <table style="width:100%; border-collapse:collapse; text-align:right;">
+            <thead>
+                <tr style="border-bottom:2px solid #002D62;">
+                    <th style="padding:12px; text-align:left; color:#002D62;">Horizon</th>
+                    <th style="padding:12px; color:#ef4444;">Pessimistic (P10)</th>
+                    <th style="padding:12px; color:#002D62;">Median (P50)</th>
+                    <th style="padding:12px; color:#16a34a;">Optimistic (P90)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:12px; text-align:left; font-weight:600;">Today</td>
+                    <td style="padding:12px; color:#888;" colspan="3">{{ current_nw|floatformat:0 }} NOK</td>
+                </tr>
+                {% if form_data.horizon >= 5 %}
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:12px; text-align:left; font-weight:600;">Year 5</td>
+                    <td style="padding:12px; color:#ef4444;">{{ result.net_worth_year5.p10|floatformat:0 }} NOK</td>
+                    <td style="padding:12px; font-weight:700;">{{ result.net_worth_year5.median|floatformat:0 }} NOK
+                    </td>
+                    <td style="padding:12px; color:#16a34a;">{{ result.net_worth_year5.p90|floatformat:0 }} NOK</td>
+                </tr>
+                {% endif %}
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:12px; text-align:left; font-weight:600;">Year {{ form_data.horizon }}</td>
+                    <td style="padding:12px; color:#ef4444;">{{ result.net_worth_final.p10|floatformat:0 }} NOK</td>
+                    <td style="padding:12px; font-weight:700;">{{ result.net_worth_final.median|floatformat:0 }} NOK
+                    </td>
+                    <td style="padding:12px; color:#16a34a;">{{ result.net_worth_final.p90|floatformat:0 }} NOK</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PROBABILITY CARDS -->
+    <div
+        style="background:white; border-radius:15px; border:1px solid #eee; padding:30px; margin-bottom:25px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="margin:0 0 20px; color:#002D62;">Probability Analysis</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:15px;">
+            {% for stmt in result.prob_statements %}
+            <div
+                style="border-radius:10px; padding:20px; text-align:center;
+                background:{% if stmt.probability >= 70 %}#f0fdf4{% elif stmt.probability >= 40 %}#fefce8{% else %}#fef2f2{% endif %};
+                border:1px solid {% if stmt.probability >= 70 %}#86efac{% elif stmt.probability >= 40 %}#fde68a{% else %}#fca5a5{% endif %};">
+                <p
+                    style="margin:0 0 8px; font-size:2rem; font-weight:800;
+                    color:{% if stmt.probability >= 70 %}#16a34a{% elif stmt.probability >= 40 %}#ca8a04{% else %}#dc2626{% endif %};">
+                    {{ stmt.probability }}%
+                </p>
+                <p style="margin:0; font-size:0.85rem; color:#555;">
+                    Chance net worth exceeds<br>
+                    <strong>{{ stmt.label }}</strong><br>
+                    by year {{ form_data.horizon }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+
+{% if result %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const data = {{ result_json| safe }};
+    const ctx = document.getElementById('nwChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.years.map(y => 'Year ' + y),
+            datasets: [
+                {
+                    label: 'Optimistic (P90)',
+                    data: data.p90,
+                    borderColor: '#16a34a',
+                    borderWidth: 2,
+                    borderDash: [5, 3],
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4,
+                },
+                {
+                    label: 'Median (P50)',
+                    data: data.median,
+                    borderColor: '#002D62',
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#002D62',
+                    fill: false,
+                    tension: 0.4,
+                },
+                {
+                    label: 'Pessimistic (P10)',
+                    data: data.p10,
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderDash: [5, 3],
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4,
+                },
+                {
+                    label: 'P25–P75 Band',
+                    data: data.p75,
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgba(0, 45, 98, 0.08)',
+                    fill: '+1',
+                    pointRadius: 0,
+                    tension: 0.4,
+                },
+                {
+                    label: '',
+                    data: data.p25,
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgba(0, 45, 98, 0.08)',
+                    fill: false,
+                    pointRadius: 0,
+                    tension: 0.4,
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    labels: {
+                        filter: item => item.text !== '',
+                        font: { family: 'Segoe UI', size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.dataset.label + ': ' +
+                            Math.round(ctx.parsed.y).toLocaleString('nb-NO') + ' NOK'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        callback: val => (val / 1_000_000).toFixed(1) + 'M'
+                    },
+                    grid: { color: '#f0f0f0' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+{% endblock %}
