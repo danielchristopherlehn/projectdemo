@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div
+    style="max-width: 600px; margin: 40px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #eee; font-family: 'Segoe UI', sans-serif;">
+    <h2 style="color: #002D62; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">Edit Equity Record
+    </h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+            {{ form.as_p }}
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 25px;">
+            <button type="submit"
+                style="flex: 1; padding: 12px; background: #004080; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                UPDATE EQUITY
+            </button>
+            <a href="{% url 'manage_equity' %}"
+                style="flex: 1; padding: 12px; background: #eee; color: #333; text-align: center; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                CANCEL
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

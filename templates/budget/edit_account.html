@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div
+    style="max-width: 600px; margin: 60px auto; padding: 40px; background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; font-family: 'Segoe UI', sans-serif;">
+
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: #002D62; margin-bottom: 10px; font-size: 2rem;">Edit Account</h2>
+        <p style="color: #666;">Updating: <strong style="color: #0056b3;">{{ account.name }}</strong></p>
+        <hr style="border: 0; border-top: 2px solid #f0f0f0; margin-top: 20px;">
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div style="display: flex; flex-direction: column; gap: 15px; color: #333;">
+            {{ form.as_p }}
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button type="submit"
+                style="flex: 2; background: #002D62; color: white; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem; transition: background 0.3s;">
+                UPDATE ACCOUNT
+            </button>
+
+            <a href="{% url 'manage_accounts' %}"
+                style="flex: 1; text-align: center; text-decoration: none; background: #f8f9fa; color: #666; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-weight: 600; font-size: 1rem; transition: 0.3s;">
+                CANCEL
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    label {
+        font-weight: 600;
+        color: #002D62;
+    }
+</style>
+{% endblock %}

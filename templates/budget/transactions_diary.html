@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<style>
+    .text-revenue {
+        color: #28a745;
+    }
+
+    .text-expense {
+        color: #dc3545;
+    }
+</style>
+
+<div style="max-width: 1200px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #333;">
+
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'budget_menu' %}" style="text-decoration: none; color: #002D62; font-weight: 600;">← Back to
+            Budget Menu</a>
+    </div>
+
+    <div
+        style="background: #002D62; color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <p style="margin: 0; opacity: 0.8; text-transform: uppercase; font-size: 0.8rem;">Budget Manager</p>
+                <h2 style="margin: 5px 0 0 0; font-size: 2.5rem;">Transaction Diary</h2>
+            </div>
+            <div style="text-align: right;">
+                <p style="margin: 0; font-weight: bold;">{{ transactions.count }} Logged Transactions</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+
+        <div
+            style="flex: 1; min-width: 320px; background: white; padding: 25px; border: 1px solid #ddd; border-radius: 12px; height: fit-content; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 style="margin-top: 0; color: #002D62;">+ Log Transaction</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    {{ form.as_p }}
+                </div>
+                <button type="submit"
+                    style="width: 100%; background: #28a745; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; text-transform: uppercase;">
+                    Save Transaction
+                </button>
+            </form>
+        </div>
+
+        <div
+            style="flex: 2; min-width: 600px; background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: #f8f9fa; border-bottom: 2px solid #002D62;">
+                    <tr>
+                        <th style="padding: 15px; text-align: left;">Date</th>
+                        <th style="padding: 15px; text-align: left;">Category</th>
+                        <th style="padding: 15px; text-align: left;">Account</th>
+                        <th style="padding: 15px; text-align: right;">Amount</th>
+                        <th style="padding: 15px; text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr style="border-bottom: 1px solid #eee;">
+
+                        <td style="padding: 15px; font-weight: 500; color: #555;">
+                            {{ transaction.date|date:"M d, Y" }}
+                        </td>
+
+                        <td style="padding: 15px;">
+                            <div style="font-weight: 600; color: #333;">{{ transaction.get_category_display }}</div>
+                            <div style="font-size: 0.8rem; color: #888;">{{ transaction.description }}</div>
+                        </td>
+
+                        <td style="padding: 15px; color: #0056b3; font-weight: 500;">
+                            {{ transaction.account.name|default:"Unassigned" }}
+                        </td>
+
+                        <td class="{% if transaction.transaction_type == 'REVENUE' %}text-revenue{% else %}text-expense{% endif %}"
+                            style="padding: 15px; text-align: right; font-weight: bold;">
+
+                            {% if transaction.transaction_type == 'REVENUE' %}
+                            +${{ transaction.amount|floatformat:2|intcomma }}
+                            {% else %}
+                            -${{ transaction.amount|floatformat:2|intcomma }}
+                            {% endif %}
+                        </td>
+
+                        <td style="padding: 15px; text-align: right;">
+                            <a href="{% url 'edit_transaction' transaction.id %}"
+                                style="color: #6366f1; text-decoration: none; margin-right: 15px; font-weight: 600; font-size: 0.9rem;">Edit</a>
+
+                            <form action="{% url 'delete_transaction' transaction.id %}" method="POST"
+                                style="display: inline;"
+                                onsubmit="return confirm('Are you sure? This will also revert the account balance.');">
+                                {% csrf_token %}
+                                <button type="submit"
+                                    style="background: none; border: none; color: #dc2626; cursor: pointer; font-weight: 600; font-size: 0.9rem; padding: 0;">Delete</button>
+                            </form>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="padding: 40px; text-align: center; color: #999; font-style: italic;">
+                            No transactions logged yet. Start by logging an income or expense on the left!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

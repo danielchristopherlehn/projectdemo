@@ -54,9 +54,14 @@
 
         <aside class="sidebar-panel">
             <h2>Budget Advice</h2>
+            {% if form_data.income or form_data.housing or form_data.food or form_data.transport or form_data.utilities or form_data.other %}
+                <p class="muted">Saved budget values for this project have been loaded into the form.</p>
+            {% else %}
+                <p class="muted">This project does not have saved budget data yet. Your first calculation will create it.</p>
+            {% endif %}
             <ul>
                 <li>Use this view to estimate disposable income each month.</li>
-                <li>It works well as the first saved-data calculator your team can expand.</li>
+                <li>This calculator now stores project-linked budget data in the database.</li>
                 <li>Linked glossary terms make the budgeting logic easier to explain in demos.</li>
             </ul>
         </aside>

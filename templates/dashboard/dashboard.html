@@ -1,77 +1,54 @@
-{% extends "base.html" %}
-
-{% block title %}Dashboard{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<section class="hero card">
-    <div class="hero-copy">
-        <span class="page-kicker">Personal Workspace</span>
-        <h1>Your Dashboard</h1>
-        <p>Build private finance projects, compare scenarios, and keep every calculator tied to your own account and glossary-aware workflow.</p>
+<divs style="max-width: 1000px; margin: 60px auto; padding: 20px; font-family: 'Segoe UI', Roboto, sans-serif;">
+
+    <div style="text-align: center; margin-bottom: 50px;">
+        <h1 style="color: #002774; font-size: 3rem; margin-bottom: 10px;">Financial Command Center</h1>
+        <p style="color: #000000; font-size: 1.1rem;">Select a module to manage your assets and planning</p>
     </div>
-    <div class="hero-actions">
-        <a class="button-link" href="{% url 'create_project' %}">Create New Project</a>
-        <p class="hero-note">Start with a budget, loan, mortgage, or rent-vs-own simulation.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
+
+        <a href="{% url 'manage_assets' %}" style="text-decoration: none; color: inherit;">
+            <div
+                style="background: rgb(0, 144, 192); padding: 40px 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; text-align: center; height: 100%;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
+                <h3 style="margin: 0; color: #ffffff; font-size: 1.5rem;">My Budget</h3>
+                <p style="color:#ffffff; margin-top: 15px; line-height: 1.5;">Track daily income, expenses, and liquid
+                    cash flow!</p>
+            </div>
+        </a>
+
+        <a href="{% url 'net_worth' %}" style="text-decoration: none; color: inherit;">
+            <div
+                style="background: rgb(101, 102, 255); padding: 40px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s; text-align: center; color: white; height: 100%;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">💰</div>
+                <h2 style="margin: 0; font-size: 1.5rem;">My Net Worth</h2>
+                <p style="opacity: 0.8; margin-top: 15px; line-height: 1.5;">View total asset allocation, fixed
+                    properties, and wealth growth.</p>
+            </div>
+        </a>
+
+        <a href="{% url 'project_list' %}" style="text-decoration: none; color: inherit;">
+            <div
+                style="background: rgb(140, 182, 255); padding: 40px 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; text-align: center; height: 100%;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">🏗️</div>
+                <h3 style="margin: 0; color: #02005c; font-size: 1.5rem;">My Projects</h3>
+                <p style="color: #000000; margin-top: 15px; line-height: 1.5;">Compare Rent vs. Own, Mortgage
+                    calculators,
+                    and investment scenarios.</p>
+            </div>
+        </a>
+
     </div>
-</section>
+    </div>
 
-<section class="stats-grid">
-    <article class="stat-card">
-        <span class="stat-label">Active projects</span>
-        <span class="stat-value">{{ projects|length }}</span>
-    </article>
-    <article class="stat-card">
-        <span class="stat-label">Calculators available</span>
-        <span class="stat-value">4</span>
-    </article>
-    <article class="stat-card">
-        <span class="stat-label">Glossary terms</span>
-        <span class="stat-value">17</span>
-    </article>
-</section>
-
-<section class="feature-grid">
-    <article class="feature-card">
-        <h3>Structured for coursework</h3>
-        <p class="muted">Authentication, templates, database models, admin access, and finance calculators are all connected in one project.</p>
-    </article>
-    <article class="feature-card">
-        <h3>Private by design</h3>
-        <p class="muted">Each project belongs to the signed-in user, which supports the personalized dashboard requirement in your proposal.</p>
-    </article>
-    <article class="feature-card">
-        <h3>Glossary-linked terms</h3>
-        <p class="muted">Key finance terms on the calculators lead directly to your glossary, which makes the site more educational and polished.</p>
-    </article>
-</section>
-
-<h2 class="section-title">My Projects</h2>
-
-{% if projects %}
-    <ul class="project-list">
-        {% for project in projects %}
-            <li class="project-item">
-                <div>
-                    <h3><a href="{% url 'project_detail' project.id %}">{{ project.name }}</a></h3>
-                    <p class="muted">Open this workspace to continue your calculations and finance planning.</p>
-                    <div class="project-meta">
-                        <span class="meta-pill">{{ project.get_calculator_type_display }}</span>
-                        <span class="meta-pill">Created {{ project.created_at|date:"M d, Y" }}</span>
-                    </div>
-                </div>
-
-                <form class="inline-form" action="{% url 'delete_project' project.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Delete this project?');">Delete</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <section class="card empty-state">
-        <h3>No projects yet</h3>
-        <p class="muted">Create your first project to start exploring budgets, mortgages, loans, and housing comparisons.</p>
-        <a class="button-link" href="{% url 'create_project' %}">Create Your First Project</a>
-    </section>
-{% endif %}
-{% endblock %}
+    <style>
+        /* Add a subtle hover effect to cards */
+        a div:hover {
+            transform: translateY(-5px);
+            border-color: #002D62 !important;
+        }
+    </style>
+    {% endblock %}

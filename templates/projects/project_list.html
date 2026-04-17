@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <a href="{% url 'dashboard' %}"
+                style="text-decoration: none; color: #002D62; font-weight: bold; font-size: 0.9rem;">← Back to Command
+                Center</a>
+            <h1 style="margin: 10px 0 0 0; color: #002D62; font-size: 2rem;">My Projects</h1>
+        </div>
+        <a href="{% url 'create_project' %}"
+            style="background: #28a745; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(40,167,69,0.2);">
+            + New Simulation
+        </a>
+    </div>
+
+    <div
+        style="background: white; border-radius: 15px; border: 1px solid #eef0f2; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead style="background: #f8f9fa; border-bottom: 2px solid #002D62;">
+                <tr>
+                    <th style="padding: 20px; color: #002D62; font-weight: 700;">Workspace Name</th>
+                    <th style="padding: 20px; color: #002D62; font-weight: 700;">Calculator Type</th>
+                    <th style="padding: 20px; color: #002D62; font-weight: 700;">Linked Asset</th>
+                    <th style="padding: 20px; color: #002D62; font-weight: 700; text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr style="border-bottom: 1px solid #f0f0f0;" onmouseover="this.style.backgroundColor='#fcfcfc'"
+                    onmouseout="this.style.backgroundColor='transparent'">
+
+                    <td style="padding: 20px; font-weight: 600; color: #333;">
+                        <span style="margin-right: 10px;">📁</span>{{ project.name }}
+                        <div style="font-size: 0.8rem; color: #aaa; font-weight: 400; margin-top: 3px;">
+                            {{ project.created_at|date:"d M Y" }}
+                        </div>
+                    </td>
+
+                    <td style="padding: 20px;">
+                        <span
+                            style="background: #eef2f7; color: #4a5568; padding: 5px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 500;">
+                            {{ project.get_calculator_type_display }}
+                        </span>
+                    </td>
+
+                    <td style="padding: 20px; color: #555; font-size: 0.9rem;">
+                        {% if project.linked_asset %}
+                        🏠 {{ project.linked_asset.asset_name }}
+                        {% else %}
+                        <span style="color: #ccc;">—</span>
+                        {% endif %}
+                    </td>
+
+                    <td style="padding: 20px; text-align: right;">
+                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <a href="{% url 'project_detail' project.id %}"
+                                style="color: #002D62; text-decoration: none; font-weight: 700; font-size: 0.9rem; border: 1px solid #002D62; padding: 6px 14px; border-radius: 6px;">
+                                Open
+                            </a>
+                            <form method="post" action="{% url 'delete_project' project.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirm('Delete {{ project.name }}?')"
+                                    style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 0.9rem; cursor: pointer;">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="padding: 60px; text-align: center; color: #999;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">☕</div>
+                        <p>No projects yet. Ready to start your first simulation?</p>
+                        <a href="{% url 'create_project' %}" style="color: #002D62; font-weight: bold;">Create one
+                            now</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
