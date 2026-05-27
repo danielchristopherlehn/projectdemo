@@ -8,6 +8,7 @@ from assets.models import Asset
 from liabilities.models import Liability
 from budget.models import Account
 from .simulation import SimulationInput, run_simulation
+from .models import ContactMessage
 
 
 @login_required
@@ -91,3 +92,19 @@ def net_worth_summary(request):
         'result_json':      json.dumps(asdict(result)) if result else 'null',
     }
     return render(request, 'dashboard/net_worth_summary.html', context)
+
+
+
+@login_required
+def contact_us(request):
+    success = False
+
+    if request.method == 'POST':
+        ContactMessage.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            message=request.POST.get('message'),
+        )
+        success = True
+
+    return render(request, 'dashboard/contact.html', {'success': success})
