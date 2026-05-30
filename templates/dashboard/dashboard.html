@@ -2,109 +2,42 @@
 
 {% block content %}
 
-<div style="max-width: 1150px; margin: 0 auto; padding: 10px 24px 24px 24px;">
+<div style="
+    background: #f4efe7;
+    min-height: calc(100vh - 90px);
+    padding: 10px 24px 24px 24px;
+">
 
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h1 style="
-            margin: 0 0 6px 0;
-            font-size: 2rem;
-            font-weight: 800;
-            color: #002D62;
-        ">
-            Financial Command Center
-        </h1>
+    <div style="max-width: 1150px; margin: 0 auto;">
 
-        <p style="
-            margin: 0;
-            font-size: 0.95rem;
-            color: #444;
-        ">
-            Select a module to manage your finances, assets, and planning tools.
-        </p>
-    </div>
-
-    <div style="
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-    ">
-
-        <a href="{% url 'manage_assets' %}" style="text-decoration: none; color: inherit;">
-            <div style="
-                background: rgb(0, 144, 192);
-                height: 165px;
-                border-radius: 16px;
-                padding: 18px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="
+                margin: 0 0 6px 0;
+                font-size: 2rem;
+                font-weight: 800;
+                color: #002D62;
             ">
-                <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: white;">
-                    My Budget
-                </h2>
+                Financial Command Center
+            </h1>
 
-                <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: white;">
-                    Track income, expenses, wallets, accounts, and cash flow.
-                </p>
-            </div>
-        </a>
-
-        <a href="{% url 'net_worth' %}" style="text-decoration: none; color: inherit;">
-            <div style="
-                background: rgb(99, 102, 241);
-                height: 165px;
-                border-radius: 16px;
-                padding: 18px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            <p style="
+                margin: 0;
+                font-size: 0.95rem;
+                color: #444;
             ">
-                <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: white;">
-                    My Net Worth
-                </h2>
-
-                <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #eef2ff;">
-                    Review assets, liabilities, equity, and total financial position.
-                </p>
-            </div>
-        </a>
-
-        <a href="{% url 'project_list' %}" style="text-decoration: none; color: inherit;">
-            <div style="
-                background: rgb(133, 171, 239);
-                height: 165px;
-                border-radius: 16px;
-                padding: 18px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            ">
-                <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #000066;">
-                    My Projects
-                </h2>
-
-                <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #111827;">
-                    Compare rent versus own, mortgages, and investment plans.
-                </p>
-            </div>
-        </a>
+                Select a module to manage your finances, assets, and planning tools.
+            </p>
+        </div>
 
         <div style="
-            grid-column: 1 / span 3;
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 18px;
         ">
 
-            <a href="{% url 'glossary' %}" style="text-decoration: none; color: inherit; width: 360px;">
+            <a href="{% url 'manage_assets' %}" style="text-decoration: none; color: inherit;">
                 <div style="
-                    background: #e0f2fe;
+                    background: rgb(0, 144, 192);
                     height: 165px;
                     border-radius: 16px;
                     padding: 18px;
@@ -114,19 +47,19 @@
                     text-align: center;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                 ">
-                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #002D62;">
-                        Glossary
+                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: white;">
+                        My Budget
                     </h2>
 
-                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #1e293b;">
-                        Learn key financial terms used across the platform.
+                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: white;">
+                        Track income, expenses, wallets, accounts, and cash flow.
                     </p>
                 </div>
             </a>
 
-            <a href="{% url 'contact_us' %}" style="text-decoration: none; color: inherit; width: 360px;">
+            <a href="{% url 'net_worth' %}" style="text-decoration: none; color: inherit;">
                 <div style="
-                    background: #dbeafe;
+                    background: rgb(99, 102, 241);
                     height: 165px;
                     border-radius: 16px;
                     padding: 18px;
@@ -136,15 +69,90 @@
                     text-align: center;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                 ">
-                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #002D62;">
-                        Contact Us
+                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: white;">
+                        My Net Worth
                     </h2>
 
-                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #1e293b;">
-                        Questions or support? Send us a message.
+                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #eef2ff;">
+                        Review assets, liabilities, equity, and total financial position.
                     </p>
                 </div>
             </a>
+
+            <a href="{% url 'project_list' %}" style="text-decoration: none; color: inherit;">
+                <div style="
+                    background: rgb(133, 171, 239);
+                    height: 165px;
+                    border-radius: 16px;
+                    padding: 18px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    text-align: center;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                ">
+                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #000066;">
+                        My Projects
+                    </h2>
+
+                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #111827;">
+                        Compare rent versus own, mortgages, and investment plans.
+                    </p>
+                </div>
+            </a>
+
+            <div style="
+                grid-column: 1 / span 3;
+                display: flex;
+                justify-content: center;
+                gap: 18px;
+            ">
+
+                <a href="{% url 'glossary' %}" style="text-decoration: none; color: inherit; width: 360px;">
+                    <div style="
+                        background: #e0f2fe;
+                        height: 165px;
+                        border-radius: 16px;
+                        padding: 18px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        text-align: center;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                    ">
+                        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #002D62;">
+                            Glossary
+                        </h2>
+
+                        <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #1e293b;">
+                            Learn key financial terms used across the platform.
+                        </p>
+                    </div>
+                </a>
+
+                <a href="{% url 'contact_us' %}" style="text-decoration: none; color: inherit; width: 360px;">
+                    <div style="
+                        background: #dbeafe;
+                        height: 165px;
+                        border-radius: 16px;
+                        padding: 18px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        text-align: center;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                    ">
+                        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #002D62;">
+                            Contact Us
+                        </h2>
+
+                        <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #1e293b;">
+                            Questions or support? Send us a message.
+                        </p>
+                    </div>
+                </a>
+
+            </div>
 
         </div>
 

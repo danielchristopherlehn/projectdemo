@@ -6,18 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EZ Household SaaS{% endblock %}</title>
+
     <link rel="stylesheet" href="{% static 'css/site.css' %}">
 
     <style>
         body {
-            background-color: #f8fafc;
             margin: 0;
+            background: #f4efe7;
             color: #1e293b;
+            font-family: Georgia, serif;
         }
 
         .site-header {
             background: white;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #d6d3d1;
             padding: 1rem 0;
             position: sticky;
             top: 0;
@@ -25,26 +27,26 @@
         }
 
         .nav-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .brand {
+            text-decoration: none;
             font-size: 1.25rem;
             font-weight: 800;
             color: #6366f1;
-            text-decoration: none;
-            letter-spacing: -0.5px;
         }
 
         .brand-subtitle {
-            font-size: 0.75rem;
-            color: #64748b;
             margin: 0;
+            font-size: 0.8rem;
+            color: #64748b;
         }
 
         .nav-links {
@@ -54,9 +56,9 @@
         }
 
         .nav-item {
-            color: #475569;
             text-decoration: none;
-            font-size: 0.9rem;
+            color: #475569;
+            font-size: 0.95rem;
             font-weight: 500;
         }
 
@@ -65,11 +67,11 @@
         }
 
         .nav-chip {
-            background: #f1f5f9;
-            color: #475569;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            background: #eef2f7;
+            color: #334155;
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
@@ -78,8 +80,7 @@
             border: none;
             color: #94a3b8;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 0.95rem;
             padding: 0;
         }
 
@@ -88,15 +89,19 @@
         }
 
         .page-content {
+            background: #f4efe7;
+            min-height: calc(100vh - 80px);
             padding-top: 2rem;
         }
     </style>
 </head>
 
 <body>
+
     <header class="site-header">
         <div class="nav-row">
-            <div class="brand-wrap">
+
+            <div>
                 <a class="brand" href="/">EZ HOUSEHOLD</a>
                 <p class="brand-subtitle">Finance Workspace</p>
             </div>
@@ -109,32 +114,45 @@
                     <a class="nav-item" href="/equity/">Equity</a>
                     <a class="nav-item" href="{% url 'transactions_diary' %}">Budget</a>
 
-                    <div style="height: 20px; width: 1px; background: #e2e8f0; margin: 0 0.5rem;"></div>
+                    <div style="width:1px;height:20px;background:#d6d3d1;"></div>
 
                     <span class="nav-chip">{{ user.username }}</span>
 
-                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                    <form method="post" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="logout-btn">Log Out</button>
+                        <button type="submit" class="logout-btn">
+                            Log Out
+                        </button>
                     </form>
                 {% endif %}
             </nav>
+
         </div>
     </header>
 
-    <main class="site-shell page-content">
+    <main class="page-content">
+
         {% if messages %}
-            <div style="max-width: 1200px; margin: 0 auto 1rem auto; padding: 0 2rem;">
+            <div style="max-width:1200px;margin:0 auto 1rem auto;padding:0 2rem;">
                 {% for message in messages %}
-                    <div style="padding: 1rem; border-radius: 8px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
+                    <div style="
+                        background:#f0fdf4;
+                        border:1px solid #bbf7d0;
+                        color:#166534;
+                        padding:1rem;
+                        border-radius:8px;
+                        margin-bottom:1rem;
+                    ">
                         {{ message }}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
 
-        {% block content %}{% endblock %}
-    </main>
-</body>
+        {% block content %}
+        {% endblock %}
 
+    </main>
+
+</body>
 </html>
