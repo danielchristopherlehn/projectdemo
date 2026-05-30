@@ -5,13 +5,13 @@
 {% block content %}
 <section class="hero card">
     <div class="hero-copy">
-        <span class="page-kicker">Permissions Demo</span>
-        <h1>Glossary Editor Hub</h1>
-        <p>This page is protected with Django's <code>@permission_required</code> decorator and is only available to users who have the custom <code>main.manage_glossary</code> permission.</p>
+        <span class="page-kicker">Permissions</span>
+        <h1>Glossary Editor</h1>
+        <p>Permission: <code>main.manage_glossary</code></p>
     </div>
     <div class="hero-actions">
-        <a class="button-link" href="/admin/main/glossaryterm/">Open Glossary In Admin</a>
-        <p class="hero-note">This gives you a concrete groups-and-permissions example for the course demo.</p>
+        <a class="button-link" href="/admin/main/glossaryterm/">Open glossary admin</a>
+        <p class="hero-note">Groups and permissions</p>
     </div>
 </section>
 
@@ -32,16 +32,16 @@
 
 <section class="feature-grid">
     <article class="feature-card">
-        <h3>Decorator Protection</h3>
-        <p class="muted">The route is blocked unless the user is logged in and has the custom permission attached to their account or group.</p>
+        <h3>Decorator</h3>
+        <p class="muted">@permission_required</p>
     </article>
     <article class="feature-card">
-        <h3>Group Ready</h3>
-        <p class="muted">Users can inherit this access through a group, which matches the lecture's recommended Django authorization flow.</p>
+        <h3>Groups</h3>
+        <p class="muted">Group-based access</p>
     </article>
     <article class="feature-card">
-        <h3>Admin Workflow</h3>
-        <p class="muted">Editors can use Django admin to maintain glossary content without needing a separate custom CRUD page.</p>
+        <h3>Admin</h3>
+        <p class="muted">Glossary terms</p>
     </article>
 </section>
 
@@ -52,7 +52,7 @@
             {% for group in user_groups %}
                 <li>
                     <strong>{{ group.name }}</strong>
-                    <p class="muted">This group can be used to assign glossary-management access to multiple users at once.</p>
+                    <p class="muted">Glossary access</p>
                 </li>
             {% endfor %}
         </ul>

@@ -18,7 +18,6 @@ def manage_assets(request):
     else:
         form = AssetForm()
 
-    # --- FETCH DATA ---
     user_assets = Asset.objects.filter(
         user=request.user
     ).exclude(asset_type='Bank Account')
@@ -28,7 +27,6 @@ def manage_assets(request):
         account_class='LIQUID'
     )
 
-    # --- TOTALS ---
     assets_total = user_assets.aggregate(
         Sum('value_estimate')
     )['value_estimate__sum'] or 0
@@ -39,7 +37,6 @@ def manage_assets(request):
 
     total_value = assets_total + accounts_total
 
-    # --- ALLOCATION BAR ---
     type_data = list(
         user_assets.values('asset_type').annotate(
             total=Sum('value_estimate')
@@ -70,7 +67,6 @@ def manage_assets(request):
             'color': colors[index % len(colors)]
         })
 
-    # --- BUCKETS ---
     cash_reserves = budget_accounts.filter(account_type='CASH')
     bank_accounts = budget_accounts.exclude(account_type='CASH')
     other_assets = user_assets

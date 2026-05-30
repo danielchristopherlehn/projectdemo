@@ -1,4 +1,3 @@
-# <-- Added get_object_or_404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
@@ -18,14 +17,11 @@ def manage_liabilities(request):
     else:
         form = LiabilityForm()
 
-    # Get only THIS user's liabilities
     user_liabilities = Liability.objects.filter(user=request.user)
 
-    # Math: Total Debt
     total_liability = user_liabilities.aggregate(Sum('principal_amount'))[
         'principal_amount__sum'] or 0
 
-    # Math: For the HTML allocation bar
     type_counts = user_liabilities.values(
         'liability_type').annotate(total=Count('id'))
 
@@ -37,13 +33,8 @@ def manage_liabilities(request):
     }
     return render(request, 'liabilities/manage_liabilities.html', context)
 
-# -------------------------------------------------------------------
-# NEW VIEWS FOR EDITING AND DELETING
-# -------------------------------------------------------------------
-
 @login_required
 def edit_liability(request, pk):
-    # This ensures a user can only edit THEIR OWN liabilities
     liability = get_object_or_404(Liability, pk=pk, user=request.user)
 
     if request.method == 'POST':
@@ -59,7 +50,6 @@ def edit_liability(request, pk):
 
 @login_required
 def delete_liability(request, pk):
-    # This ensures a user can only delete THEIR OWN liabilities
     liability = get_object_or_404(Liability, pk=pk, user=request.user)
     liability.delete()
     return redirect('manage_liabilities')

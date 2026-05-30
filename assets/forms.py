@@ -14,7 +14,6 @@ class AssetForm(forms.ModelForm):
             'purchase_year',
             'active_Status'
         ]
-        # Optional: Add styling to the form fields
         widgets = {
             'asset_name': forms.TextInput(attrs={'style': 'width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;'}),
             'country': forms.Select(attrs={'style': 'width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;'}),

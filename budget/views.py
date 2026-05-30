@@ -5,14 +5,11 @@ from django.db.models import Sum
 from .models import Transaction, Account
 from .forms import TransactionForm, AccountForm
 
-# --- 1. THE FACE: BUDGET MENU (DASHBOARD) ---
-
 
 @login_required
 def budget_dashboard(request):
     user_accounts = Account.objects.filter(user=request.user)
 
-    # FIXED: Replaced 'balance' with 'initial_balance'
     liquid_total = user_accounts.filter(account_class='LIQUID').aggregate(
         Sum('initial_balance'))['initial_balance__sum'] or 0
     debt_total = user_accounts.filter(account_class='DEBT').aggregate(
@@ -26,8 +23,6 @@ def budget_dashboard(request):
     }
     return render(request, 'budget/budget_menu.html', context)
 
-
-# --- 2. MANAGE LIQUIDITY & DEBT (The Setup) ---
 
 @login_required
 def manage_accounts(request):
@@ -47,8 +42,6 @@ def manage_accounts(request):
     return render(request, 'budget/manage_accounts.html', {'form': form, 'accounts': accounts})
 
 
-# --- THE NEW EDIT ACCOUNT FUNCTION ---
-
 @login_required
 def edit_account(request, pk):
     account = get_object_or_404(Account, pk=pk, user=request.user)
@@ -66,8 +59,6 @@ def edit_account(request, pk):
     return render(request, 'budget/edit_account.html', {'form': form, 'account': account})
 
 
-# --- 3. TRANSACTION DIARY (The Flow) ---
-
 @login_required
 def transactions_diary(request):
     if request.method == 'POST':
@@ -76,9 +67,7 @@ def transactions_diary(request):
             transaction = form.save(commit=False)
             transaction.user = request.user
 
-            # --- UPDATE THE ACCOUNT BALANCE ---
             if transaction.account:
-                # FIXED: Replaced 'balance' with 'initial_balance'
                 if transaction.transaction_type == 'REVENUE':
                     transaction.account.initial_balance += transaction.amount
                 elif transaction.transaction_type == 'EXPENSE':
@@ -98,8 +87,6 @@ def transactions_diary(request):
     return render(request, 'budget/transactions_diary.html', {'form': form, 'transactions': transactions})
 
 
-# --- UTILITIES ---
-
 @login_required
 def edit_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
@@ -112,21 +99,16 @@ def edit_transaction(request, pk):
         form = TransactionForm(
             request.POST, instance=transaction, user=request.user)
         if form.is_valid():
-            # 1. Reverse the old impact on the account
             if original_account:
-                # FIXED: Replaced 'balance' with 'initial_balance'
                 if original_type == 'REVENUE':
                     original_account.initial_balance -= original_amount
                 else:
                     original_account.initial_balance += original_amount
                 original_account.save()
 
-            # 2. Save new transaction data
             updated_transaction = form.save()
 
-            # 3. Apply the new impact to the account
             if updated_transaction.account:
-                # FIXED: Replaced 'balance' with 'initial_balance'
                 if updated_transaction.transaction_type == 'REVENUE':
                     updated_transaction.account.initial_balance += updated_transaction.amount
                 else:
@@ -145,9 +127,7 @@ def edit_transaction(request, pk):
 def delete_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
     if request.method == 'POST':
-        # --- REVERSE THE BALANCE BEFORE DELETING ---
         if transaction.account:
-            # FIXED: Replaced 'balance' with 'initial_balance'
             if transaction.transaction_type == 'REVENUE':
                 transaction.account.initial_balance -= transaction.amount
             else:
@@ -158,8 +138,6 @@ def delete_transaction(request, pk):
         messages.success(request, 'Transaction deleted and balance restored.')
     return redirect('transactions_diary')
 
-from django.shortcuts import get_object_or_404, redirect
-
 
 def delete_account(request, pk):
     account = get_object_or_404(Account, pk=pk)
@@ -167,4 +145,3 @@ def delete_account(request, pk):
     if request.method == "POST":
         account.delete()
         return redirect('manage_accounts')
-

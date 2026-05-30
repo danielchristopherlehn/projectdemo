@@ -24,7 +24,6 @@ class Account(models.Model):
         )),
     ]
 
-    # Added related_name for easier querying (e.g., user.accounts.all())
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='accounts')
     name = models.CharField(max_length=100, help_text="e.g., DNB Main Account")
@@ -39,7 +38,6 @@ class Account(models.Model):
         max_length=2, choices=COUNTRY_CHOICES, default='no'
     )
 
-    # Renamed to clarify this is the starting point, not the dynamic current balance
     initial_balance = models.DecimalField(
         max_digits=12, decimal_places=2, default=0.00
     )
@@ -67,14 +65,11 @@ class Transaction(models.Model):
         ('OTHER', 'Other'),
     ]
 
-    # Added related_name
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='transactions')
 
-    # Made account mandatory. Money must flow from/to somewhere.
     account = models.ForeignKey(
         Account,
-        # Changed to CASCADE: if account is deleted, delete its transactions
         on_delete=models.CASCADE,
         related_name='transactions',
         help_text="Select the funding source or debt account for this transaction."
@@ -87,7 +82,6 @@ class Transaction(models.Model):
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     description = models.CharField(max_length=255)
 
-    # Added MinValueValidator to prevent negative inputs
     amount = models.DecimalField(
         max_digits=12, decimal_places=2, validators=[MinValueValidator(0.01)]
     )
