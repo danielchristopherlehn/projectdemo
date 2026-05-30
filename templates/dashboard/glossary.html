@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 20px 24px 35px 24px;">
+
+    <div style="text-align: center; margin-bottom: 24px;">
+        <h1 style="
+            margin: 0 0 8px 0;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #002D62;
+        ">
+            Financial Glossary
+        </h1>
+
+        <p style="
+            margin: 0;
+            font-size: 0.95rem;
+            color: #475569;
+        ">
+            Key financial terms used across the platform.
+        </p>
+    </div>
+
+    <div style="
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    ">
+
+        {% for term in terms %}
+            <div style="
+                background: #ffffff;
+                border-radius: 14px;
+                padding: 18px 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e5e7eb;
+            ">
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 10px;
+                    margin-bottom: 8px;
+                ">
+                    <h2 style="
+                        margin: 0;
+                        font-size: 1.15rem;
+                        font-weight: 700;
+                        color: #002D62;
+                    ">
+                        {{ term.term }}
+                    </h2>
+
+                    <span style="
+                        font-size: 0.75rem;
+                        color: #334155;
+                        background: #e0f2fe;
+                        padding: 4px 8px;
+                        border-radius: 999px;
+                        white-space: nowrap;
+                    ">
+                        {{ term.term_type }}
+                    </span>
+                </div>
+
+                <p style="
+                    margin: 0;
+                    font-size: 0.9rem;
+                    line-height: 1.45;
+                    color: #334155;
+                ">
+                    {{ term.definition }}
+                </p>
+            </div>
+        {% empty %}
+            <div style="
+                grid-column: 1 / -1;
+                background: #ffffff;
+                border-radius: 14px;
+                padding: 24px;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            ">
+                <p style="margin: 0; color: #475569;">
+                    No glossary terms are available yet.
+                </p>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <div style="text-align: center; margin-top: 24px;">
+        <a href="{% url 'dashboard' %}" style="
+            display: inline-block;
+            text-decoration: none;
+            background: #002D62;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+        ">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -157,3 +157,14 @@ def delete_transaction(request, pk):
         transaction.delete()
         messages.success(request, 'Transaction deleted and balance restored.')
     return redirect('transactions_diary')
+
+from django.shortcuts import get_object_or_404, redirect
+
+
+def delete_account(request, pk):
+    account = get_object_or_404(Account, pk=pk)
+
+    if request.method == "POST":
+        account.delete()
+        return redirect('manage_accounts')
+

@@ -4,12 +4,15 @@
 <div style="max-width: 1200px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #333;">
 
     <div
-        style="background: #8B0000; color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+        style="background: #002D62; color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
-                <p style="margin: 0; opacity: 0.8; text-transform: uppercase; font-size: 0.8rem;">Total Outstanding Debt
+                <p style="margin: 0; opacity: 0.85; text-transform: uppercase; font-size: 0.8rem;">
+                    Total Outstanding Debt
                 </p>
-                <h2 style="margin: 5px 0 0 0; font-size: 3rem;">${{ total_liability|default:"0.00"|floatformat:2 }}</h2>
+                <h2 style="margin: 5px 0 0 0; font-size: 3rem;">
+                    ${{ total_liability|default:"0.00"|floatformat:2 }}
+                </h2>
             </div>
             <div style="text-align: right;">
                 <p style="margin: 0; font-weight: bold;">{{ liabilities.count }} Active Liabilities</p>
@@ -17,19 +20,20 @@
         </div>
 
         <div style="margin-top: 25px;">
-            <p style="margin-bottom: 10px; font-size: 0.9rem; font-weight: bold; color: #ffcccc;">Allocation by Type:
+            <p style="margin-bottom: 10px; font-size: 0.9rem; font-weight: bold; color: #ffffff;">
+                Allocation by Type:
             </p>
             <div
-                style="display: flex; height: 12px; width: 100%; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;">
+                style="display: flex; height: 12px; width: 100%; background: rgba(255,255,255,0.25); border-radius: 10px; overflow: hidden;">
                 {% for item in type_counts %}
-                <div style="height: 100%; width: 25%; background: #ff4d4d; border-right: 1px solid #8B0000;"
+                <div style="height: 100%; width: 25%; background: #4f78a8; border-right: 1px solid #002D62;"
                     title="{{ item.liability_type }}"></div>
                 {% endfor %}
             </div>
             <div style="display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
                 {% for item in type_counts %}
                 <span style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
-                    <span style="width: 10px; height: 10px; background: #ff4d4d; border-radius: 50%;"></span>
+                    <span style="width: 10px; height: 10px; background: #4f78a8; border-radius: 50%;"></span>
                     {{ item.liability_type }}: <strong>{{ item.total }}</strong>
                 </span>
                 {% endfor %}
@@ -40,14 +44,14 @@
     <div style="display: flex; gap: 30px; flex-wrap: wrap;">
         <div
             style="flex: 1; min-width: 320px; background: white; padding: 25px; border: 1px solid #ddd; border-radius: 12px;">
-            <h3 style="margin-top: 0; color: #8B0000;">+ Register Liability</h3>
+            <h3 style="margin-top: 0; color: #002D62;">+ Register Liability</h3>
             <form method="POST">
                 {% csrf_token %}
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     {{ form.as_p }}
                 </div>
                 <button type="submit"
-                    style="width: 100%; background: #dc3545; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer;">
+                    style="width: 100%; background: #002D62; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer;">
                     SAVE LIABILITY
                 </button>
             </form>
@@ -56,7 +60,7 @@
         <div
             style="flex: 2; min-width: 600px; background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
             <table style="width: 100%; border-collapse: collapse;">
-                <thead style="background: #f8f9fa; border-bottom: 2px solid #8B0000;">
+                <thead style="background: #f8f9fa; border-bottom: 2px solid #002D62;">
                     <tr>
                         <th style="padding: 15px; text-align: left;">Name</th>
                         <th style="padding: 15px; text-align: left;">Type</th>
@@ -72,7 +76,7 @@
                         <td style="padding: 15px; font-weight: 600;">{{ liability.liability_name }}</td>
                         <td style="padding: 15px;">{{ liability.liability_type }}</td>
                         <td style="padding: 15px;">{{ liability.interest_rate }}%</td>
-                        <td style="padding: 15px; color: #8B0000; font-weight: bold;">${{ liability.principal_amount }}
+                        <td style="padding: 15px; color: #002D62; font-weight: bold;">${{ liability.principal_amount }}
                         </td>
                         <td style="padding: 15px; font-size: 0.85rem; color: #555;">
                             {% if liability.linked_asset %}
@@ -83,16 +87,21 @@
                         </td>
                         <td style="padding: 15px; text-align: center;">
                             <a href="{% url 'edit_liability' liability.pk %}"
-                                style="color: #0056b3; text-decoration: none; font-weight: bold; margin-right: 10px;">Edit</a>
+                                style="color: #002D62; text-decoration: none; font-weight: bold; margin-right: 10px;">
+                                Edit
+                            </a>
                             <a href="{% url 'delete_liability' liability.pk %}"
-                                style="color: #dc3545; text-decoration: none; font-weight: bold;"
-                                onclick="return confirm('Delete this debt?')">Del</a>
+                                style="color: #2563eb; text-decoration: none; font-weight: bold;"
+                                onclick="return confirm('Delete this debt?')">
+                                Del
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" style="padding: 30px; text-align: center; color: #999;">No liabilities recorded.
-                            You are debt-free!</td>
+                        <td colspan="6" style="padding: 30px; text-align: center; color: #999;">
+                            No liabilities recorded. You are debt-free!
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

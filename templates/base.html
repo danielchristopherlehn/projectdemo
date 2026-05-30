@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EZ Household SaaS{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/site.css' %}">
+
     <style>
-        /* Minimal additions for professional SaaS feel without breaking your site.css */
         body {
             background-color: #f8fafc;
             margin: 0;
@@ -20,7 +20,6 @@
             border-bottom: 1px solid #e2e8f0;
             padding: 1rem 0;
             position: sticky;
-            /* Note: I fixed a tiny typo here from 'sticky: top;' to 'position: sticky; top: 0;' just in case! */
             top: 0;
             z-index: 100;
         }
@@ -59,7 +58,6 @@
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
-            transition: color 0.2s;
         }
 
         .nav-item:hover {
@@ -73,16 +71,6 @@
             border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 600;
-        }
-
-        .btn-primary {
-            background: #6366f1;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
         }
 
         .logout-btn {
@@ -109,30 +97,26 @@
     <header class="site-header">
         <div class="nav-row">
             <div class="brand-wrap">
-                <a class="brand" href="{% url 'dashboard' %}">EZ HOUSEHOLD</a>
+                <a class="brand" href="/">EZ HOUSEHOLD</a>
                 <p class="brand-subtitle">Finance Workspace</p>
             </div>
 
             <nav class="nav-links">
                 {% if user.is_authenticated %}
-                <a class="nav-item" href="{% url 'dashboard' %}">Dashboard</a>
-                <a class="nav-item" href="/assets/">Assets</a>
-                <a class="nav-item" href="/liabilities/">Liabilities</a>
-                <a class="nav-item" href="/equity/">Equity</a>
+                    <a class="nav-item" href="{% url 'dashboard' %}">Dashboard</a>
+                    <a class="nav-item" href="/assets/">Assets</a>
+                    <a class="nav-item" href="/liabilities/">Liabilities</a>
+                    <a class="nav-item" href="/equity/">Equity</a>
+                    <a class="nav-item" href="{% url 'transactions_diary' %}">Budget</a>
 
-                <a class="nav-item" href="{% url 'transactions_diary' %}">Budget</a>
+                    <div style="height: 20px; width: 1px; background: #e2e8f0; margin: 0 0.5rem;"></div>
 
-                <div style="height: 20px; width: 1px; background: #e2e8f0; margin: 0 0.5rem;"></div>
+                    <span class="nav-chip">{{ user.username }}</span>
 
-                <span class="nav-chip">{{ user.username }}</span>
-
-                <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-btn">Log Out</button>
-                </form>
-                {% else %}
-                <a class="nav-item" href="/admin/login/">Log In</a>
-                <a class="btn-primary" href="{% url 'register' %}">Get Started</a>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">Log Out</button>
+                    </form>
                 {% endif %}
             </nav>
         </div>
@@ -140,14 +124,13 @@
 
     <main class="site-shell page-content">
         {% if messages %}
-        <div style="max-width: 1200px; margin: 0 auto 1rem auto; padding: 0 2rem;">
-            {% for message in messages %}
-            <div
-                style="padding: 1rem; border-radius: 8px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
-                {{ message }}
+            <div style="max-width: 1200px; margin: 0 auto 1rem auto; padding: 0 2rem;">
+                {% for message in messages %}
+                    <div style="padding: 1rem; border-radius: 8px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
         {% endif %}
 
         {% block content %}{% endblock %}

@@ -1,3 +1,4 @@
+```html
 {% extends "base.html" %}
 
 {% block title %}Create Project{% endblock %}
@@ -7,49 +8,50 @@
 
     <div style="margin-bottom: 30px;">
         <a href="{% url 'project_list' %}"
-            style="text-decoration: none; color: #002D62; font-weight: bold; font-size: 0.9rem;">← Back to Projects</a>
-        <h1 style="margin: 10px 0 5px; color: #002D62; font-size: 2rem;">New Simulation</h1>
-        <p style="color: #888; margin: 0;">Choose a calculator type, name your workspace, and optionally link a real
-            asset you own.</p>
+           style="text-decoration: none; color: #002D62; font-weight: bold; font-size: 0.9rem;">
+            ← Back to Projects
+        </a>
+
+        <h1 style="margin: 10px 0 5px; color: #002D62; font-size: 2rem;">
+            New Simulation
+        </h1>
+
+        <p style="color: #888; margin: 0;">
+            Choose a calculator type, name your workspace, and optionally link a real asset you own.
+        </p>
     </div>
 
     <form method="post">
         {% csrf_token %}
 
-        <!-- STEP 1: CALCULATOR TYPE CARDS -->
         <div style="margin-bottom: 30px;">
-            <p style="font-weight: 700; color: #002D62; margin-bottom: 12px; font-size: 1rem;">1. Choose Calculator Type
+            <p style="font-weight: 700; color: #002D62; margin-bottom: 12px; font-size: 1rem;">
+                1. Choose Calculator Type
             </p>
+
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
 
                 <label for="type_loan" style="cursor: pointer;">
-                    <input type="radio" name="calculator_type" id="type_loan" value="loan" style="display:none;"
-                        required>
-                    <div class="type-card" onclick="selectType(this, 'type_loan')"
-                        style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 24px 16px; text-align: center; transition: 0.2s; background: white;">
+                    <input type="radio" name="calculator_type" id="type_loan" value="loan" style="display:none;" required>
+                    <div class="type-card" onclick="selectType(this, 'type_loan')">
                         <div style="font-size: 2.2rem; margin-bottom: 10px;">💳</div>
                         <div style="font-weight: 700; color: #002D62; font-size: 0.95rem;">Loan Calculator</div>
-                        <div style="font-size: 0.78rem; color: #888; margin-top: 6px;">Monthly payments & total interest
-                        </div>
+                        <div style="font-size: 0.78rem; color: #888; margin-top: 6px;">Monthly payments & total interest</div>
                     </div>
                 </label>
 
                 <label for="type_mortgage" style="cursor: pointer;">
-                    <input type="radio" name="calculator_type" id="type_mortgage" value="mortgage"
-                        style="display:none;">
-                    <div class="type-card" onclick="selectType(this, 'type_mortgage')"
-                        style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 24px 16px; text-align: center; transition: 0.2s; background: white;">
+                    <input type="radio" name="calculator_type" id="type_mortgage" value="mortgage" style="display:none;">
+                    <div class="type-card" onclick="selectType(this, 'type_mortgage')">
                         <div style="font-size: 2.2rem; margin-bottom: 10px;">🏠</div>
                         <div style="font-weight: 700; color: #002D62; font-size: 0.95rem;">Mortgage Calculator</div>
-                        <div style="font-size: 0.78rem; color: #888; margin-top: 6px;">Property financing & repayment
-                        </div>
+                        <div style="font-size: 0.78rem; color: #888; margin-top: 6px;">Property financing & repayment</div>
                     </div>
                 </label>
 
                 <label for="type_rent" style="cursor: pointer;">
                     <input type="radio" name="calculator_type" id="type_rent" value="rent_vs_own" style="display:none;">
-                    <div class="type-card" onclick="selectType(this, 'type_rent')"
-                        style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 24px 16px; text-align: center; transition: 0.2s; background: white;">
+                    <div class="type-card" onclick="selectType(this, 'type_rent')">
                         <div style="font-size: 2.2rem; margin-bottom: 10px;">⚖️</div>
                         <div style="font-weight: 700; color: #002D62; font-size: 0.95rem;">Rent vs Own</div>
                         <div style="font-size: 0.78rem; color: #888; margin-top: 6px;">10-year cost comparison</div>
@@ -59,42 +61,48 @@
             </div>
         </div>
 
-        <!-- STEP 2: PROJECT NAME -->
         <div style="margin-bottom: 25px;">
-            <p style="font-weight: 700; color: #002D62; margin-bottom: 12px; font-size: 1rem;">2. Name Your Workspace
+            <p style="font-weight: 700; color: #002D62; margin-bottom: 12px; font-size: 1rem;">
+                2. Name Your Workspace
             </p>
+
             <input type="text" name="name" placeholder="e.g. Oslo Apartment Mortgage 2026" required
-                style="width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline: none; font-family: 'Segoe UI', sans-serif;"
-                onfocus="this.style.borderColor='#002D62'" onblur="this.style.borderColor='#e0e0e0'">
+                   style="width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline: none; font-family: 'Segoe UI', sans-serif;"
+                   onfocus="this.style.borderColor='#002D62'"
+                   onblur="this.style.borderColor='#e0e0e0'">
         </div>
 
-        <!-- STEP 3: LINK ASSET (optional) -->
         <div style="margin-bottom: 30px;">
             <p style="font-weight: 700; color: #002D62; margin-bottom: 6px; font-size: 1rem;">
-                3. Link a Real Asset <span style="font-weight: 400; color: #aaa; font-size: 0.85rem;">— optional</span>
+                3. Link a Real Asset
+                <span style="font-weight: 400; color: #aaa; font-size: 0.85rem;">— optional</span>
             </p>
+
             <p style="color: #888; font-size: 0.85rem; margin: 0 0 12px;">
-                Linking a property pre-fills the calculator with its estimated value and country. Only your
-                <strong>Property & Land</strong> assets appear here.
+                Linking a property pre-fills the calculator with its estimated value and country.
+                Only your <strong>Property & Land</strong> assets appear here.
             </p>
 
             <select name="linked_asset"
-                style="width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; color: #333; background: white;"
-                onfocus="this.style.borderColor='#002D62'" onblur="this.style.borderColor='#e0e0e0'">
+                    style="width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; color: #333; background: white;"
+                    onfocus="this.style.borderColor='#002D62'"
+                    onblur="this.style.borderColor='#e0e0e0'">
+
                 <option value="">— No, I'll enter data manually —</option>
+
                 {% for asset in form.linked_asset.field.queryset %}
-                <option value="{{ asset.pk }}">
-                    🏠 {{ asset.asset_name }} — {{ asset.get_country_display }} (est. {{
-                    asset.value_estimate|floatformat:0 }})
-                </option>
+                    <option value="{{ asset.pk }}">
+                        🏠 {{ asset.asset_name }} — {{ asset.get_country_display }} (est. {{ asset.value_estimate|floatformat:0 }})
+                    </option>
                 {% endfor %}
+
             </select>
         </div>
 
-        <!-- SUBMIT -->
         <button type="submit"
-            style="width: 100%; background: #002D62; color: white; padding: 14px; border: none; border-radius: 8px; font-size: 1.05rem; font-weight: 700; cursor: pointer; letter-spacing: 0.5px;"
-            onmouseover="this.style.background='#00408a'" onmouseout="this.style.background='#002D62'">
+                style="width: 100%; background: #002D62; color: white; padding: 14px; border: none; border-radius: 8px; font-size: 1.05rem; font-weight: 700; cursor: pointer; letter-spacing: 0.5px;"
+                onmouseover="this.style.background='#00408a'"
+                onmouseout="this.style.background='#002D62'">
             Create Workspace →
         </button>
 
@@ -102,6 +110,15 @@
 </div>
 
 <style>
+    .type-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 24px 16px;
+        text-align: center;
+        transition: 0.2s;
+        background: white;
+    }
+
     .type-card:hover {
         border-color: #002D62 !important;
         box-shadow: 0 4px 12px rgba(0, 45, 98, 0.1);
@@ -116,13 +133,14 @@
 
 <script>
     function selectType(cardEl, inputId) {
-        // Unselect all cards
-        document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-        // Select clicked card
+        document.querySelectorAll('.type-card').forEach(function(card) {
+            card.classList.remove('selected');
+        });
+
         cardEl.classList.add('selected');
-        // Check the hidden radio
         document.getElementById(inputId).checked = true;
     }
 </script>
 
 {% endblock %}
+```

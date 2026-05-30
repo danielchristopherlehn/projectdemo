@@ -16,13 +16,12 @@
         </div>
 
         <div style="margin-top: 25px;">
-            <p style="margin-bottom: 10px; font-size: 0.9rem; font-weight: bold; color: #ffd700;">
+            <p style="margin-bottom: 10px; font-size: 0.9rem; font-weight: bold; color: #ffffff;">
                 Allocation by Category (Value Based):
             </p>
 
-            <!-- Allocation Bar -->
             <div
-                style="display: flex; height: 12px; width: 100%; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;">
+                style="display: flex; height: 12px; width: 100%; background: rgba(255,255,255,0.25); border-radius: 10px; overflow: hidden;">
                 {% for item in allocation_bar %}
                 {% if item.percentage > 0 %}
                 <div style="height: 100%; width: {{ item.percentage }}%; background-color: {{ item.color }}; border-right: 1px solid #002D62;"
@@ -32,7 +31,6 @@
                 {% endfor %}
             </div>
 
-            <!-- Legend -->
             <div style="display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
                 {% for item in allocation_bar %}
                 <span style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
@@ -47,7 +45,6 @@
 
     <div style="display: flex; gap: 30px; flex-wrap: wrap;">
 
-        <!-- Form -->
         <div
             style="flex: 1; min-width: 320px; background: white; padding: 25px; border: 1px solid #ddd; border-radius: 12px;">
             <h3 style="margin-top: 0; color: #002D62;">+ Register Asset</h3>
@@ -57,7 +54,7 @@
                     {{ form.as_p }}
                 </div>
                 <button type="submit"
-                    style="width: 100%; background: #28a745; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer;">
+                    style="width: 100%; background: #002D62; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer;">
                     SAVE TO DATABASE
                 </button>
             </form>
@@ -65,7 +62,6 @@
 
         <div style="flex: 2; min-width: 600px; display: flex; flex-direction: column; gap: 25px;">
 
-            <!-- Bank Accounts -->
             <div
                 style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #002D62;">
@@ -82,14 +78,13 @@
                             </td>
                             <td style="padding: 15px; font-weight: 600;">{{ asset.name }}</td>
 
-                            <!-- FIXED HERE -->
-                            <td style="padding: 15px; color: #28a745; font-weight: bold;">
+                            <td style="padding: 15px; color: #002D62; font-weight: bold;">
                                 ${{ asset.initial_balance|floatformat:2 }}
                             </td>
 
                             <td style="padding: 15px; text-align: right;">
                                 <a href="{% url 'edit_account' asset.pk %}"
-                                    style="color: #0056b3; text-decoration: none; font-weight: bold; margin-right: 10px;">
+                                    style="color: #002D62; text-decoration: none; font-weight: bold; margin-right: 10px;">
                                     Edit in Budget
                                 </a>
                             </td>
@@ -105,7 +100,6 @@
                 </table>
             </div>
 
-            <!-- Cash Reserves -->
             <div
                 style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #002D62;">
@@ -122,14 +116,13 @@
                             </td>
                             <td style="padding: 15px; font-weight: 600;">{{ asset.name }}</td>
 
-                            <!-- FIXED HERE -->
-                            <td style="padding: 15px; color: #28a745; font-weight: bold;">
+                            <td style="padding: 15px; color: #002D62; font-weight: bold;">
                                 ${{ asset.initial_balance|floatformat:2 }}
                             </td>
 
                             <td style="padding: 15px; text-align: right;">
                                 <a href="{% url 'edit_account' asset.pk %}"
-                                    style="color: #0056b3; text-decoration: none; font-weight: bold; margin-right: 10px;">
+                                    style="color: #002D62; text-decoration: none; font-weight: bold; margin-right: 10px;">
                                     Edit in Budget
                                 </a>
                             </td>
@@ -145,7 +138,6 @@
                 </table>
             </div>
 
-            <!-- Other Assets (unchanged) -->
             <div
                 style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #002D62;">
@@ -162,13 +154,13 @@
                                 <div style="font-weight: 600;">{{ asset.asset_name }}</div>
                                 <div style="font-size: 0.8rem; color: #666;">{{ asset.asset_type }}</div>
                             </td>
-                            <td style="padding: 15px; font-weight: bold;">
+                            <td style="padding: 15px; color: #002D62; font-weight: bold;">
                                 ${{ asset.purchase_price|floatformat:2 }}
                             </td>
                             <td style="padding: 15px; text-align: right;">
                                 <a href="{% url 'edit_asset' asset.pk %}"
-                                    style="color: #0056b3; font-weight: bold; margin-right: 10px;">Edit</a>
-                                <a href="{% url 'delete_asset' asset.pk %}" style="color: #dc3545; font-weight: bold;"
+                                    style="color: #002D62; font-weight: bold; margin-right: 10px;">Edit</a>
+                                <a href="{% url 'delete_asset' asset.pk %}" style="color: #002D62; font-weight: bold;"
                                     onclick="return confirm('Delete this asset?')">Del</a>
                             </td>
                         </tr>

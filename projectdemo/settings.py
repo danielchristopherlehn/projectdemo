@@ -1,21 +1,13 @@
-"""
-Django settings for projectdemo project.
-"""
-
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-@ds=i^ks&ns@yt^evzt%etht=aikf*^e)a^+ou79o9q!9l)1vq'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -23,20 +15,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
-    # --- PRO FINANCIAL TOOLS ---
-    'django.contrib.humanize',  # Enables |intcomma for currency formatting
-
-    # --- LOCAL APPS ---
     'main',
     'accounts',
     'assets',
     'liabilities',
     'equity',
-    'budget',        # Stateful budget tracking app
+    'budget',
     'dashboard',
-    'projects',      # Project management & dashboard routing
-    'calculators',   # Stateless calculators app
+    'projects',
+    'calculators',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +43,7 @@ ROOT_URLCONF = 'projectdemo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Looks in global templates folder
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,7 +57,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'projectdemo.wsgi.application'
 
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -76,7 +64,6 @@ DATABASES = {
     }
 }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -84,22 +71,21 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-# This tells Django where to find your global static folder (where you'll keep CSS)
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Auth Redirects
-LOGIN_URL = "/admin/login/"
-# Ensure 'dashboard' is a named URL in dashboard/urls.py (or projects/urls.py depending on your setup)
-LOGIN_REDIRECT_URL = "dashboard"
-LOGOUT_REDIRECT_URL = "/admin/login/"
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
