@@ -12,7 +12,7 @@ class LiabilityForm(forms.ModelForm):
             'term_months', 'start_date',
             'location', 'linked_asset', 'notes',
         ]
-        # 'form-field' is the css class I use to style all the inputs the same.
+        # CSS styling and placeholders for the form fields
         widgets = {
             'liability_name': forms.TextInput(attrs={
                 'class': 'form-field', 'placeholder': 'e.g., DNB Mortgage'}),
@@ -40,13 +40,6 @@ class LiabilityForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Only let the user link to one of their own assets.
         if user:
-            self.fields['linked_asset'].queryset = Asset.objects.filter(user=user)
-        self.fields['linked_asset'].required = False
+            self.fields['linked_asset'].queryset = Asset.objects.filter(
+                user=user)
         self.fields['linked_asset'].empty_label = '--- No linked asset ---'
-
-        # These fields are all optional when adding a liability.
-        self.fields['lender'].required = False
-        self.fields['monthly_payment'].required = False
-        self.fields['term_months'].required = False
-        self.fields['start_date'].required = False
-        self.fields['notes'].required = False

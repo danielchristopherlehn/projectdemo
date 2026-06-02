@@ -87,7 +87,7 @@
 
     <div class="sidebar">
       <p class="sidebar-label">Register</p>
-      <a href="{% url 'add_liability' %}" class="add-btn">+ Add Liability</a>
+      <a href="{% url 'liabilities:add_liability' %}" class="add-btn">+ Add Liability</a>
     </div>
 
     <div class="main">
@@ -97,7 +97,7 @@
           <h4>Current Liabilities <span style="font-weight:400;font-size:0.78rem;color:#6b7280;">— managed in My Budget</span></h4>
           <span class="badge">{{ current_liabilities_total|floatformat:2 }} NOK</span>
         </div>
-        <form method="GET" action="{% url 'manage_liabilities' %}">
+        <form method="GET" action="{% url 'liabilities:manage_liabilities' %}">
           <div class="sort-bar">
             <span>Sort</span>
             <select name="cl_sort">
@@ -107,7 +107,7 @@
               <option value="name_asc"     {% if cl_sort == 'name_asc'     %}selected{% endif %}>Name A–Z</option>
             </select>
             <button type="submit" class="btn-sort">Apply</button>
-            <a href="{% url 'manage_liabilities' %}" class="btn-reset">Reset</a>
+            <a href="{% url 'liabilities:manage_liabilities' %}" class="btn-reset">Reset</a>
           </div>
         </form>
         {% if current_groups %}
@@ -150,7 +150,7 @@
           <h4>Long-Term Debt</h4>
           <span class="badge">{{ long_term_total|floatformat:2 }} NOK</span>
         </div>
-        <form method="GET" action="{% url 'manage_liabilities' %}">
+        <form method="GET" action="{% url 'liabilities:manage_liabilities' %}">
           <div class="sort-bar">
             <span>Sort</span>
             <select name="sort">
@@ -161,7 +161,7 @@
               <option value="name_asc"    {% if current_sort == 'name_asc'    %}selected{% endif %}>Name A–Z</option>
             </select>
             <button type="submit" class="btn-sort">Apply</button>
-            <a href="{% url 'manage_liabilities' %}" class="btn-reset">Reset</a>
+            <a href="{% url 'liabilities:manage_liabilities' %}" class="btn-reset">Reset</a>
           </div>
         </form>
         <table class="tbl">
@@ -182,8 +182,8 @@
               </td>
               <td class="amt">{{ liability.principal_amount|floatformat:2 }} NOK</td>
               <td style="text-align:right;white-space:nowrap;">
-                <a href="{% url 'edit_liability' liability.pk %}" class="link-edit">Edit</a>
-                <form method="POST" action="{% url 'delete_liability' liability.pk %}" style="display:inline;" onsubmit="return confirm('Delete {{ liability.liability_name }}?')">
+                <a href="{% url 'liabilities:edit_liability' liability.pk %}" class="link-edit">Edit</a>
+                <form method="POST" action="{% url 'liabilities:delete_liability' liability.pk %}" style="display:inline;" onsubmit="return confirm('Delete {{ liability.liability_name }}?')">
                   {% csrf_token %}
                   <button type="submit" class="link-del">Delete</button>
                 </form>

@@ -1,5 +1,9 @@
 from django import forms
+
+# Getting from the same folder the model asset
 from .models import Asset
+
+# Here we create a form for the asset model
 
 
 class AssetForm(forms.ModelForm):
@@ -10,7 +14,11 @@ class AssetForm(forms.ModelForm):
             'purchase_price', 'value_estimate', 'purchase_year',
             'active_Status', 'notes',
         ]
+        # Above we specified fields (characteristics of the [Asset])
+        # This is what the user will fill out
 
+        # The widgets method is usefull for HTML styling.
+        # Used to add CSS classes and placeholders, otherwise it collapses
         widgets = {
             'asset_name': forms.TextInput(attrs={
                 'class': 'form-field', 'placeholder': 'e.g., Oslo Apartment'}),
@@ -26,11 +34,3 @@ class AssetForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={
                 'class': 'form-field', 'rows': 2, 'placeholder': 'Optional notes'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        # The view passes a user in, but the asset form doesn't need it.
-        kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        # These two fields are optional.
-        self.fields['value_estimate'].required = False
-        self.fields['notes'].required = False

@@ -101,7 +101,7 @@ def manage_assets(request):
 @login_required
 def add_asset(request):
     if request.method == 'POST':
-        form = AssetForm(request.POST, user=request.user)
+        form = AssetForm(user=request.user, data=request.POST)
         if form.is_valid():
             asset = form.save(commit=False)
             asset.user = request.user
@@ -109,7 +109,7 @@ def add_asset(request):
             messages.success(request, f"'{asset.asset_name}' registered.")
             return redirect('manage_assets')
     else:
-        form = AssetForm(user=request.user)
+        form = AssetForm()
     return render(request, 'assets/add_asset.html', {'form': form})
 
 
@@ -123,7 +123,7 @@ def edit_asset(request, pk):
             messages.success(request, f"'{asset.asset_name}' updated.")
             return redirect('manage_assets')
     else:
-        form = AssetForm(instance=asset, user=request.user)
+        form = AssetForm(instance=asset)
     return render(request, 'assets/add_asset.html', {'form': form, 'asset': asset, 'editing': True})
 
 

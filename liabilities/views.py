@@ -30,7 +30,7 @@ def manage_liabilities(request):
             liability = form.save(commit=False)
             liability.user = request.user
             liability.save()
-            return redirect('manage_liabilities')
+            return redirect('liabilities:manage_liabilities')
     else:
         form = LiabilityForm(user=request.user)
 
@@ -93,7 +93,7 @@ def add_liability(request):
             liability.user = request.user
             liability.save()
             messages.success(request, f"'{liability.liability_name}' registered.")
-            return redirect('manage_liabilities')
+            return redirect('liabilities:manage_liabilities')
     else:
         form = LiabilityForm(user=request.user)
     return render(request, 'liabilities/add_liability.html', {'form': form})
@@ -107,7 +107,7 @@ def edit_liability(request, pk):
             request.POST, instance=liability, user=request.user)
         if form.is_valid():
             form.save()
-            return redirect('manage_liabilities')
+            return redirect('liabilities:manage_liabilities')
     else:
         form = LiabilityForm(instance=liability, user=request.user)
     return render(request, 'liabilities/edit_liability.html', {
@@ -119,4 +119,4 @@ def delete_liability(request, pk):
     liability = get_object_or_404(Liability, pk=pk, user=request.user)
     if request.method == 'POST':
         liability.delete()
-    return redirect('manage_liabilities')
+    return redirect('liabilities:manage_liabilities')

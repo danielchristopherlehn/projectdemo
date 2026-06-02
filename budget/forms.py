@@ -62,7 +62,7 @@ class AccountForm(forms.ModelForm):
                                'This type belongs to liabilities. Choose Cash, Checking, Savings, or Digital Wallet for a Current Asset.')
 
         # A liability account can't use an asset type.
-        if account_class == 'CURRENT_LIABILITY':
+        elif account_class == 'CURRENT_LIABILITY':
             if account_type and account_type in self.ASSET_TYPES:
                 self.add_error('account_type',
                                'This type belongs to assets. Choose Credit Card, Overdraft, or Line of Credit for a Current Liability.')
@@ -97,7 +97,6 @@ class TransactionForm(forms.ModelForm):
                 account_class__in=['CURRENT_ASSET', 'CURRENT_LIABILITY']
             )
             self.fields['account'].empty_label = "--- Select Account ---"
-        self.fields['category'].required = False
         # Transfers have their own page, so only Revenue/Expense here.
         self.fields['transaction_type'].choices = [
             ('REVENUE', 'Revenue'),
@@ -111,7 +110,7 @@ class TransactionForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        t_type = cleaned_data.get('transaction_type')
+        transaction_type = cleaned_data.get('transaction_type')
         category = cleaned_data.get('category')
 
         # A category always has to be chosen.
@@ -121,16 +120,16 @@ class TransactionForm(forms.ModelForm):
 
         # You can't earn revenue into a credit card.
         account = cleaned_data.get('account')
-        if account and account.account_class == 'CURRENT_LIABILITY' and t_type == 'REVENUE':
+        if account and account.account_class == 'CURRENT_LIABILITY' and transaction_type == 'REVENUE':
             self.add_error('transaction_type',
                            'A liability account cannot receive revenue. Use a Current Asset account for income.')
 
         # Make sure the category matches the type (income vs expense).
-        if t_type == 'REVENUE' and category in self.EXPENSE_CATEGORIES:
+        if transaction_type == 'REVENUE' and category in self.EXPENSE_CATEGORIES:
             self.add_error('category',
                            'This category belongs to expenses. Choose Salary, Dividends, or Extras for Revenue.')
 
-        if t_type == 'EXPENSE' and category in self.INCOME_CATEGORIES:
+        if transaction_type == 'EXPENSE' and category in self.INCOME_CATEGORIES:
             self.add_error('category',
                            'This category belongs to income. Choose a spending category for Expense.')
 

@@ -38,7 +38,7 @@
 </style>
 
 <div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
-    <a href="{% url 'manage_liabilities' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My
+    <a href="{% url 'liabilities:manage_liabilities' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My
         Liabilities</a>
     <h2 style="margin:8px 0 4px;color:#7f1d1d;font-size:1.6rem;font-weight:800;">Edit Liability</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">{{ liability.liability_name }}</p>
@@ -61,7 +61,7 @@
                     style="flex:2;background:#7f1d1d;color:white;padding:13px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
                     UPDATE LIABILITY
                 </button>
-                <a href="{% url 'manage_liabilities' %}"
+                <a href="{% url 'liabilities:manage_liabilities' %}"
                     style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:13px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">
                     CANCEL
                 </a>

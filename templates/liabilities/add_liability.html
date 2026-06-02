@@ -14,7 +14,7 @@
 </style>
 
 <div style="max-width:560px;margin:40px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
-  <a href="{% url 'manage_liabilities' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Liabilities</a>
+  <a href="{% url 'liabilities:manage_liabilities' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Liabilities</a>
   <h2 style="margin:8px 0 20px;color:#7f1d1d;font-size:1.6rem;font-weight:800;">
     {% if editing %}Edit: {{ liability.liability_name }}{% else %}Register Liability{% endif %}
   </h2>
@@ -102,7 +102,7 @@
         <button type="submit" style="flex:2;background:#7f1d1d;color:white;padding:12px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
           {% if editing %}UPDATE{% else %}SAVE{% endif %} LIABILITY
         </button>
-        <a href="{% url 'manage_liabilities' %}" style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:12px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">CANCEL</a>
+        <a href="{% url 'liabilities:manage_liabilities' %}" style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:12px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">CANCEL</a>
       </div>
     </form>
   </div>
