@@ -3,156 +3,180 @@
 {% block content %}
 
 <div style="
-    background: #f4efe7;
-    min-height: calc(100vh - 90px);
-    padding: 10px 24px 24px 24px;
+    background: #b0ddff;
+    min-height: 100vh;
+    padding: 24px 40px 48px 40px;
 ">
 
-    <div style="max-width: 1150px; margin: 0 auto;">
+    <div style="max-width: 1400px; margin: 0 auto;">
 
-        <div style="text-align: center; margin-bottom: 20px;">
+        <div style="text-align: center; margin-bottom: 32px;">
             <h1 style="
                 margin: 0 0 6px 0;
-                font-size: 2rem;
-                font-weight: 800;
-                color: #002D62;
+                font-size: 5rem;
+                font-weight: 900;
+                color: #07004f;
+                letter-spacing: 3px;
+                text-transform: uppercase;
             ">
-                Financial Command Center
+                The EZ Dashboard
             </h1>
-
+            <div style="
+                width: 800px;
+                height: 10px;
+                background: #008ba1;
+                border-radius: 4px;
+                margin: 12px auto 16px;
+            "></div>
             <p style="
                 margin: 0;
-                font-size: 0.95rem;
-                color: #444;
+                font-size: 2rem;
+                color: #66027a;
+                letter-spacing: 0.5px;
             ">
-                Select a module to manage your finances, assets, and planning tools.
+                Financial clarity at a glance
             </p>
         </div>
 
         <div style="
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
         ">
 
-            <a href="{% url 'manage_assets' %}" style="text-decoration: none; color: inherit;">
+            <!-- My Budget -->
+            <a href="{% url 'budget_menu' %}" style="text-decoration: none; color: inherit;">
                 <div style="
-                    background: rgb(0, 144, 192);
-                    height: 165px;
-                    border-radius: 16px;
-                    padding: 18px;
+                    background: rgb(1, 100, 52);
+                    height: 220px;
+                    border-radius: 18px;
+                    padding: 28px 24px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     text-align: center;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                ">
-                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: white;">
+                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.15s, box-shadow 0.15s;
+                " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 24px rgba(0,0,0,0.15)'"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.1)'">
+                    <h2 style="margin: 0; font-size: 3rem; font-weight: 1000; color: rgb(255, 255, 255);">
                         My Budget
                     </h2>
-
-                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: white;">
+                    <p style="margin: 8px 0 0 0; font-size: 1rem; line-height: 1; color: rgba(255, 255, 255, 0.88);">
                         Track income, expenses, wallets, accounts, and cash flow.
                     </p>
                 </div>
             </a>
 
+            <!--Transactions -->
+            <a href="{% url 'transactions_list' %}" style="text-decoration: none; color: inherit;">
+                <div style="
+                    background: rgb(194, 126, 0);
+                    height: 220px;
+                    border-radius: 18px;
+                    padding: 28px 24px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    text-align: center;
+                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+                " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 24px rgba(0,0,0,0.15)'"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.1)'">
+                    <h2 style="margin: 0; font-size: 3rem; font-weight: 1000; color: rgb(255, 255, 255);">
+                        Transactions
+                    </h2>
+                    <p style="margin: 8px 0 0 0; font-size: 1rem; line-height: 1.45; color: rgb(255, 255, 255);">
+                        Track your spending and income
+                    </p>
+                </div>
+            </a>
+
+            <!-- My Wealth -->
             <a href="{% url 'net_worth' %}" style="text-decoration: none; color: inherit;">
                 <div style="
-                    background: rgb(99, 102, 241);
-                    height: 165px;
-                    border-radius: 16px;
-                    padding: 18px;
+                    background: rgb(0, 1, 85);
+                    height: 220px;
+                    border-radius: 18px;
+                    padding: 28px 24px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     text-align: center;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                ">
-                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: white;">
-                        My Net Worth
+                    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.1);
+                " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 24px rgba(0,0,0,0.15)'"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.1)'">
+                    <h2 style="margin: 0; font-size: 3rem; font-weight: 1000; color: rgb(255, 255, 255);">
+                        My Wealth
                     </h2>
-
-                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #eef2ff;">
-                        Review assets, liabilities, equity, and total financial position.
+                    <p style="margin: 8px 0 0 0; font-size: 1rem; line-height: 1.45; color: rgba(255,255,255,0.88);">
+                        Check your finance health in a glance.
                     </p>
                 </div>
             </a>
 
+            <!--Projects -->
             <a href="{% url 'project_list' %}" style="text-decoration: none; color: inherit;">
                 <div style="
-                    background: rgb(133, 171, 239);
-                    height: 165px;
-                    border-radius: 16px;
-                    padding: 18px;
+                    background: rgb(180, 0, 0);
+                    height: 220px;
+                    border-radius: 18px;
+                    padding: 28px 24px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     text-align: center;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                ">
-                    <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #000066;">
-                        My Projects
+                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+                " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 24px rgba(0,0,0,0.15)'"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.1)'">
+                    <h2 style="margin: 0; font-size: 3rem; font-weight: 1000; color: white;">
+                        Projects
                     </h2>
-
-                    <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #111827;">
-                        Compare rent versus own, mortgages, and investment plans.
+                    <p style="margin: 8px 0 0 0; font-size: 1rem; line-height: 1.45; color: rgba(255,255,255,0.88);">
+                        Compare different financial scenarios and plans to make informed decisions.
                     </p>
                 </div>
             </a>
 
-            <div style="
-                grid-column: 1 / span 3;
-                display: flex;
-                justify-content: center;
-                gap: 18px;
-            ">
+            <!-- Glossary -->
+            <a href="{% url 'glossary' %}" style="text-decoration: none; color: inherit; grid-column: 1 / span 4;">
+                <div style="
+                    background: #3f8bf0;
+                    height: 130px;
+                    border-radius: 18px;
+                    padding: 0 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 24px;
+                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+                " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 24px rgba(0,0,0,0.12)'"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.07)'">
+                    <span
+                        style="font-size: 4rem; font-weight: 800; color: #e7f6ff; white-space: nowrap;">Glossary</span>
+                    <span style="font-size: 1.5rem; color: #ffffff;">Learn key financial terms used across the
+                        platform.</span>
+                </div>
+            </a>
 
-                <a href="{% url 'glossary' %}" style="text-decoration: none; color: inherit; width: 360px;">
-                    <div style="
-                        background: #e0f2fe;
-                        height: 165px;
-                        border-radius: 16px;
-                        padding: 18px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        text-align: center;
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                    ">
-                        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #002D62;">
-                            Glossary
-                        </h2>
-
-                        <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #1e293b;">
-                            Learn key financial terms used across the platform.
-                        </p>
-                    </div>
-                </a>
-
-                <a href="{% url 'contact_us' %}" style="text-decoration: none; color: inherit; width: 360px;">
-                    <div style="
-                        background: #dbeafe;
-                        height: 165px;
-                        border-radius: 16px;
-                        padding: 18px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        text-align: center;
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                    ">
-                        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #002D62;">
-                            Contact Us
-                        </h2>
-
-                        <p style="margin: 10px 0 0 0; font-size: 0.82rem; line-height: 1.35; color: #1e293b;">
-                            Questions or support? Send us a message.
-                        </p>
-                    </div>
-                </a>
-
-            </div>
+            <!-- Contact Us -->
+            <a href="{% url 'contact_us' %}" style="text-decoration: none; color: inherit; grid-column: 1 / span 4;">
+                <div style="
+                    background: #002D62;
+                    height: 64px;
+                    border-radius: 14px;
+                    padding: 0 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 16px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                " onmouseover="this.style.background='#003d87';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.2)'"
+                    onmouseout="this.style.background='#002D62';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.12)'">
+                    <span style="font-size: 2rem; font-weight: 800; color: white;">Contact Us</span>
+                    <span style="font-size: 1.25rem; color: rgba(255,255,255,0.7);">Questions or support? Send us a
+                        message.</span>
+                </div>
+            </a>
 
         </div>
 

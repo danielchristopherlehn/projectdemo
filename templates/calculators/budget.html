@@ -73,10 +73,10 @@
                 <p><strong>{{ result.error }}</strong></p>
             {% else %}
                 <h2>Results</h2>
-                <p><strong>Income:</strong> <span class="result-highlight">{{ result.income }}</span></p>
-                <p><strong>{% if glossary_terms.total_expenses %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_expenses.slug %}">Total Expenses</a>{% else %}Total Expenses{% endif %}:</strong> <span class="result-highlight">{{ result.total_expenses }}</span></p>
-                <p><strong>{% if glossary_terms.monthly_savings %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_savings.slug %}">Monthly Savings</a>{% else %}Monthly Savings{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_savings }}</span></p>
-                <p><strong>{% if glossary_terms.yearly_savings %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.yearly_savings.slug %}">Yearly Savings</a>{% else %}Yearly Savings{% endif %}:</strong> <span class="result-highlight">{{ result.yearly_savings }}</span></p>
+                <p><strong>Income:</strong> <span class="result-highlight">{{ result.income }} NOK</span></p>
+                <p><strong>{% if glossary_terms.total_expenses %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_expenses.slug %}">Total Expenses</a>{% else %}Total Expenses{% endif %}:</strong> <span class="result-highlight">{{ result.total_expenses }} NOK</span></p>
+                <p><strong>{% if glossary_terms.monthly_savings %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_savings.slug %}">Monthly Savings</a>{% else %}Monthly Savings{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_savings }} NOK</span></p>
+                <p><strong>{% if glossary_terms.yearly_savings %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.yearly_savings.slug %}">Yearly Savings</a>{% else %}Yearly Savings{% endif %}:</strong> <span class="result-highlight">{{ result.yearly_savings }} NOK</span></p>
             {% endif %}
         </div>
     {% endif %}

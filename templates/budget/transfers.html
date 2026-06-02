@@ -1,0 +1,479 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .tx-wrap {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 26px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .top-bar h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #002D62;
+        font-weight: 800;
+    }
+
+    .layout {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    .form-panel {
+        flex: 0 0 320px;
+    }
+
+    .list-panel {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #002D62;
+        margin: 0 0 18px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f2f5;
+    }
+
+    .form-field {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        box-sizing: border-box;
+    }
+
+    .form-field:focus {
+        outline: none;
+        border-color: #002D62;
+    }
+
+    .lbl {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .fw {
+        margin-bottom: 12px;
+    }
+
+    .hint {
+        font-size: 0.7rem;
+        color: #9ca3af;
+        margin-top: 2px;
+        margin-bottom: 4px;
+    }
+
+    .err {
+        color: #dc2626;
+        font-size: 0.73rem;
+        margin-top: 3px;
+    }
+
+    .btn-save {
+        width: 100%;
+        background: #002D62;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 7px;
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+        margin-top: 6px;
+    }
+
+    .divider {
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin: 14px 0;
+    }
+
+    .tx-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .tx-table thead th {
+        padding: 11px 14px;
+        text-align: left;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #6b7280;
+        background: #f9fafb;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .tx-table tbody td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+
+    .tx-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tx-date {
+        font-size: 0.8rem;
+        color: #6b7280;
+        white-space: nowrap;
+    }
+
+    .tx-acc {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #111;
+    }
+
+    .tx-arrow {
+        font-size: 0.8rem;
+        color: #6366f1;
+        font-weight: 600;
+    }
+
+    .tx-desc {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+
+    .amt-tr {
+        color: #6366f1;
+        font-weight: 700;
+        font-size: 0.92rem;
+    }
+
+    .badge-tr {
+        font-size: 0.68rem;
+        padding: 2px 7px;
+        border-radius: 10px;
+        font-weight: 700;
+        background: #ede9fe;
+        color: #4c1d95;
+    }
+
+    .action-link {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .a-del {
+        color: #dc2626;
+    }
+
+    .empty {
+        text-align: center;
+        color: #9ca3af;
+        font-style: italic;
+        padding: 36px;
+        font-size: 0.9rem;
+    }
+
+    .msg-ok {
+        background: #d1fae5;
+        color: #065f46;
+        padding: 11px 15px;
+        border-radius: 7px;
+        margin-bottom: 14px;
+        font-size: 0.86rem;
+    }
+
+    .msg-err {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 11px 15px;
+        border-radius: 7px;
+        margin-bottom: 14px;
+        font-size: 0.86rem;
+    }
+
+    .arrow-icon {
+        color: #6366f1;
+        font-size: 1rem;
+        margin: 0 6px;
+    }
+</style>
+
+<div class="tx-wrap">
+
+    {% if messages %}
+    {% for m in messages %}
+    {% if m.tags == 'error' %}
+    <div class="msg-err">{{ m }}</div>
+    {% else %}
+    <div class="msg-ok">{{ m }}</div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <div class="top-bar">
+        <div>
+            <p style="margin:0;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">My Budget
+            </p>
+            <h1>Transfers</h1>
+        </div>
+        <div style="display:flex;gap:10px;">
+            <a href="{% url 'transactions_list' %}"
+                style="font-size:0.83rem;color:#6b7280;text-decoration:none;padding:8px 14px;border:1px solid #e5e7eb;border-radius:7px;">My
+                Transactions</a>
+            <a href="{% url 'budget_menu' %}" style="font-size:0.83rem;color:#6b7280;text-decoration:none;">← My
+                Budget</a>
+        </div>
+    </div>
+
+    <div class="layout">
+
+        <div class="form-panel">
+            <div class="card">
+                <p class="card-title">New Transfer</p>
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="fw">
+                        <label class="lbl">Date</label>
+                        {{ form.date }}
+                        {% if form.date.errors %}<p class="err">{{ form.date.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="fw">
+                        <label class="lbl">From Account</label>
+                        <p class="hint">Only current asset accounts can send transfers.</p>
+                        {{ form.source_account }}
+                        {% if form.source_account.errors %}<p class="err">{{ form.source_account.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="fw">
+                        <label class="lbl">To Account</label>
+                        <p class="hint">Send to another asset or pay off a liability.</p>
+                        {{ form.destination_account }}
+                        {% if form.destination_account.errors %}<p class="err">{{ form.destination_account.errors.0 }}
+                        </p>{% endif %}
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="fw">
+                        <label class="lbl">Amount</label>
+                        {{ form.amount }}
+                        {% if form.amount.errors %}<p class="err">{{ form.amount.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="fw">
+                        <label class="lbl">Note</label>
+                        {{ form.description }}
+                    </div>
+
+                    {% if form.non_field_errors %}
+                    <p class="err">{{ form.non_field_errors.0 }}</p>
+                    {% endif %}
+
+                    <button type="submit" class="btn-save">EXECUTE TRANSFER</button>
+                </form>
+            </div>
+
+            <div class="card" style="margin-top:20px;">
+                <p class="card-title">Pay a Card</p>
+                <form method="POST" action="{% url 'pay_card' %}">
+                    {% csrf_token %}
+
+                    <div class="fw">
+                        <label class="lbl">Date</label>
+                        {{ pay_card_form.date }}
+                    </div>
+
+                    <div class="fw">
+                        <label class="lbl">Pay From</label>
+                        <p class="hint">Asset account the money comes out of.</p>
+                        {{ pay_card_form.source_account }}
+                    </div>
+
+                    <div class="fw">
+                        <label class="lbl">Card to Pay</label>
+                        {{ pay_card_form.card }}
+                        <p class="hint" id="card-info">Select a card to see its balance.</p>
+                    </div>
+
+                    <label
+                        style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#374151;margin-bottom:10px;cursor:pointer;">
+                        {{ pay_card_form.pay_full }} Pay full balance
+                    </label>
+
+                    <div class="fw">
+                        <label class="lbl">Amount</label>
+                        {{ pay_card_form.amount }}
+                        <p class="hint">Can't pay more than the card owes — extra is ignored.</p>
+                    </div>
+
+                    <label id="penalty-row"
+                        style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#374151;margin-bottom:14px;cursor:pointer;">
+                        {{ pay_card_form.apply_penalty }} <span id="penalty-label">Apply bank penalty fee</span>
+                    </label>
+
+                    {% if pay_card_form.non_field_errors %}
+                    <p class="err">{{ pay_card_form.non_field_errors.0 }}</p>
+                    {% endif %}
+
+                    <button type="submit" class="btn-save" style="background:#7f1d1d;">PAY CARD</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="list-panel">
+            <div class="card" style="padding:0;overflow:hidden;">
+                <table class="tx-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>From</th>
+                            <th></th>
+                            <th>To</th>
+                            <th style="text-align:right;">Amount</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transfers %}
+                        <tr>
+                            <td class="tx-date">{{ tx.date|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="tx-acc">{{ tx.account.name }}</div>
+                                <div class="tx-desc">{{ tx.account.get_account_type_display }}</div>
+                            </td>
+                            <td class="tx-arrow">→</td>
+                            <td>
+                                {% if tx.destination_account %}
+                                <div class="tx-acc">{{ tx.destination_account.name }}</div>
+                                <div class="tx-desc">{{ tx.destination_account.get_account_type_display }}</div>
+                                {% else %}
+                                <span style="color:#9ca3af;font-size:0.8rem;">—</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align:right;">
+                                <span class="amt-tr">${{ tx.amount|floatformat:2 }}</span>
+                                {% if tx.description %}
+                                <div class="tx-desc" style="text-align:right;">{{ tx.description }}</div>
+                                {% endif %}
+                            </td>
+                            <td style="text-align:right;">
+                                <form method="POST" action="{% url 'delete_transaction' tx.pk %}"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('Delete this transfer? Balances will be restored.')">
+                                    {% csrf_token %}
+                                    <button type="submit" style="background:none;border:none;cursor:pointer;padding:0;"
+                                        class="action-link a-del">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="empty">No transfers yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Info about each card (its balance and penalty fee) so I can show it on the form.
+    const CARD_DATA = {
+        {% for c in cards %}"{{ c.pk }}": { balance: {{ c.initial_balance }}, penalty: {{ c.payment_penalty }} },
+        {% endfor %}
+    };
+
+    // Show the selected card's balance and penalty under the dropdown.
+    function showCardInfo() {
+        const cardSel = document.getElementById('id_card');
+        const info = document.getElementById('card-info');
+        const penaltyRow = document.getElementById('penalty-row');
+        const penaltyLabel = document.getElementById('penalty-label');
+        const payFull = document.getElementById('id_pay_full');
+        const amount = document.getElementById('id_pay_amount');
+
+        const card = CARD_DATA[cardSel.value];
+        if (!card) {
+            info.textContent = 'Select a card to see its balance.';
+            penaltyRow.style.display = 'none';
+            return;
+        }
+
+        // If the card has a penalty fee, show it and the tick box. If not, hide the box.
+        if (card.penalty > 0) {
+            info.textContent = 'Owes $' + card.balance.toFixed(2) + ' · Penalty fee $' + card.penalty.toFixed(2);
+            penaltyRow.style.display = 'flex';
+            penaltyLabel.textContent = 'Apply bank penalty fee ($' + card.penalty.toFixed(2) + ')';
+        } else {
+            info.textContent = 'Owes $' + card.balance.toFixed(2) + ' · No penalty';
+            penaltyRow.style.display = 'none';
+        }
+
+        // If "pay full" is ticked, keep the amount in sync with the balance.
+        if (payFull.checked) {
+            amount.value = card.balance.toFixed(2);
+        }
+    }
+
+    // When "pay full" is ticked, fill in the whole balance and lock the amount box.
+    function toggleFullPayment() {
+        const cardSel = document.getElementById('id_card');
+        const payFull = document.getElementById('id_pay_full');
+        const amount = document.getElementById('id_pay_amount');
+        const card = CARD_DATA[cardSel.value];
+
+        if (payFull.checked) {
+            if (card) {
+                amount.value = card.balance.toFixed(2);
+            }
+            amount.readOnly = true;
+            amount.style.background = '#f3f4f6';
+        } else {
+            amount.readOnly = false;
+            amount.style.background = '';
+        }
+    }
+
+    // Hook up the dropdown and the tick box, and run once when the page opens.
+    const cardSelect = document.getElementById('id_card');
+    if (cardSelect) {
+        cardSelect.onchange = showCardInfo;
+        document.getElementById('id_pay_full').onclick = toggleFullPayment;
+        showCardInfo();
+        toggleFullPayment();
+    }
+</script>
+{% endblock %}

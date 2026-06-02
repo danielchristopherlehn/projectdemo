@@ -1,4 +1,4 @@
-# Full list of ISO countries for the dropdown
+# Full list of ISO countries
 COUNTRY_CHOICES = [
     ('af', 'Afghanistan'), ('al', 'Albania'), ('dz',
                                                'Algeria'), ('as', 'American Samoa'),

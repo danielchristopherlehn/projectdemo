@@ -1,26 +1,72 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div
-    style="max-width: 600px; margin: 40px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #eee; font-family: 'Segoe UI', sans-serif;">
-    <h2 style="color: #8B0000; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">Edit Liability</h2>
+<style>
+    .form-field {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+    }
 
-    <form method="POST">
-        {% csrf_token %}
-        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-            {{ form.as_p }}
-        </div>
+    .form-field:focus {
+        outline: none;
+        border-color: #7f1d1d;
+    }
 
-        <div style="display: flex; gap: 15px; margin-top: 25px;">
-            <button type="submit"
-                style="flex: 1; padding: 12px; background: #8B0000; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                UPDATE LIABILITY
-            </button>
-            <a href="{% url 'manage_liabilities' %}"
-                style="flex: 1; padding: 12px; background: #eee; color: #333; text-align: center; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                CANCEL
-            </a>
-        </div>
-    </form>
+    .lbl {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .fw {
+        margin-bottom: 14px;
+    }
+
+    .divider {
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin: 18px 0;
+    }
+</style>
+
+<div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
+    <a href="{% url 'manage_liabilities' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My
+        Liabilities</a>
+    <h2 style="margin:8px 0 4px;color:#7f1d1d;font-size:1.6rem;font-weight:800;">Edit Liability</h2>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">{{ liability.liability_name }}</p>
+
+    <div
+        style="background:white;border-radius:14px;padding:30px;border:1px solid #e5e7eb;box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="fw">
+                <label class="lbl">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<p style="color:#dc2626;font-size:0.75rem;margin:3px 0 0;">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div style="display:flex;gap:12px;margin-top:20px;">
+                <button type="submit"
+                    style="flex:2;background:#7f1d1d;color:white;padding:13px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
+                    UPDATE LIABILITY
+                </button>
+                <a href="{% url 'manage_liabilities' %}"
+                    style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:13px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">
+                    CANCEL
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

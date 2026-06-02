@@ -74,10 +74,10 @@
                 <p><strong>{{ result.error }}</strong></p>
             {% else %}
                 <h2>Results</h2>
-                <p><strong>Loan Amount:</strong> <span class="result-highlight">{{ result.loan }}</span></p>
-                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Payment</a>{% else %}Monthly Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }}</span></p>
-                <p><strong>Total Paid:</strong> <span class="result-highlight">{{ result.total_paid }}</span></p>
-                <p><strong>Total Interest:</strong> <span class="result-highlight">{{ result.total_interest }}</span></p>
+                <p><strong>Loan Amount:</strong> <span class="result-highlight">{{ result.loan }} NOK</span></p>
+                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Payment</a>{% else %}Monthly Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }} NOK</span></p>
+                <p><strong>Total Paid:</strong> <span class="result-highlight">{{ result.total_paid }} NOK</span></p>
+                <p><strong>Total Interest:</strong> <span class="result-highlight">{{ result.total_interest }} NOK</span></p>
             {% endif %}
         </div>
     {% endif %}

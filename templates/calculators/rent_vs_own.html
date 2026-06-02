@@ -88,9 +88,9 @@
             {% else %}
                 <h2>Results</h2>
 
-                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Mortgage Payment</a>{% else %}Monthly Mortgage Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }}</span></p>
-                <p><strong>{% if glossary_terms.total_rent_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_rent_cost.slug %}">Total Rent Cost (10 years)</a>{% else %}Total Rent Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.rent_cost }}</span></p>
-                <p><strong>{% if glossary_terms.total_buy_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_buy_cost.slug %}">Total Buy Cost (10 years)</a>{% else %}Total Buy Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.buy_cost }}</span></p>
+                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Mortgage Payment</a>{% else %}Monthly Mortgage Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }} NOK</span></p>
+                <p><strong>{% if glossary_terms.total_rent_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_rent_cost.slug %}">Total Rent Cost (10 years)</a>{% else %}Total Rent Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.rent_cost }} NOK</span></p>
+                <p><strong>{% if glossary_terms.total_buy_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_buy_cost.slug %}">Total Buy Cost (10 years)</a>{% else %}Total Buy Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.buy_cost }} NOK</span></p>
 
                 {% if result.rent_cost < result.buy_cost %}
                     <p><strong>Renting is cheaper.</strong></p>

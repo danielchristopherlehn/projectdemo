@@ -1,51 +1,131 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div
-    style="max-width: 600px; margin: 60px auto; padding: 40px; background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; font-family: 'Segoe UI', sans-serif;">
-
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h2 style="color: #002D62; margin-bottom: 10px; font-size: 2rem;">Edit Account</h2>
-        <p style="color: #666;">Updating: <strong style="color: #0056b3;">{{ account.name }}</strong></p>
-        <hr style="border: 0; border-top: 2px solid #f0f0f0; margin-top: 20px;">
-    </div>
-
-    <form method="POST">
-        {% csrf_token %}
-
-        <div style="display: flex; flex-direction: column; gap: 15px; color: #333;">
-            {{ form.as_p }}
-        </div>
-
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            <button type="submit"
-                style="flex: 2; background: #002D62; color: white; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem; transition: background 0.3s;">
-                UPDATE ACCOUNT
-            </button>
-
-            <a href="{% url 'manage_accounts' %}"
-                style="flex: 1; text-align: center; text-decoration: none; background: #f8f9fa; color: #666; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-weight: 600; font-size: 1rem; transition: 0.3s;">
-                CANCEL
-            </a>
-        </div>
-    </form>
-</div>
-
 <style>
-    input,
-    select,
-    textarea {
+    .form-field {
         width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 0.9rem;
         box-sizing: border-box;
     }
 
-    label {
-        font-weight: 600;
-        color: #002D62;
+    .form-field:focus {
+        outline: none;
+        border-color: #002D62;
+    }
+
+    .lbl {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .fw {
+        margin-bottom: 14px;
+    }
+
+    .row2 {
+        display: flex;
+        gap: 14px;
+    }
+
+    .row2>div {
+        flex: 1;
+    }
+
+    .divider {
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin: 18px 0;
+    }
+
+    .hint {
+        font-size: 0.72rem;
+        color: #9ca3af;
+        margin-top: 3px;
     }
 </style>
+
+<div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
+    <a href="{% url 'budget_menu' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Budget</a>
+    <h2 style="margin:8px 0 4px;color:#002D62;font-size:1.6rem;font-weight:800;">Edit Account</h2>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">{{ account.name }}</p>
+
+    {% if messages %}
+    {% for m in messages %}
+    <div
+        style="background:#d1fae5;color:#065f46;padding:11px 15px;border-radius:7px;margin-bottom:14px;font-size:0.86rem;">
+        {{ m }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <div
+        style="background:white;border-radius:14px;padding:30px;border:1px solid #e5e7eb;box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="fw">
+                <label class="lbl">Account Name</label>{{ form.name }}
+            </div>
+
+            <div class="row2">
+                <div class="fw"><label class="lbl">Class</label>{{ form.account_class }}</div>
+                <div class="fw"><label class="lbl">Type</label>{{ form.account_type }}</div>
+            </div>
+
+            <div class="row2">
+                <div class="fw"><label class="lbl">Currency</label>{{ form.currency }}</div>
+                <div class="fw"><label class="lbl">Country</label>{{ form.country }}</div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="fw">
+                <label class="lbl">Current Balance</label>
+                {{ form.initial_balance }}
+                <p class="hint">Only edit to manually correct an error.</p>
+            </div>
+
+            <div class="fw">
+                <label class="lbl">Credit Limit</label>
+                {{ form.credit_limit }}
+                <p class="hint">Only for Credit Cards / Lines of Credit. Leave blank for asset accounts.</p>
+            </div>
+
+            <div class="fw">
+                <label class="lbl">Payment Penalty / Fee</label>
+                {{ form.payment_penalty }}
+                <p class="hint">Bank fee charged each time you pay this card. Leave 0 if none.</p>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:20px;">
+                <button type="submit"
+                    style="flex:2;background:#002D62;color:white;padding:13px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
+                    UPDATE ACCOUNT
+                </button>
+                <a href="{% url 'budget_menu' %}"
+                    style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:13px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">
+                    CANCEL
+                </a>
+            </div>
+        </form>
+
+        <hr class="divider">
+
+        <form method="POST" action="{% url 'delete_account' account.pk %}"
+            onsubmit="return confirm('Delete {{ account.name }}? This cannot be undone.')">
+            {% csrf_token %}
+            <button type="submit"
+                style="width:100%;background:none;border:1px solid #dc2626;color:#dc2626;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.86rem;">
+                Delete this account
+            </button>
+        </form>
+    </div>
+</div>
 {% endblock %}

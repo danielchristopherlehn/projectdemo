@@ -1,121 +1,195 @@
 {% extends 'base.html' %}
-{% load humanize %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Budget Command Center</h2>
-        <span class="badge bg-secondary p-2">{{ user.username }}'s Portfolio</span>
+<style>
+  .budget-wrap { max-width:100%; margin:0; padding:40px 40px 60px; font-family:'Segoe UI',sans-serif; }
+
+  /* TOP BAR */
+  .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
+  .top-bar h1 { margin:0; font-size:2rem; color:#002D62; font-weight:900; }
+  .top-actions { display:flex; gap:10px; }
+  .btn-primary { background:#002D62; color:white; padding:10px 22px; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.88rem; }
+  .btn-secondary { background:white; color:#002D62; padding:10px 22px; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.88rem; border:2px solid #002D62; }
+
+  /* SUMMARY BANNER */
+  .summary-banner { display:flex; width:100%; border-radius:16px; overflow:hidden; margin-bottom:36px; box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+  .banner-block { flex:1; padding:30px 36px; }
+  .banner-assets { background:#002D62; color:white; }
+  .banner-liabilities { background:#7f1d1d; color:white; }
+  .banner-working { background:#f0f4ff; color:#111; border-left:1px solid #e5e7eb; }
+  .banner-block .lbl { font-size:0.72rem; text-transform:uppercase; letter-spacing:1.2px; opacity:0.75; margin:0 0 8px; font-weight:700; }
+  .banner-block .amt { font-size:2.6rem; font-weight:900; margin:0; line-height:1; }
+  .banner-block .sub { font-size:0.82rem; margin:8px 0 0; opacity:0.7; }
+  .banner-working .lbl { color:#6b7280; opacity:1; }
+  .banner-working .amt { color:#002D62; }
+  .banner-working.neg .amt { color:#dc2626; }
+  .banner-working .sub { color:#6b7280; opacity:1; }
+
+  /* WALLET */
+  .wallet-title-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .wallet-title { font-size:1.3rem; font-weight:900; color:#002D62; margin:0; }
+  .wallet-cols { display:flex; gap:24px; }
+  .wallet-col { flex:1; display:flex; flex-direction:column; gap:16px; }
+  .col-head { font-size:0.7rem; font-weight:900; text-transform:uppercase; letter-spacing:1.2px; padding-bottom:10px; margin-bottom:4px; }
+  .col-head.a { color:#047857; border-bottom:2px solid #d1fae5; }
+  .col-head.l { color:#b91c1c; border-bottom:2px solid #fee2e2; }
+
+  .group-block { border-radius:10px; border:1px solid #e5e7eb; overflow:hidden; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+  .group-hdr { display:flex; justify-content:space-between; align-items:center; padding:11px 18px; background:#f9fafb; border-bottom:1px solid #e5e7eb; }
+  .group-name { font-size:0.82rem; font-weight:700; color:#374151; }
+  .group-tot { font-size:0.82rem; font-weight:700; }
+  .g-a { color:#047857; } .g-l { color:#b91c1c; }
+
+  .acc-row { display:flex; align-items:center; padding:13px 18px; border-bottom:1px solid #f3f4f6; gap:12px; }
+  .acc-row:last-child { border-bottom:none; }
+  .acc-info { flex:1; }
+  .acc-name { font-size:0.92rem; font-weight:600; color:#111; }
+  .acc-sub { font-size:0.74rem; color:#6b7280; margin-top:1px; }
+  .acc-bal { font-size:0.95rem; font-weight:700; margin-right:12px; white-space:nowrap; }
+  .bal-a { color:#047857; } .bal-l { color:#b91c1c; }
+  .btn-edit { font-size:0.74rem; color:#002D62; text-decoration:none; font-weight:700; background:#e8edf7; padding:4px 11px; border-radius:6px; white-space:nowrap; }
+  .btn-edit:hover { background:#d1daf0; }
+
+  .credit-bar-bg { background:#fee2e2; border-radius:3px; height:4px; margin-top:5px; }
+  .credit-bar-fill { background:#b91c1c; border-radius:3px; height:4px; }
+  .credit-lbl { font-size:0.68rem; color:#9ca3af; margin-top:2px; }
+
+  .empty-col { text-align:center; color:#9ca3af; font-size:0.85rem; padding:30px 16px; background:white; border-radius:10px; border:1px dashed #e5e7eb; }
+
+  .msg-ok  { background:#d1fae5; color:#065f46; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:0.88rem; }
+  .msg-err { background:#fee2e2; color:#991b1b; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:0.88rem; }
+</style>
+
+<div class="budget-wrap">
+
+  {% if messages %}
+  {% for m in messages %}
+  {% if m.tags == 'error' %}
+  <div class="msg-err">{{ m }}</div>
+  {% else %}
+  <div class="msg-ok">{{ m }}</div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <p style="margin:0;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">EZ Households</p>
+      <h1>My Budget</h1>
+    </div>
+    <div class="top-actions">
+      <a href="{% url 'transfers_list' %}" class="btn-secondary">Transfers</a>
+      <a href="{% url 'transactions_list' %}" class="btn-secondary">My Transactions</a>
+      <a href="{% url 'manage_accounts' %}" class="btn-primary">+ Add Account</a>
+    </div>
+  </div>
+
+  <!-- SUMMARY BANNER -->
+  <div class="summary-banner">
+    <div class="banner-block banner-assets">
+      <p class="lbl">Total Current Assets</p>
+      <p class="amt">{{ assets_total|floatformat:2 }} NOK</p>
+      <p class="sub">Cash, savings &amp; checking accounts</p>
+    </div>
+    <div class="banner-block banner-liabilities">
+      <p class="lbl">Total Current Liabilities</p>
+      <p class="amt">{{ liabilities_total|floatformat:2 }} NOK</p>
+      <p class="sub">Credit cards &amp; overdrafts</p>
+    </div>
+    <div class="banner-block banner-working {% if working_capital < 0 %}neg{% endif %}">
+      <p class="lbl">Working Capital</p>
+      <p class="amt">{{ working_capital|floatformat:2 }} NOK</p>
+      <p class="sub">Assets minus liabilities</p>
+    </div>
+  </div>
+
+  <!-- MY WALLET -->
+  <div class="wallet-title-row">
+    <p class="wallet-title">My Wallet</p>
+  </div>
+
+  <div class="wallet-cols">
+
+    <!-- LEFT: CURRENT ASSETS -->
+    <div class="wallet-col">
+      <p class="col-head a">Current Assets</p>
+
+      {% if asset_groups %}
+      {% for group in asset_groups %}
+      <div class="group-block">
+        <div class="group-hdr">
+          <span class="group-name">{{ group.label }}</span>
+          <span class="group-tot g-a">{{ group.total|floatformat:2 }} NOK</span>
+        </div>
+        {% for account in group.accounts %}
+        <div class="acc-row">
+          <div style="width:22px;flex-shrink:0;">
+            {% if account.country %}
+            <img src="https://flagcdn.com/w20/{{ account.country }}.png" alt="">
+            {% else %}
+            🏦
+            {% endif %}
+          </div>
+          <div class="acc-info">
+            <div class="acc-name">{{ account.name }}</div>
+            <div class="acc-sub">{{ account.currency }} &middot; {{ account.get_account_type_display }}</div>
+          </div>
+          <span class="acc-bal bal-a">{{ account.initial_balance|floatformat:2 }} NOK</span>
+          <a href="{% url 'edit_account' account.pk %}" class="btn-edit">Edit</a>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty-col">
+        No current assets yet.<br>
+        <a href="{% url 'manage_accounts' %}" style="color:#002D62;font-weight:700;">Add your first account →</a>
+      </div>
+      {% endif %}
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100"
-                style="background-color: #f8f9fa; border-left: 5px solid #0d6efd !important;">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small fw-bold">Net Liquidity</h6>
-                    <h2 class="display-6 fw-bold {% if net_worth < 0 %}text-danger{% else %}text-primary{% endif %}">
-                        ${{ net_worth|floatformat:2|intcomma }}
-                    </h2>
-                    <p class="small text-muted mb-0">Combined value of all accounts</p>
-                </div>
-            </div>
-        </div>
+    <!-- RIGHT: CURRENT LIABILITIES -->
+    <div class="wallet-col">
+      <p class="col-head l">Current Liabilities</p>
 
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100"
-                style="background-color: #e6fffa; border-left: 5px solid #38b2ac !important;">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small fw-bold">Total Liquidity</h6>
-                    <h2 class="display-6 fw-bold text-success">
-                        ${{ liquid_total|floatformat:2|intcomma }}
-                    </h2>
-                    <p class="small text-muted mb-0">Cash, Bank & E-Wallets</p>
-                </div>
-            </div>
+      {% if liability_groups %}
+      {% for group in liability_groups %}
+      <div class="group-block">
+        <div class="group-hdr">
+          <span class="group-name">{{ group.label }}</span>
+          <span class="group-tot g-l">{{ group.total|floatformat:2 }} NOK</span>
         </div>
-
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100"
-                style="background-color: #fff5f5; border-left: 5px solid #e53e3e !important;">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small fw-bold">Total Liabilities</h6>
-                    <h2 class="display-6 fw-bold text-danger">
-                        ${{ debt_total|floatformat:2|intcomma }}
-                    </h2>
-                    <p class="small text-muted mb-0">Credit Cards & Overdrafts</p>
-                </div>
+        {% for account in group.accounts %}
+        <div class="acc-row">
+          <div style="width:22px;flex-shrink:0;">
+            {% if account.country %}
+            <img src="https://flagcdn.com/w20/{{ account.country }}.png" alt="">
+            {% else %}
+            💳
+            {% endif %}
+          </div>
+          <div class="acc-info">
+            <div class="acc-name">{{ account.name }}</div>
+            <div class="acc-sub">{{ account.currency }} &middot; {{ account.get_account_type_display }}</div>
+            {% if account.credit_limit %}
+            <div class="credit-bar-bg">
+              <div class="credit-bar-fill" style="width:{% widthratio account.initial_balance account.credit_limit 100 %}%;"></div>
             </div>
+            <div class="credit-lbl">{{ account.initial_balance|floatformat:2 }} NOK of {{ account.credit_limit|floatformat:2 }} NOK used</div>
+            {% endif %}
+          </div>
+          <span class="acc-bal bal-l">{{ account.initial_balance|floatformat:2 }} NOK</span>
+          <a href="{% url 'edit_account' account.pk %}" class="btn-edit">Edit</a>
         </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty-col">No current liabilities registered.</div>
+      {% endif %}
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card h-100 shadow-sm border-0 p-3">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-wallet2 display-4 text-primary"></i>
-                    </div>
-                    <h4>Accounts & Wallets</h4>
-                    <p class="text-muted">Register new bank accounts, credit cards, or cash reserves.</p>
-                    <a href="{% url 'manage_accounts' %}" class="btn btn-primary w-100 py-2 fw-bold">
-                        Manage Liquidity & Debt
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card h-100 shadow-sm border-0 p-3">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-journal-text display-4 text-success"></i>
-                    </div>
-                    <h4>Transaction Diary</h4>
-                    <p class="text-muted">Log your daily expenses and income. Balances sync automatically.</p>
-                    <a href="{% url 'transactions_diary' %}" class="btn btn-success w-100 py-2 fw-bold">
-                        Open Transaction Diary
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="mt-5">
-        <h4 class="mb-3">Account Overviews</h4>
-        <div class="table-responsive bg-white rounded shadow-sm">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Account Name</th>
-                        <th>Class</th>
-                        <th>Type</th>
-                        <th class="text-end">Current Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for acc in accounts %}
-                    <tr>
-                        <td class="fw-bold">{{ acc.name }}</td>
-                        <td>
-                            <span
-                                class="badge {% if acc.account_class == 'LIQUID' %}bg-info{% else %}bg-warning{% endif %} text-dark">
-                                {{ acc.get_account_class_display }}
-                            </span>
-                        </td>
-                        <td>{{ acc.get_account_type_display }}</td>
-                        <td class="text-end fw-bold {% if acc.balance < 0 %}text-danger{% endif %}">
-                            ${{ acc.balance|floatformat:2|intcomma }}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No accounts registered yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+  </div>
 </div>
 {% endblock %}

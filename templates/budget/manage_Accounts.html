@@ -1,239 +1,149 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width: 1200px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #333;">
+<style>
+    .form-field {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+    }
+
+    .form-field:focus {
+        outline: none;
+        border-color: #002D62;
+    }
+
+    .lbl {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .fw {
+        margin-bottom: 14px;
+    }
+
+    .row2 {
+        display: flex;
+        gap: 14px;
+    }
+
+    .row2>div {
+        flex: 1;
+    }
+
+    .divider {
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin: 18px 0;
+    }
+
+    .hint {
+        font-size: 0.72rem;
+        color: #9ca3af;
+        margin-top: 3px;
+    }
+
+    .err {
+        color: #dc2626;
+        font-size: 0.75rem;
+        margin-top: 3px;
+    }
+
+    .info-box {
+        font-size: 0.78rem;
+        color: #1e3a5f;
+        background: #f0f7ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 7px;
+        padding: 10px 14px;
+        margin-bottom: 16px;
+    }
+</style>
+
+<div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
+    <a href="{% url 'budget_menu' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Budget</a>
+    <h2 style="margin:8px 0 4px;color:#002D62;font-size:1.6rem;font-weight:800;">Add Account</h2>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">Register a current asset or liability account.</p>
+
+    {% if messages %}
+    {% for m in messages %}
+    <div
+        style="background:#d1fae5;color:#065f46;padding:11px 15px;border-radius:7px;margin-bottom:14px;font-size:0.86rem;">
+        {{ m }}</div>
+    {% endfor %}
+    {% endif %}
 
     <div
-        style="background: #002D62; color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-            <div>
-                <p style="margin: 0; opacity: 0.8; text-transform: uppercase; font-size: 0.8rem;">Account Management</p>
-                <h2 style="margin: 5px 0 0 0; font-size: 2.5rem;">Liquidity & Debt</h2>
+        style="background:white;border-radius:14px;padding:30px;border:1px solid #e5e7eb;box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="fw">
+                <label class="lbl">Account Name</label>
+                {{ form.name }}
+                {% if form.name.errors %}<p class="err">{{ form.name.errors.0 }}</p>{% endif %}
             </div>
-            <div style="text-align: right;">
-                <p style="margin: 0; font-size: 1.2rem; font-weight: bold; color: #ffd700;">
-                    {{ accounts.count }} Total Accounts Registered
-                </p>
+
+            <div class="row2">
+                <div class="fw">
+                    <label class="lbl">Class</label>
+                    {{ form.account_class }}
+                </div>
+                <div class="fw">
+                    <label class="lbl">Type</label>
+                    {{ form.account_type }}
+                </div>
             </div>
-        </div>
+
+            <div class="row2">
+                <div class="fw">
+                    <label class="lbl">Currency</label>
+                    {{ form.currency }}
+                </div>
+                <div class="fw">
+                    <label class="lbl">Country</label>
+                    {{ form.country }}
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="fw">
+                <label class="lbl">Starting Balance</label>
+                {{ form.initial_balance }}
+                <p class="hint">Enter 0 if this is a brand new account.</p>
+                {% if form.initial_balance.errors %}<p class="err">{{ form.initial_balance.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="fw">
+                <label class="lbl">Credit Limit</label>
+                {{ form.credit_limit }}
+                <p class="hint">Only for Credit Cards / Lines of Credit. Leave blank for asset accounts.</p>
+                {% if form.credit_limit.errors %}<p class="err">{{ form.credit_limit.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="fw">
+                <label class="lbl">Payment Penalty / Fee</label>
+                {{ form.payment_penalty }}
+                <p class="hint">Bank fee charged each time you pay this card. Leave 0 if none.</p>
+                {% if form.payment_penalty.errors %}<p class="err">{{ form.payment_penalty.errors.0 }}</p>{% endif %}
+            </div>
+
+            <button type="submit"
+                style="width:100%;background:#002D62;color:white;padding:13px;border:none;border-radius:8px;font-weight:700;font-size:0.95rem;cursor:pointer;margin-top:6px;">
+                SAVE ACCOUNT
+            </button>
+            <a href="{% url 'budget_menu' %}"
+                style="display:block;text-align:center;margin-top:10px;color:#6b7280;font-size:0.83rem;text-decoration:none;">Cancel</a>
+        </form>
     </div>
-
-    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-
-        <!-- LEFT SIDE -->
-        <div
-            style="flex: 1; min-width: 320px; background: white; padding: 25px; border: 1px solid #ddd; border-radius: 12px; height: fit-content;">
-
-            <h3 style="margin-top: 0; color: #002D62;">+ Register Account</h3>
-
-            <form method="POST">
-                {% csrf_token %}
-
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    {{ form.as_p }}
-                </div>
-
-                <button type="submit"
-                    style="width: 100%; background: #28a745; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer;">
-                    SAVE TO DATABASE
-                </button>
-            </form>
-        </div>
-
-        <!-- RIGHT SIDE -->
-        <div style="flex: 2; min-width: 600px; display: flex; flex-direction: column; gap: 25px;">
-
-            <!-- LIQUID ACCOUNTS -->
-            <div
-                style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-
-                <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #002D62;">
-                    <h4 style="margin: 0; color: #002D62;">Liquid Accounts (Cash & Bank)</h4>
-                </div>
-
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tbody>
-
-                        {% for account in accounts %}
-
-                            {% if account.account_class == 'LIQUID' %}
-
-                            <tr style="border-bottom: 1px solid #eee;">
-
-                                <td style="padding: 15px; width: 50px;">
-
-                                    {% if account.country %}
-                                        <img src="https://flagcdn.com/w20/{{ account.country }}.png" alt="flag">
-                                    {% else %}
-                                        🏦
-                                    {% endif %}
-
-                                </td>
-
-                                <td style="padding: 15px; font-weight: 600;">
-                                    {{ account.name }}
-                                </td>
-
-                                <td style="padding: 15px; color: #28a745; font-weight: bold;">
-                                    ${{ account.initial_balance|floatformat:2 }}
-                                </td>
-
-                                <td style="padding: 15px; text-align: right;">
-
-                                    <a href="{% url 'edit_account' account.pk %}"
-                                        style="
-                                            color: #0056b3;
-                                            text-decoration: none;
-                                            font-weight: bold;
-                                            margin-right: 15px;
-                                        ">
-
-                                        Edit
-
-                                    </a>
-
-                                    <form method="POST"
-                                        action="{% url 'delete_account' account.pk %}"
-                                        style="display:inline;">
-
-                                        {% csrf_token %}
-
-                                        <button type="submit"
-                                            onclick="return confirm('Delete this account?')"
-                                            style="
-                                                background:none;
-                                                border:none;
-                                                color:#dc3545;
-                                                font-weight:bold;
-                                                cursor:pointer;
-                                                font-size:1rem;
-                                            ">
-
-                                            Delete
-
-                                        </button>
-
-                                    </form>
-
-                                </td>
-
-                            </tr>
-
-                            {% endif %}
-
-                        {% empty %}
-
-                            <tr>
-                                <td colspan="4"
-                                    style="padding: 25px; text-align: center; color: #999; font-style: italic;">
-                                    No liquid accounts registered.
-                                </td>
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- DEBT -->
-            <div
-                style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-
-                <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #dc3545;">
-                    <h4 style="margin: 0; color: #dc3545;">Debt & Liabilities</h4>
-                </div>
-
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tbody>
-
-                        {% for account in accounts %}
-
-                            {% if account.account_class == 'DEBT' %}
-
-                            <tr style="border-bottom: 1px solid #eee;">
-
-                                <td style="padding: 15px; width: 50px;">
-
-                                    {% if account.country %}
-                                        <img src="https://flagcdn.com/w20/{{ account.country }}.png" alt="flag">
-                                    {% else %}
-                                        💳
-                                    {% endif %}
-
-                                </td>
-
-                                <td style="padding: 15px; font-weight: 600;">
-                                    {{ account.name }}
-                                </td>
-
-                                <td style="padding: 15px; color: #dc3545; font-weight: bold;">
-                                    ${{ account.initial_balance|floatformat:2 }}
-                                </td>
-
-                                <td style="padding: 15px; text-align: right;">
-
-                                    <a href="{% url 'edit_account' account.pk %}"
-                                        style="
-                                            color: #0056b3;
-                                            text-decoration: none;
-                                            font-weight: bold;
-                                            margin-right: 15px;
-                                        ">
-
-                                        Edit
-
-                                    </a>
-
-                                    <form method="POST"
-                                        action="{% url 'delete_account' account.pk %}"
-                                        style="display:inline;">
-
-                                        {% csrf_token %}
-
-                                        <button type="submit"
-                                            onclick="return confirm('Delete this account?')"
-                                            style="
-                                                background:none;
-                                                border:none;
-                                                color:#dc3545;
-                                                font-weight:bold;
-                                                cursor:pointer;
-                                                font-size:1rem;
-                                            ">
-
-                                            Delete
-
-                                        </button>
-
-                                    </form>
-
-                                </td>
-
-                            </tr>
-
-                            {% endif %}
-
-                        {% empty %}
-
-                            <tr>
-                                <td colspan="4"
-                                    style="padding: 25px; text-align: center; color: #999; font-style: italic;">
-                                    No debt accounts registered.
-                                </td>
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-                </table>
-
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
 {% endblock %}
-

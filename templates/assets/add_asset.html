@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .form-field {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+  }
+
+  .form-field:focus {
+    outline: none;
+    border-color: #002D62;
+  }
+
+  .lbl {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .fw {
+    margin-bottom: 14px;
+  }
+
+  .row2 {
+    display: flex;
+    gap: 14px;
+  }
+
+  .row2>div {
+    flex: 1;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 18px 0;
+  }
+
+  .err {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 3px;
+  }
+
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .check-row label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+  }
+</style>
+
+<div style="max-width:520px;margin:40px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
+  <a href="{% url 'manage_assets' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Assets</a>
+  <h2 style="margin:8px 0 20px;color:#002D62;font-size:1.6rem;font-weight:800;">
+    {% if editing %}Edit: {{ asset.asset_name }}{% else %}Register Asset{% endif %}
+  </h2>
+
+  {% if messages %}{% for m in messages %}
+  <div
+    style="background:#d1fae5;color:#065f46;padding:10px 14px;border-radius:7px;margin-bottom:14px;font-size:0.85rem;">
+    {{ m }}</div>
+  {% endfor %}{% endif %}
+
+  <div
+    style="background:white;border-radius:12px;padding:26px;border:1px solid #e5e7eb;box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="fw">
+        <label class="lbl">Asset Name</label>
+        {{ form.asset_name }}
+        {% if form.asset_name.errors %}<p class="err">{{ form.asset_name.errors.0 }}</p>{% endif %}
+      </div>
+
+      <div class="row2">
+        <div class="fw">
+          <label class="lbl">Type</label>
+          {{ form.asset_type }}
+          {% if form.asset_type.errors %}<p class="err">{{ form.asset_type.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="fw">
+          <label class="lbl">Country</label>
+          {{ form.country }}
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="row2">
+        <div class="fw">
+          <label class="lbl">Purchase Price (NOK)</label>
+          {{ form.purchase_price }}
+          {% if form.purchase_price.errors %}<p class="err">{{ form.purchase_price.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="fw">
+          <label class="lbl">Current Value (NOK)</label>
+          {{ form.value_estimate }}
+        </div>
+      </div>
+
+      <div class="fw" style="max-width:48%;">
+        <label class="lbl">Purchase Year</label>
+        {{ form.purchase_year }}
+        {% if form.purchase_year.errors %}<p class="err">{{ form.purchase_year.errors.0 }}</p>{% endif %}
+      </div>
+
+      <hr class="divider">
+
+      <div class="fw">
+        <label class="lbl">Notes</label>
+        {{ form.notes }}
+      </div>
+      <div class="check-row">
+        {{ form.active_Status }}
+        <label for="{{ form.active_Status.id_for_label }}">Active asset</label>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button type="submit"
+          style="flex:2;background:#002D62;color:white;padding:12px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
+          {% if editing %}UPDATE{% else %}SAVE{% endif %} ASSET
+        </button>
+        <a href="{% url 'manage_assets' %}"
+          style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:12px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">CANCEL</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

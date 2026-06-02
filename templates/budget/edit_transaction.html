@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .form-field {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+    }
+
+    .form-field:focus {
+        outline: none;
+        border-color: #002D62;
+    }
+
+    .lbl {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .fw {
+        margin-bottom: 14px;
+    }
+
+    .divider {
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin: 16px 0;
+    }
+
+    .hint {
+        font-size: 0.72rem;
+        color: #9ca3af;
+        margin-top: 3px;
+    }
+
+    .err {
+        color: #dc2626;
+        font-size: 0.75rem;
+        margin-top: 3px;
+    }
+</style>
+
+<div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
+    <a href="{% url 'transactions_list' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My
+        Transactions</a>
+    <h2 style="margin:8px 0 4px;color:#002D62;font-size:1.6rem;font-weight:800;">Edit Transaction</h2>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">{{ transaction.date }} · {{
+        transaction.get_transaction_type_display }}</p>
+
+    {% if messages %}
+    {% for m in messages %}
+    <div
+        style="background:{% if m.tags == 'error' %}#fee2e2;color:#991b1b{% else %}#d1fae5;color:#065f46{% endif %};padding:11px 15px;border-radius:7px;margin-bottom:14px;font-size:0.86rem;">
+        {{ m }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <div
+        style="background:white;border-radius:14px;padding:30px;border:1px solid #e5e7eb;box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="fw"><label class="lbl">Date</label>{{ form.date }}</div>
+            <div class="fw"><label class="lbl">Account</label>{{ form.account }}</div>
+            <div class="fw"><label class="lbl">Type</label>{{ form.transaction_type }}</div>
+
+            <div class="fw">
+                <label class="lbl">Category</label>
+                <p class="hint">Leave blank for Transfer transactions.</p>
+                {{ form.category }}
+                {% if form.category.errors %}<p class="err">{{ form.category.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="fw">
+                <label class="lbl">Destination Account</label>
+                <p class="hint">Required only for Transfer. Leave blank otherwise.</p>
+                {{ form.destination_account }}
+                {% if form.destination_account.errors %}<p class="err">{{ form.destination_account.errors.0 }}</p>{% endif %}
+            </div>
+
+            <hr class="divider">
+
+            <div class="fw"><label class="lbl">Description</label>{{ form.description }}</div>
+            <div class="fw">
+                <label class="lbl">Amount</label>
+                {{ form.amount }}
+                {% if form.amount.errors %}<p class="err">{{ form.amount.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:20px;">
+                <button type="submit"
+                    style="flex:2;background:#002D62;color:white;padding:13px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
+                    UPDATE
+                </button>
+                <a href="{% url 'transactions_list' %}"
+                    style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:13px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">
+                    CANCEL
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

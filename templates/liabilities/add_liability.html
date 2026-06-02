@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .form-field { width:100%; padding:9px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:0.9rem; box-sizing:border-box; }
+  .form-field:focus { outline:none; border-color:#7f1d1d; }
+  .lbl { display:block; font-size:0.78rem; font-weight:700; color:#374151; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.4px; }
+  .fw { margin-bottom:14px; }
+  .row2 { display:flex; gap:14px; }
+  .row2 > div { flex:1; }
+  .divider { border:none; border-top:1px solid #e5e7eb; margin:18px 0; }
+  .section-label { font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#6b7280; margin:0 0 12px; }
+  .err { color:#dc2626; font-size:0.75rem; margin-top:3px; }
+  .hint { font-size:0.72rem; color:#9ca3af; margin-top:3px; }
+</style>
+
+<div style="max-width:560px;margin:40px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
+  <a href="{% url 'manage_liabilities' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Liabilities</a>
+  <h2 style="margin:8px 0 20px;color:#7f1d1d;font-size:1.6rem;font-weight:800;">
+    {% if editing %}Edit: {{ liability.liability_name }}{% else %}Register Liability{% endif %}
+  </h2>
+
+  {% if messages %}{% for m in messages %}
+  <div style="background:#d1fae5;color:#065f46;padding:10px 14px;border-radius:7px;margin-bottom:14px;font-size:0.85rem;">{{ m }}</div>
+  {% endfor %}{% endif %}
+
+  <div style="background:white;border-radius:12px;padding:26px;border:1px solid #e5e7eb;box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+    <form method="POST">
+      {% csrf_token %}
+
+      <p class="section-label">Classification</p>
+      <div class="fw">
+        <label class="lbl">Liability Name</label>
+        {{ form.liability_name }}
+        {% if form.liability_name.errors %}<p class="err">{{ form.liability_name.errors.0 }}</p>{% endif %}
+      </div>
+      <div class="row2">
+        <div class="fw">
+          <label class="lbl">Type</label>
+          {{ form.liability_type }}
+          {% if form.liability_type.errors %}<p class="err">{{ form.liability_type.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="fw">
+          <label class="lbl">Lender / Bank</label>
+          {{ form.lender }}
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <p class="section-label">Loan Details</p>
+      <div class="row2">
+        <div class="fw">
+          <label class="lbl">Principal (NOK)</label>
+          {{ form.principal_amount }}
+          {% if form.principal_amount.errors %}<p class="err">{{ form.principal_amount.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="fw">
+          <label class="lbl">Interest Rate (%)</label>
+          {{ form.interest_rate }}
+          {% if form.interest_rate.errors %}<p class="err">{{ form.interest_rate.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+      <div class="row2">
+        <div class="fw">
+          <label class="lbl">Monthly Payment (NOK)</label>
+          {{ form.monthly_payment }}
+        </div>
+        <div class="fw">
+          <label class="lbl">Term (months)</label>
+          {{ form.term_months }}
+          <p class="hint">e.g., 360 = 30 years</p>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="fw">
+          <label class="lbl">Start Date</label>
+          {{ form.start_date }}
+        </div>
+        <div class="fw">
+          <label class="lbl">Country</label>
+          {{ form.location }}
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <p class="section-label">Linked Asset <span style="font-weight:400;text-transform:none;font-size:0.9em;">(optional)</span></p>
+      <div class="fw">
+        <label class="lbl">Linked Asset</label>
+        {{ form.linked_asset }}
+        <p class="hint">Link this debt to an asset, e.g. a mortgage to a property.</p>
+      </div>
+
+      <hr class="divider">
+
+      <div class="fw">
+        <label class="lbl">Notes</label>
+        {{ form.notes }}
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button type="submit" style="flex:2;background:#7f1d1d;color:white;padding:12px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
+          {% if editing %}UPDATE{% else %}SAVE{% endif %} LIABILITY
+        </button>
+        <a href="{% url 'manage_liabilities' %}" style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:12px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">CANCEL</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

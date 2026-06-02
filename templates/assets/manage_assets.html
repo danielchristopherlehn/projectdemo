@@ -1,181 +1,198 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width: 1200px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #333;">
+<style>
+  .wrap { max-width:1100px; margin:40px auto; padding:0 20px; font-family:'Segoe UI',sans-serif; }
+  .header-card { background:#002D62; color:white; padding:28px 32px; border-radius:14px; margin-bottom:28px; box-shadow:0 8px 24px rgba(0,45,98,0.18); }
+  .header-card h1 { margin:0 0 4px; font-size:0.85rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px; }
+  .big-number { font-size:2.6rem; font-weight:700; margin:0; }
+  .sub { font-size:0.88rem; opacity:0.7; margin-top:4px; }
+  .alloc-bar { display:flex; height:8px; border-radius:8px; overflow:hidden; background:rgba(255,255,255,0.2); margin-top:18px; }
+  .alloc-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; }
+  .alloc-legend span { font-size:0.8rem; display:flex; align-items:center; gap:4px; }
+  .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .layout { display:flex; gap:24px; flex-wrap:wrap; }
+  .sidebar { flex:0 0 170px; display:flex; flex-direction:column; gap:8px; }
+  .sidebar-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#6b7280; margin:0 0 4px; }
+  .add-btn { display:block; text-align:center; background:#002D62; color:white; padding:13px; border-radius:8px; font-weight:700; text-decoration:none; font-size:0.88rem; }
+  .add-btn:hover { background:#003d7a; }
+  .main { flex:1; min-width:280px; display:flex; flex-direction:column; gap:20px; }
+  .card { border-radius:10px; border:1px solid #e5e7eb; overflow:hidden; background:white; }
+  .card-head { display:flex; justify-content:space-between; align-items:center; padding:11px 16px; background:#f9fafb; border-bottom:1px solid #e5e7eb; }
+  .card-head h4 { margin:0; font-size:0.9rem; color:#002D62; font-weight:700; }
+  .badge { font-size:0.8rem; font-weight:700; color:#002D62; background:#e8edf7; padding:3px 9px; border-radius:16px; }
+  .sort-bar { display:flex; gap:8px; align-items:center; padding:8px 16px; background:#fafafa; border-bottom:1px solid #e5e7eb; }
+  .sort-bar span { font-size:0.7rem; font-weight:700; color:#6b7280; text-transform:uppercase; }
+  .sort-bar select { padding:5px 8px; border:1px solid #d1d5db; border-radius:5px; font-size:0.8rem; background:white; }
+  .btn-sort { background:#002D62; color:white; padding:5px 12px; border:none; border-radius:5px; font-size:0.8rem; font-weight:700; cursor:pointer; }
+  .btn-reset { color:#6b7280; font-size:0.8rem; text-decoration:none; padding:5px 8px; border:1px solid #e5e7eb; border-radius:5px; background:white; }
+  .tbl { width:100%; border-collapse:collapse; }
+  .tbl td { padding:12px 16px; border-bottom:2px solid #e5e7eb; vertical-align:middle; }
+  .tbl tr:last-child td { border-bottom:none; }
+  .tbl tr:hover td { background:#fafafa; }
+  .name { font-weight:600; font-size:0.92rem; }
+  .meta { font-size:0.75rem; color:#6b7280; margin-top:2px; }
+  .amt { font-weight:700; color:#002D62; white-space:nowrap; }
+  .tag { font-size:0.7rem; background:#e8edf7; color:#002D62; padding:2px 7px; border-radius:8px; }
+  .link-edit { color:#002D62; font-size:0.8rem; font-weight:600; text-decoration:none; }
+  .link-del { color:#dc2626; font-size:0.8rem; font-weight:600; background:none; border:none; cursor:pointer; margin-left:8px; }
+  .redirect { font-size:0.73rem; color:#6b7280; background:#f3f4f6; padding:3px 8px; border-radius:8px; border:1px solid #e5e7eb; text-decoration:none; }
+  .empty { text-align:center; color:#9ca3af; font-style:italic; padding:28px; font-size:0.88rem; }
+  .group-title { font-size:0.73rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#6b7280; padding:8px 16px 5px; background:#fafafa; border-bottom:1px solid #f0f2f5; }
+  .msg-ok  { background:#d1fae5; color:#065f46; padding:10px 14px; border-radius:7px; margin-bottom:14px; font-size:0.85rem; }
+  .msg-err { background:#fee2e2; color:#991b1b; padding:10px 14px; border-radius:7px; margin-bottom:14px; font-size:0.85rem; }
+</style>
 
-    <div
-        style="background: #002D62; color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-            <div>
-                <p style="margin: 0; opacity: 0.8; text-transform: uppercase; font-size: 0.8rem;">Net Worth</p>
-                <h2 style="margin: 5px 0 0 0; font-size: 3rem;">${{ total_value|floatformat:2 }}</h2>
-            </div>
-            <div style="text-align: right;">
-                <p style="margin: 0; font-weight: bold;">{{ assets.count }} Total Assets</p>
-            </div>
+<div class="wrap">
+
+  {% if messages %}
+  {% for m in messages %}
+  {% if m.tags == 'error' %}
+  <div class="msg-err">{{ m }}</div>
+  {% else %}
+  <div class="msg-ok">{{ m }}</div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  <div class="header-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h1>My Assets</h1>
+        <p class="big-number">{{ long_term_total|floatformat:2 }} NOK</p>
+        <p class="sub">Long-term assets &nbsp;·&nbsp; {{ long_term_assets.count }} asset{{ long_term_assets.count|pluralize }}</p>
+      </div>
+      <div style="text-align:right;">
+        <p style="margin:0;font-size:0.8rem;opacity:0.7;">Current Assets (My Budget)</p>
+        <p style="margin:4px 0 0;font-size:1.4rem;font-weight:700;">{{ current_assets_total|floatformat:2 }} NOK</p>
+      </div>
+    </div>
+    {% if allocation_bar %}
+    <div class="alloc-bar">
+      {% for item in allocation_bar %}
+      {% if item.percentage > 0 %}
+      <div style="width:{{ item.percentage }}%;background:{{ item.color }};"></div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <div class="alloc-legend">
+      {% for item in allocation_bar %}
+      <span><span class="dot" style="background:{{ item.color }};"></span>{{ item.name }}: <strong>{{ item.total|floatformat:2 }} NOK</strong></span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="layout">
+
+    <div class="sidebar">
+      <p class="sidebar-label">Register</p>
+      <a href="{% url 'add_asset' %}" class="add-btn">+ Add Asset</a>
+    </div>
+
+    <div class="main">
+
+      <div class="card">
+        <div class="card-head">
+          <h4>Current Assets <span style="font-weight:400;font-size:0.78rem;color:#6b7280;">— managed in My Budget</span></h4>
+          <span class="badge">{{ current_assets_total|floatformat:2 }} NOK</span>
         </div>
-
-        <div style="margin-top: 25px;">
-            <p style="margin-bottom: 10px; font-size: 0.9rem; font-weight: bold; color: #ffffff;">
-                Allocation by Category (Value Based):
-            </p>
-
-            <div
-                style="display: flex; height: 12px; width: 100%; background: rgba(255,255,255,0.25); border-radius: 10px; overflow: hidden;">
-                {% for item in allocation_bar %}
-                {% if item.percentage > 0 %}
-                <div style="height: 100%; width: {{ item.percentage }}%; background-color: {{ item.color }}; border-right: 1px solid #002D62;"
-                    title="{{ item.name }}: ${{ item.total|floatformat:2 }} ({{ item.percentage }}%)">
-                </div>
+        <form method="GET" action="{% url 'manage_assets' %}">
+          <div class="sort-bar">
+            <span>Sort</span>
+            <select name="ca_sort">
+              <option value="balance_desc" {% if ca_sort == 'balance_desc' %}selected{% endif %}>Balance ↓</option>
+              <option value="balance_asc"  {% if ca_sort == 'balance_asc'  %}selected{% endif %}>Balance ↑</option>
+              <option value="name_asc"     {% if ca_sort == 'name_asc'     %}selected{% endif %}>Name A–Z</option>
+            </select>
+            <button type="submit" class="btn-sort">Apply</button>
+            <a href="{% url 'manage_assets' %}" class="btn-reset">Reset</a>
+          </div>
+        </form>
+        {% if current_asset_groups %}
+        {% for group_name, accounts in current_asset_groups.items %}
+        <div class="group-title">{{ group_name }}</div>
+        <table class="tbl">
+          <tbody>
+            {% for account in accounts %}
+            <tr>
+              <td style="width:28px;">
+                {% if account.country %}
+                <img src="https://flagcdn.com/w20/{{ account.country }}.png" alt="">
+                {% else %}
+                🏦
                 {% endif %}
-                {% endfor %}
-            </div>
+              </td>
+              <td>
+                <div class="name">{{ account.name }}</div>
+                <div class="meta">{{ account.currency }}</div>
+              </td>
+              <td class="amt">{{ account.initial_balance|floatformat:2 }} NOK</td>
+              <td style="text-align:right;">
+                <a href="{% url 'budget_menu' %}" class="redirect">Edit in My Budget →</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endfor %}
+        {% else %}
+        <p class="empty">No current assets yet. Add them in <a href="{% url 'budget_menu' %}" style="color:#002D62;">My Budget</a>.</p>
+        {% endif %}
+      </div>
 
-            <div style="display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
-                {% for item in allocation_bar %}
-                <span style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
-                    <span
-                        style="width: 10px; height: 10px; border-radius: 50%; background-color: {{ item.color }}; display: inline-block;"></span>
-                    {{ item.name }}: <strong>${{ item.total|floatformat:2 }}</strong>
-                </span>
-                {% endfor %}
-            </div>
+      <div class="card">
+        <div class="card-head">
+          <h4>Long-Term Assets</h4>
+          <span class="badge">{{ long_term_total|floatformat:2 }} NOK</span>
         </div>
+        <form method="GET" action="{% url 'manage_assets' %}">
+          <div class="sort-bar">
+            <span>Sort</span>
+            <select name="sort">
+              <option value="value_desc" {% if current_sort == 'value_desc' %}selected{% endif %}>Value ↓</option>
+              <option value="value_asc"  {% if current_sort == 'value_asc'  %}selected{% endif %}>Value ↑</option>
+              <option value="year_desc"  {% if current_sort == 'year_desc'  %}selected{% endif %}>Year ↓</option>
+              <option value="year_asc"   {% if current_sort == 'year_asc'   %}selected{% endif %}>Year ↑</option>
+              <option value="name_asc"   {% if current_sort == 'name_asc'   %}selected{% endif %}>Name A–Z</option>
+            </select>
+            <button type="submit" class="btn-sort">Apply</button>
+            <a href="{% url 'manage_assets' %}" class="btn-reset">Reset</a>
+          </div>
+        </form>
+        <table class="tbl">
+          <tbody>
+            {% for asset in long_term_assets %}
+            <tr>
+              <td style="width:28px;">
+                <img src="https://flagcdn.com/w20/{{ asset.country }}.png" alt="">
+              </td>
+              <td>
+                <div class="name">{{ asset.asset_name }}</div>
+                <div class="meta">
+                  <span class="tag">{{ asset.asset_type }}</span>
+                  &nbsp;· {{ asset.purchase_year }}
+                </div>
+              </td>
+              <td class="amt">{{ asset.value_estimate|default:asset.purchase_price|floatformat:2 }} NOK</td>
+              <td style="text-align:right;white-space:nowrap;">
+                <a href="{% url 'edit_asset' asset.pk %}" class="link-edit">Edit</a>
+                <form method="POST" action="{% url 'delete_asset' asset.pk %}" style="display:inline;" onsubmit="return confirm('Delete {{ asset.asset_name }}?')">
+                  {% csrf_token %}
+                  <button type="submit" class="link-del">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="empty">No long-term assets yet. Click "+ Add Asset" to register one.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
     </div>
-
-    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-
-        <div
-            style="flex: 1; min-width: 320px; background: white; padding: 25px; border: 1px solid #ddd; border-radius: 12px;">
-            <h3 style="margin-top: 0; color: #002D62;">+ Register Asset</h3>
-            <form method="POST">
-                {% csrf_token %}
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    {{ form.as_p }}
-                </div>
-                <button type="submit"
-                    style="width: 100%; background: #002D62; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer;">
-                    SAVE TO DATABASE
-                </button>
-            </form>
-        </div>
-
-        <div style="flex: 2; min-width: 600px; display: flex; flex-direction: column; gap: 25px;">
-
-            <div
-                style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #002D62;">
-                    <h4 style="margin: 0; color: #002D62;">Liquid Assets: Bank Accounts</h4>
-                </div>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tbody>
-                        {% for asset in bank_accounts %}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 15px; width: 50px;">
-                                {% if asset.country %}
-                                <img src="https://flagcdn.com/w20/{{ asset.country }}.png" alt="flag">
-                                {% else %}🏦{% endif %}
-                            </td>
-                            <td style="padding: 15px; font-weight: 600;">{{ asset.name }}</td>
-
-                            <td style="padding: 15px; color: #002D62; font-weight: bold;">
-                                ${{ asset.initial_balance|floatformat:2 }}
-                            </td>
-
-                            <td style="padding: 15px; text-align: right;">
-                                <a href="{% url 'edit_account' asset.pk %}"
-                                    style="color: #002D62; text-decoration: none; font-weight: bold; margin-right: 10px;">
-                                    Edit in Budget
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" style="padding: 20px; text-align: center; color: #999; font-style: italic;">
-                                No bank accounts registered.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div
-                style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #002D62;">
-                    <h4 style="margin: 0; color: #002D62;">Liquid Assets: Cash Reserves</h4>
-                </div>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tbody>
-                        {% for asset in cash_reserves %}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 15px; width: 50px;">
-                                {% if asset.country %}
-                                <img src="https://flagcdn.com/w20/{{ asset.country }}.png" alt="flag">
-                                {% else %}💵{% endif %}
-                            </td>
-                            <td style="padding: 15px; font-weight: 600;">{{ asset.name }}</td>
-
-                            <td style="padding: 15px; color: #002D62; font-weight: bold;">
-                                ${{ asset.initial_balance|floatformat:2 }}
-                            </td>
-
-                            <td style="padding: 15px; text-align: right;">
-                                <a href="{% url 'edit_account' asset.pk %}"
-                                    style="color: #002D62; text-decoration: none; font-weight: bold; margin-right: 10px;">
-                                    Edit in Budget
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" style="padding: 20px; text-align: center; color: #999; font-style: italic;">
-                                No cash reserves registered.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div
-                style="background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <div style="background: #f8f9fa; padding: 15px; border-bottom: 2px solid #002D62;">
-                    <h4 style="margin: 0; color: #002D62;">Fixed & Illiquid Assets</h4>
-                </div>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tbody>
-                        {% for asset in other_assets %}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 15px; width: 50px;">
-                                <img src="https://flagcdn.com/w20/{{ asset.country }}.png" alt="flag">
-                            </td>
-                            <td style="padding: 15px;">
-                                <div style="font-weight: 600;">{{ asset.asset_name }}</div>
-                                <div style="font-size: 0.8rem; color: #666;">{{ asset.asset_type }}</div>
-                            </td>
-                            <td style="padding: 15px; color: #002D62; font-weight: bold;">
-                                ${{ asset.purchase_price|floatformat:2 }}
-                            </td>
-                            <td style="padding: 15px; text-align: right;">
-                                <a href="{% url 'edit_asset' asset.pk %}"
-                                    style="color: #002D62; font-weight: bold; margin-right: 10px;">Edit</a>
-                                <a href="{% url 'delete_asset' asset.pk %}" style="color: #002D62; font-weight: bold;"
-                                    onclick="return confirm('Delete this asset?')">Del</a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" style="padding: 20px; text-align: center; color: #999; font-style: italic;">
-                                No fixed assets registered.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-        </div>
-    </div>
+  </div>
 </div>
 {% endblock %}
