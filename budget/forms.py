@@ -59,13 +59,13 @@ class AccountForm(forms.ModelForm):
             cleaned_data['payment_penalty'] = 0
             if account_type and account_type in self.LIABILITY_TYPES:
                 self.add_error('account_type',
-                    'This type belongs to liabilities. Choose Cash, Checking, Savings, or Digital Wallet for a Current Asset.')
+                               'This type belongs to liabilities. Choose Cash, Checking, Savings, or Digital Wallet for a Current Asset.')
 
         # A liability account can't use an asset type.
         if account_class == 'CURRENT_LIABILITY':
             if account_type and account_type in self.ASSET_TYPES:
                 self.add_error('account_type',
-                    'This type belongs to assets. Choose Credit Card, Overdraft, or Line of Credit for a Current Liability.')
+                               'This type belongs to assets. Choose Credit Card, Overdraft, or Line of Credit for a Current Liability.')
 
         return cleaned_data
 
@@ -123,16 +123,16 @@ class TransactionForm(forms.ModelForm):
         account = cleaned_data.get('account')
         if account and account.account_class == 'CURRENT_LIABILITY' and t_type == 'REVENUE':
             self.add_error('transaction_type',
-                'A liability account cannot receive revenue. Use a Current Asset account for income.')
+                           'A liability account cannot receive revenue. Use a Current Asset account for income.')
 
         # Make sure the category matches the type (income vs expense).
         if t_type == 'REVENUE' and category in self.EXPENSE_CATEGORIES:
             self.add_error('category',
-                'This category belongs to expenses. Choose Salary, Dividends, or Extras for Revenue.')
+                           'This category belongs to expenses. Choose Salary, Dividends, or Extras for Revenue.')
 
         if t_type == 'EXPENSE' and category in self.INCOME_CATEGORIES:
             self.add_error('category',
-                'This category belongs to income. Choose a spending category for Expense.')
+                           'This category belongs to income. Choose a spending category for Expense.')
 
         return cleaned_data
 
@@ -201,7 +201,7 @@ class TransferForm(forms.Form):
 
 
 class PayCardForm(forms.Form):
-    # Form for the "Pay a Card" feature on the transfers page.
+    # separate from the normal transfer form because paying a card works a bit differently, you pay full balance or just part of it
     date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-field'})
     )
@@ -217,6 +217,7 @@ class PayCardForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-field', 'id': 'id_card'}),
         label="Card to Pay",
     )
+
     pay_full = forms.BooleanField(
         required=False, label="Pay full balance",
         widget=forms.CheckboxInput(attrs={'id': 'id_pay_full'}),
@@ -227,6 +228,7 @@ class PayCardForm(forms.Form):
             'class': 'form-field', 'placeholder': '0.00',
             'step': '0.01', 'id': 'id_pay_amount'}),
     )
+    # some banks charge a fee when you pay, this lets the user include it or not
     apply_penalty = forms.BooleanField(
         required=False, initial=True, label="Apply bank penalty fee",
         widget=forms.CheckboxInput(attrs={'id': 'id_apply_penalty'}),
@@ -236,7 +238,7 @@ class PayCardForm(forms.Form):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user:
-            # Pay from an asset account, pay towards a liability (card).
+            # only show the users own accounts in the dropdowns
             self.fields['source_account'].queryset = Account.objects.filter(
                 user=user, account_class='CURRENT_ASSET')
             self.fields['card'].queryset = Account.objects.filter(
@@ -247,7 +249,7 @@ class PayCardForm(forms.Form):
         pay_full = cleaned_data.get('pay_full')
         amount = cleaned_data.get('amount')
 
-        # The user has to either type an amount or tick "pay full balance".
+        # need at least one of these otherwise we dont know how much to pay
         if not pay_full and not amount:
             raise forms.ValidationError(
                 "Enter an amount, or tick 'Pay full balance'.")
