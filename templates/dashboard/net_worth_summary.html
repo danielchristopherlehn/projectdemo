@@ -2,53 +2,166 @@
 
 {% block content %}
 
-<!-- Main page wrapper -->
 <div style="max-width: 1100px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #000;">
 
-    <!-- Back button -->
-    <a href="{% url 'dashboard' %}" style="color:#002D62; font-weight:700; text-decoration:none; font-size:0.9rem;">←
-        Back to Command Center</a>
+    <a href="{% url 'dashboard' %}" style="color:#002D62; font-weight:700; text-decoration:none; font-size:0.9rem;">
+        ← Back to Command Center
+    </a>
 
-    <!-- Current net worth hero section -->
-    <div
-        style="background:#002D62; color:white; border-radius:15px; padding:30px; margin:20px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+    <div style="
+        background:#002D62;
+        color:white;
+        border-radius:15px;
+        padding:30px;
+        margin:20px 0;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:20px;
+    ">
         <div>
-            <p style="margin:0; opacity:1; font-size:0.8rem; text-transform:uppercase;">Current Net Worth</p>
-            <h1 style="margin:5px 0 0; font-size:2.8rem;">{{ current_nw|floatformat:"0" }} NOK</h1>
+            <p style="margin:0; font-size:0.8rem; text-transform:uppercase;">
+                Current Net Worth
+            </p>
+
+            <h1 style="margin:5px 0 0; font-size:2.8rem;">
+                {{ current_nw|floatformat:"0" }} NOK
+            </h1>
         </div>
 
         <div style="display:flex; gap:30px; flex-wrap:wrap;">
             <div style="text-align:center;">
-                <p style="margin:0; opacity:1; font-size:0.75rem; text-transform:uppercase;">Total Assets</p>
-                <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#4ade80;">{{ total_assets|floatformat:"0" }} NOK</p>
+                <p style="margin:0; font-size:0.75rem; text-transform:uppercase;">
+                    Total Assets
+                </p>
+
+                <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#4ade80;">
+                    {{ total_assets|floatformat:"0" }} NOK
+                </p>
             </div>
 
             <div style="text-align:center;">
-                <p style="margin:0; opacity:1; font-size:0.75rem; text-transform:uppercase;">Total Liabilities</p>
-                <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#f87171;">{{ total_debt|floatformat:"0" }} NOK</p>
+                <p style="margin:0; font-size:0.75rem; text-transform:uppercase;">
+                    Total Liabilities
+                </p>
+
+                <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#f87171;">
+                    {{ total_debt|floatformat:"0" }} NOK
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Asset summary cards -->
     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:30px;">
+
         <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">Property & Land</p>
-            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">{{ property_value|floatformat:"0" }} NOK</p>
-            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">{{ properties.count }} asset(s)</p>
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Property & Land
+            </p>
+
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">
+                {{ property_value|floatformat:"0" }} NOK
+            </p>
+
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                {{ properties.count }} asset(s)
+            </p>
         </div>
 
         <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">Investments</p>
-            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">{{ investment_value|floatformat:"0" }} NOK</p>
-            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">{{ investments.count }} asset(s)</p>
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Investments
+            </p>
+
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">
+                {{ investment_value|floatformat:"0" }} NOK
+            </p>
+
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                {{ investments.count }} asset(s)
+            </p>
         </div>
 
         <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">Liquid (Cash & Bank)</p>
-            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">{{ liquid_value|floatformat:"0" }} NOK</p>
-            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">{{ liquid_accounts.count }} account(s)</p>
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Liquid Cash & Bank
+            </p>
+
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">
+                {{ liquid_value|floatformat:"0" }} NOK
+            </p>
+
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                {{ liquid_accounts.count }} account(s)
+            </p>
         </div>
+
+    </div>
+
+    <div style="
+        background:white;
+        border-radius:15px;
+        border:1px solid #eee;
+        padding:30px;
+        margin-bottom:25px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    ">
+        <h2 style="margin:0 0 20px; color:#002D62;">
+            Net Worth Breakdown
+        </h2>
+
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:2px solid #002D62;">
+                    <th style="padding:12px; text-align:left; color:#002D62;">
+                        Category
+                    </th>
+                    <th style="padding:12px; text-align:right; color:#002D62;">
+                        Value
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:12px;">Property & Land</td>
+                    <td style="padding:12px; text-align:right;">
+                        {{ property_value|floatformat:"0" }} NOK
+                    </td>
+                </tr>
+
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:12px;">Investments</td>
+                    <td style="padding:12px; text-align:right;">
+                        {{ investment_value|floatformat:"0" }} NOK
+                    </td>
+                </tr>
+
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:12px;">Liquid Cash & Bank</td>
+                    <td style="padding:12px; text-align:right;">
+                        {{ liquid_value|floatformat:"0" }} NOK
+                    </td>
+                </tr>
+
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:12px;">Liabilities</td>
+                    <td style="padding:12px; text-align:right; color:#dc2626;">
+                        -{{ total_debt|floatformat:"0" }} NOK
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:14px; font-weight:700; color:#002D62;">
+                        Current Net Worth
+                    </td>
+                    <td style="padding:14px; text-align:right; font-weight:700; color:#002D62;">
+                        {{ current_nw|floatformat:"0" }} NOK
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 </div>

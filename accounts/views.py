@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.db import IntegrityError
 from django.shortcuts import redirect, render
 
 from .forms import RegisterForm
@@ -12,14 +13,18 @@ def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            UserProfile.objects.create(
-                user=user,
-                country=form.cleaned_data.get("country", ""),
-                occupation=form.cleaned_data.get("occupation", ""),
-            )
-            login(request, user)
-            return redirect("dashboard")
+            try:
+                user = form.save()
+                UserProfile.objects.create(
+                    user=user,
+                    country=form.cleaned_data.get("country", ""),
+                    occupation=form.cleaned_data.get("occupation", ""),
+                )
+                login(request, user)
+                return redirect("dashboard")
+            except IntegrityError:
+                # Username already exists — show a clear error on the form
+                form.add_error("username", "That username is already taken. Please choose another.")
     else:
         form = RegisterForm()
 

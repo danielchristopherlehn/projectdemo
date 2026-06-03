@@ -49,7 +49,7 @@ def net_worth_summary(request):
 
     liquid_accounts = Account.objects.filter(
         user=user,
-        account_class="CURRENT_ASSET"
+        account_class="LIQUID"
     )
 
     liabilities = Liability.objects.filter(user=user)
