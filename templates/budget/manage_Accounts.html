@@ -2,63 +2,11 @@
 
 {% block content %}
 <style>
-    .form-field {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 7px;
-        font-size: 0.9rem;
-        box-sizing: border-box;
-    }
-
-    .form-field:focus {
-        outline: none;
-        border-color: #002D62;
-    }
-
-    .lbl {
-        display: block;
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: #374151;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-    }
-
-    .fw {
-        margin-bottom: 14px;
-    }
-
-    .row2 {
-        display: flex;
-        gap: 14px;
-    }
-
-    .row2>div {
-        flex: 1;
-    }
-
-    .divider {
-        border: none;
-        border-top: 1px solid #e5e7eb;
-        margin: 18px 0;
-    }
-
-    .hint {
-        font-size: 0.72rem;
-        color: #9ca3af;
-        margin-top: 3px;
-    }
-
-    .err {
-        color: #dc2626;
-        font-size: 0.75rem;
-        margin-top: 3px;
-    }
+    /* Shared form styles live in site.css; keep section accent + unique bits. */
+    .form-field:focus { border-color:#002D62; }   /* budget navy accent */
 
     .info-box {
-        font-size: 0.78rem;
+        font-size: 0.8rem;
         color: #1e3a5f;
         background: #f0f7ff;
         border: 1px solid #bfdbfe;
@@ -69,14 +17,14 @@
 </style>
 
 <div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
-    <a href="{% url 'budget_menu' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Budget</a>
+    <a href="{% url 'budget_menu' %}" style="font-size:0.8rem;color:#6b7280;text-decoration:none;">← My Budget</a>
     <h2 style="margin:8px 0 4px;color:#002D62;font-size:1.6rem;font-weight:800;">Add Account</h2>
-    <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">Register a current asset or liability account.</p>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:0.9rem;">Register a current asset or liability account.</p>
 
     {% if messages %}
     {% for m in messages %}
     <div
-        style="background:#d1fae5;color:#065f46;padding:11px 15px;border-radius:7px;margin-bottom:14px;font-size:0.86rem;">
+        style="background:#d1fae5;color:#065f46;padding:11px 15px;border-radius:7px;margin-bottom:14px;font-size:0.9rem;">
         {{ m }}</div>
     {% endfor %}
     {% endif %}
@@ -138,11 +86,11 @@
             </div>
 
             <button type="submit"
-                style="width:100%;background:#002D62;color:white;padding:13px;border:none;border-radius:8px;font-weight:700;font-size:0.95rem;cursor:pointer;margin-top:6px;">
+                style="width:100%;background:#002D62;color:white;padding:13px;border:none;border-radius:8px;font-weight:700;font-size:0.9rem;cursor:pointer;margin-top:6px;">
                 SAVE ACCOUNT
             </button>
             <a href="{% url 'budget_menu' %}"
-                style="display:block;text-align:center;margin-top:10px;color:#6b7280;font-size:0.83rem;text-decoration:none;">Cancel</a>
+                style="display:block;text-align:center;margin-top:10px;color:#6b7280;font-size:0.8rem;text-decoration:none;">Cancel</a>
         </form>
     </div>
 </div>

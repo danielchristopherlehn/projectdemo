@@ -2,23 +2,10 @@
 
 {% block content %}
 <style>
-    .form-field {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        box-sizing: border-box;
-    }
-
-    .form-field:focus {
-        outline: none;
-        border-color: #002D62;
-    }
-
+    /* Page-specific label styling. Shared form styles live in site.css. */
     label {
         display: block;
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         font-weight: 600;
         color: #374151;
         margin-bottom: 4px;
@@ -30,7 +17,7 @@
         style="background:white; border-radius:14px; padding:36px; border:1px solid #e5e7eb; box-shadow:0 8px 24px rgba(0,0,0,0.07);">
 
         <div style="margin-bottom:24px;">
-            <p style="margin:0; font-size:0.78rem; text-transform:uppercase; letter-spacing:1px; color:#6b7280;">My
+            <p style="margin:0; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; color:#6b7280;">My
                 Assets</p>
             <h2 style="margin:4px 0 0; color:#002D62; font-size:1.6rem;">Edit Asset</h2>
             <p style="margin:6px 0 0; color:#6b7280; font-size:0.9rem;">{{ asset.asset_name }}</p>
@@ -42,7 +29,7 @@
             <div style="margin-bottom:14px;">
                 <label>{{ field.label }}</label>
                 {{ field }}
-                {% if field.errors %}<p style="color:#dc2626; font-size:0.78rem; margin:3px 0 0;">{{ field.errors.0 }}
+                {% if field.errors %}<p style="color:#dc2626; font-size:0.8rem; margin:3px 0 0;">{{ field.errors.0 }}
                 </p>{% endif %}
             </div>
             {% endfor %}

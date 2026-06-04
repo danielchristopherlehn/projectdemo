@@ -26,7 +26,7 @@ class Asset(models.Model):
         max_digits=15, decimal_places=2, null=True, blank=True)
     purchase_year = models.PositiveIntegerField()
     # Whether I still own it / it's still active.
-    active_Status = models.BooleanField(default=True)
+    active_status = models.BooleanField(default=True)
     notes = models.TextField(blank=True, default='')
 
     def __str__(self):

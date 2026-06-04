@@ -8,6 +8,8 @@
         ← Back to Command Center
     </a>
 
+    <h1 style="margin:18px 0 0; color:#002D62; font-size:2rem;">Net Worth &amp; Equity</h1>
+
     <div style="
         background:#002D62;
         color:white;
@@ -25,9 +27,12 @@
                 Current Net Worth
             </p>
 
-            <h1 style="margin:5px 0 0; font-size:2.8rem;">
+            <div style="margin:5px 0 0; font-size:2.8rem; font-weight:700;">
                 {{ current_nw|floatformat:"0" }} NOK
-            </h1>
+            </div>
+            <p style="margin:6px 0 0; font-size:0.8rem; opacity:0.75;">
+                Your equity position: assets minus liabilities
+            </p>
         </div>
 
         <div style="display:flex; gap:30px; flex-wrap:wrap;">
@@ -48,6 +53,16 @@
 
                 <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#f87171;">
                     {{ total_debt|floatformat:"0" }} NOK
+                </p>
+            </div>
+
+            <div style="text-align:center;">
+                <p style="margin:0; font-size:0.75rem; text-transform:uppercase;">
+                    Reported Equity
+                </p>
+
+                <p style="margin:4px 0 0; font-size:1.3rem; font-weight:700; color:#e0bf99;">
+                    {{ reported_equity|floatformat:"0" }} NOK
                 </p>
             </div>
         </div>
@@ -99,6 +114,90 @@
 
     </div>
 
+    <!-- Income Snapshot (calculated from the user's transactions) -->
+    <h2 style="margin:0 0 12px; color:#002D62;">Income Snapshot</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:30px;">
+
+        <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Avg. Monthly Income
+            </p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#016434;">
+                {{ avg_monthly_income|floatformat:"0" }} NOK
+            </p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                Average revenue per month
+            </p>
+        </div>
+
+        <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Avg. Yearly Income
+            </p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#016434;">
+                {{ avg_yearly_income|floatformat:"0" }} NOK
+            </p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                Monthly average × 12
+            </p>
+        </div>
+
+        <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Adjusted Income (Monthly)
+            </p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">
+                {{ adjusted_income|floatformat:"0" }} NOK
+            </p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                After average monthly expenses
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Equity Snapshot (reported equity vs. the equity implied by net worth) -->
+    <h2 style="margin:0 0 12px; color:#442200;">Equity Snapshot</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:30px;">
+
+        <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Reported Equity
+            </p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#442200;">
+                {{ reported_equity|floatformat:"0" }} NOK
+            </p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                {{ equity_count }} record(s) you logged
+            </p>
+        </div>
+
+        <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Implied Equity
+            </p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#002D62;">
+                {{ current_nw|floatformat:"0" }} NOK
+            </p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                Assets - Liabilities (= net worth)
+            </p>
+        </div>
+
+        <div style="background:white; border-radius:12px; padding:20px; border:1px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin:0 0 5px; font-size:0.75rem; text-transform:uppercase; color:#000;">
+                Untracked Difference
+            </p>
+            <p style="margin:0; font-size:1.5rem; font-weight:700; color:#9a6a00;">
+                {{ equity_gap|floatformat:"0" }} NOK
+            </p>
+            <p style="margin:4px 0 0; font-size:0.8rem; color:#000;">
+                Net worth not yet itemised as equity
+            </p>
+        </div>
+
+    </div>
+
     <div style="
         background:white;
         border-radius:15px;
@@ -108,7 +207,7 @@
         box-shadow:0 4px 15px rgba(0,0,0,0.05);
     ">
         <h2 style="margin:0 0 20px; color:#002D62;">
-            Net Worth Breakdown
+            Net Worth &amp; Equity Breakdown
         </h2>
 
         <table style="width:100%; border-collapse:collapse;">
@@ -154,14 +253,39 @@
 
                 <tr>
                     <td style="padding:14px; font-weight:700; color:#002D62;">
-                        Current Net Worth
+                        Current Net Worth (Implied Equity)
                     </td>
                     <td style="padding:14px; text-align:right; font-weight:700; color:#002D62;">
                         {{ current_nw|floatformat:"0" }} NOK
                     </td>
                 </tr>
+
+                <tr style="border-top:2px solid #f0e6d8;">
+                    <td style="padding:12px; color:#442200;">
+                        Reported Equity (self-logged)
+                    </td>
+                    <td style="padding:12px; text-align:right; color:#442200;">
+                        {{ reported_equity|floatformat:"0" }} NOK
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:12px; color:#9a6a00;">
+                        Untracked difference
+                    </td>
+                    <td style="padding:12px; text-align:right; color:#9a6a00;">
+                        {{ equity_gap|floatformat:"0" }} NOK
+                    </td>
+                </tr>
             </tbody>
         </table>
+
+        <p style="margin:16px 0 0; font-size:0.8rem; color:#6b7280; line-height:1.4;">
+            In accounting, <strong>Equity = Assets - Liabilities</strong>, so reported equity would
+            equal your net worth. Because this tool lets you log equity by hand, the
+            <strong>untracked difference</strong> is just net worth you haven't itemised in the
+            Equity module yet.
+        </p>
     </div>
 
 </div>

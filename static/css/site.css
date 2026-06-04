@@ -126,7 +126,7 @@ label {
 
 .brand {
     color: var(--brand-deep);
-    font-size: 1.55rem;
+    font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     text-decoration: none;
@@ -154,7 +154,7 @@ label {
     border-radius: 999px;
     background: rgba(12, 91, 95, 0.08);
     color: var(--brand-deep);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .link-button {
@@ -212,7 +212,7 @@ label {
 }
 
 .hero-copy p {
-    font-size: 1.06rem;
+    font-size: 1.1rem;
     max-width: 60ch;
 }
 
@@ -224,7 +224,7 @@ label {
 
 .hero-note {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--muted);
 }
 
@@ -235,7 +235,7 @@ label {
     border-radius: 999px;
     background: var(--accent-soft);
     color: var(--brand-deep);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -271,7 +271,7 @@ label {
 .stat-value {
     display: block;
     margin-top: 0.15rem;
-    font-size: 1.65rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: var(--brand-deep);
 }
@@ -364,7 +364,7 @@ label {
     border-radius: 999px;
     background: rgba(12, 91, 95, 0.08);
     color: var(--brand-deep);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
 }
 
 .calculator-grid {
@@ -387,7 +387,7 @@ label {
 .results-panel h2,
 .sidebar-panel h2 {
     margin-top: 0;
-    font-size: 1.18rem;
+    font-size: 1.2rem;
 }
 
 .sidebar-panel ul {
@@ -416,7 +416,7 @@ label {
 
 .result-highlight {
     color: var(--brand-deep);
-    font-size: 1.05rem;
+    font-size: 1rem;
 }
 
 .glossary-grid {
@@ -446,7 +446,7 @@ label {
 .glossary-term-link {
     display: inline-block;
     margin-bottom: 0.35rem;
-    font-size: 1.12rem;
+    font-size: 1.1rem;
     font-weight: 700;
     text-decoration: none;
 }
@@ -454,7 +454,7 @@ label {
 .glossary-definition {
     max-width: 65ch;
     line-height: 1.8;
-    font-size: 1.08rem;
+    font-size: 1.1rem;
 }
 
 .detail-meta {
@@ -480,6 +480,127 @@ label {
 .empty-state {
     text-align: center;
     padding: 2rem 1.25rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Shared form + manage-page styles.
+   These used to be copy-pasted into the <style> block of nearly every
+   assets / budget / equity / liabilities template. They are defined once here
+   instead. Section accent colors (like the focus border) are kept as small
+   per-page overrides where a section has its own color.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Compact form field (smaller than the global input style higher up) */
+.form-field {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.form-field:focus {
+    outline: none;
+    border-color: #0c5b5f;
+    /* default focus color; budget/equity/liabilities override this per section */
+}
+
+/* Small uppercase label above a field */
+.lbl {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+/* Spacing below each label + field pair */
+.fw {
+    margin-bottom: 14px;
+}
+
+/* Two fields side by side */
+.row2 {
+    display: flex;
+    gap: 14px;
+}
+
+.row2 > div {
+    flex: 1;
+}
+
+/* Thin line dividing form sections */
+.divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 18px 0;
+}
+
+/* Validation error text under a field */
+.err {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 3px;
+}
+
+/* Small grey helper text under a field */
+.hint {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-top: 3px;
+}
+
+/* Green success / red error flash messages */
+.msg-ok {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 10px 14px;
+    border-radius: 7px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+}
+
+.msg-err {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 7px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+}
+
+/* Two-column shell on the "manage" pages: narrow sidebar + main column */
+.layout {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.sidebar {
+    flex: 0 0 170px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.main {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Placeholder row shown when a list is empty */
+.empty {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 28px;
+    font-size: 0.9rem;
 }
 
 @media (max-width: 900px) {

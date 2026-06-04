@@ -1,76 +1,152 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Loan Calculator{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/calculators.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="card calculator-shell">
+<div class="calc-wrap">
+  <section class="card calculator-shell">
+
     <div class="calculator-head">
-        <div>
-            <span class="page-kicker">Calculator</span>
-            <h1>Loan Calculator</h1>
-        </div>
-        <span class="project-badge">Project: {{ project.name }}</span>
+      <div>
+        <span class="page-kicker">Simulator</span>
+        <h1>Loan Calculator</h1>
+      </div>
+      <span class="project-badge">{{ project.name }}</span>
     </div>
 
-    <div class="calculator-grid">
-        <div class="form-panel">
-            <h2>Enter Loan Details</h2>
-            <form method="post" class="stack-form">
-                {% csrf_token %}
+    <div class="calc-grid">
 
-                <label for="principal">
-                    {% if glossary_terms.principal %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.principal.slug %}">Loan Amount</a>
-                    {% else %}
-                        Loan Amount
-                    {% endif %}
-                </label>
-                <input type="number" id="principal" name="principal" value="{{ form_data.principal }}" required>
+      <!-- LEFT: input form -->
+      <div class="form-panel">
+        <h2>Loan Details</h2>
+        <form method="post" class="stack-form">
+          {% csrf_token %}
 
-                <label for="rate">
-                    {% if glossary_terms.interest_rate %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.interest_rate.slug %}">Interest Rate (%)</a>
-                    {% else %}
-                        Interest Rate (%)
-                    {% endif %}
-                </label>
-                <input type="number" step="0.01" id="rate" name="rate" value="{{ form_data.rate }}" required>
-
-                <label for="years">
-                    {% if glossary_terms.loan_term %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.loan_term.slug %}">Loan Term (Years)</a>
-                    {% else %}
-                        Loan Term (Years)
-                    {% endif %}
-                </label>
-                <input type="number" id="years" name="years" value="{{ form_data.years }}" required>
-
-                <button type="submit">Calculate</button>
-            </form>
-        </div>
-
-        <aside class="sidebar-panel">
-            <h2>What This Helps With</h2>
-            <ul>
-                <li>Estimate a monthly repayment before committing to a loan.</li>
-                <li>Compare how rate and term changes affect affordability.</li>
-                <li>Use the linked finance terms to support the educational side of the project.</li>
-            </ul>
-        </aside>
-    </div>
-
-    {% if result %}
-        <div class="results-panel">
-            {% if result.error %}
-                <p><strong>{{ result.error }}</strong></p>
-            {% else %}
-                <h2>Results</h2>
-                <p><strong>Loan Amount:</strong> <span class="result-highlight">{{ result.principal }} NOK</span></p>
-                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Payment</a>{% else %}Monthly Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }} NOK</span></p>
-                <p><strong>Total Paid:</strong> <span class="result-highlight">{{ result.total_paid }} NOK</span></p>
-                <p><strong>{% if glossary_terms.total_interest %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_interest.slug %}">Total Interest</a>{% else %}Total Interest{% endif %}:</strong> <span class="result-highlight">{{ result.total_interest }} NOK</span></p>
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.principal.id_for_label }}">Loan Amount (NOK)</label>
+            {{ form.principal }}
+            {% if form.principal.errors %}
+            <p class="form-error">{{ form.principal.errors.0 }}</p>
             {% endif %}
+          </div>
+
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.rate.id_for_label }}">Interest Rate (%)</label>
+            {{ form.rate }}
+          </div>
+
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.years.id_for_label }}">Loan Term (Years)</label>
+            {{ form.years }}
+          </div>
+
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.start_year.id_for_label }}">Start Year</label>
+            {{ form.start_year }}
+          </div>
+
+          <button type="submit" class="calc-btn">Calculate &amp; Save</button>
+        </form>
+      </div>
+
+      <!-- RIGHT: results stacked above saved assumptions -->
+      <div class="results-col">
+
+        <div class="results-panel">
+          <h2>Results</h2>
+          {% if result %}
+          <div class="result-row">
+            <span class="result-key">Loan Amount</span>
+            <span class="result-val">{{ result.principal|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Monthly Payment</span>
+            <span class="result-val">{{ result.monthly_payment|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Total Payment</span>
+            <span class="result-val">{{ result.total_payment|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Total Interest</span>
+            <span class="result-val">{{ result.total_interest|floatformat:"0" }} NOK</span>
+          </div>
+          {% else %}
+          <p class="amort-note">Fill in the details on the left and click Calculate to see results.</p>
+          {% endif %}
         </div>
+
+        {% if saved %}
+        <div class="assumptions-card">
+          <h4>Saved Assumptions</h4>
+          <p class="date-saved">
+            Created: {{ saved.created_at|date:"d M Y, H:i" }}<br>
+            Last updated: {{ saved.updated_at|date:"d M Y, H:i" }}
+          </p>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Loan Amount</span>
+            <span class="assumption-val">{{ saved.principal|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Interest Rate</span>
+            <span class="assumption-val">{{ saved.rate }}%</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Term</span>
+            <span class="assumption-val">{{ saved.years }} years</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Start Year</span>
+            <span class="assumption-val">{{ saved.start_year }}</span>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    {% if result.schedule %}
+    <div class="results-panel">
+      <h2>Amortization Schedule</h2>
+      <p class="amort-note">How each year splits between paying down the loan (principal) and paying interest.</p>
+      <div class="amort-scroll">
+        <table class="amort-table">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Principal Paid</th>
+              <th>Interest Paid</th>
+              <th>Remaining Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in result.schedule %}
+            <tr>
+              <td>{{ row.calendar_year }}</td>
+              <td class="amort-principal">{{ row.principal_paid|floatformat:"0" }} NOK</td>
+              <td class="amort-interest">{{ row.interest_paid|floatformat:"0" }} NOK</td>
+              <td>{{ row.balance|floatformat:"0" }} NOK</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td class="amort-principal">{{ result.principal|floatformat:"0" }} NOK</td>
+              <td class="amort-interest">{{ result.total_interest|floatformat:"0" }} NOK</td>
+              <td>{{ result.total_payment|floatformat:"0" }} NOK</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
     {% endif %}
-</section>
+
+  </section>
+</div>
 {% endblock %}

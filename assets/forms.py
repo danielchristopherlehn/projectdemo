@@ -12,7 +12,7 @@ class AssetForm(forms.ModelForm):
         fields = [
             'asset_name', 'asset_type', 'country',
             'purchase_price', 'value_estimate', 'purchase_year',
-            'active_Status', 'notes',
+            'active_status', 'notes',
         ]
         # Above we specified fields (characteristics of the [Asset])
         # This is what the user will fill out
@@ -30,7 +30,7 @@ class AssetForm(forms.ModelForm):
                 'class': 'form-field', 'placeholder': '0.00 (optional)', 'step': '0.01'}),
             'purchase_year': forms.NumberInput(attrs={
                 'class': 'form-field', 'placeholder': 'e.g., 2022'}),
-            'active_Status': forms.CheckboxInput(),
+            'active_status': forms.CheckboxInput(),
             'notes': forms.Textarea(attrs={
                 'class': 'form-field', 'rows': 2, 'placeholder': 'Optional notes'}),
         }

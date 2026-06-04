@@ -1,0 +1,312 @@
+/* Calculator pages — shared styles for loan, mortgage, and rent-vs-own.
+   Loaded via {% block extra_head %} in each calculator template.
+   site.css already defines: .card, .calculator-shell, .calculator-head,
+   .calculator-grid, .form-panel, .results-panel, .page-kicker, .project-badge,
+   .stack-form — so none of those are repeated here.
+   Amortization table styles (.amort-*) also live here, not in base.html. */
+
+.calc-wrap {
+    max-width: 1100px;
+    margin: 32px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+    .calc-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.results-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+/* Form inputs*/
+
+.calc-input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.calc-input:focus {
+    outline: none;
+    border-color: #80bbbe;
+}
+
+.calc-lbl {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+/* Wrapper that adds spacing below each label + input pair. */
+.fw {
+    margin-bottom: 14px;
+}
+
+/* Two fields side by side (e.g. years + start year in rent-vs-own). */
+.row2 {
+    display: flex;
+    gap: 12px;
+}
+
+.row2>div {
+    flex: 1;
+}
+
+/* Small heading that divides form sections (Renting / Buying / Time Horizon). */
+.calc-section-head {
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #051324;
+    margin: 20px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #081b43;
+}
+
+/* Validation error shown below a field. */
+.form-error {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 3px;
+}
+
+
+/*  Submit button */
+/*  pill shape on buttons */
+
+.calc-btn {
+    width: 100%;
+    background: #0c5b5f;
+    color: white;
+    padding: 11px;
+    border: none;
+    border-radius: 9px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 9px;
+}
+
+.calc-btn:hover {
+    background: #b0ebf3;
+}
+
+
+/*Results panel rows */
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid #f0ece5;
+    font-size: 1rem;
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+.result-key {
+    color: #3879c9;
+}
+
+.result-val {
+    font-weight: 700;
+    color: #07363c;
+}
+
+
+/*Verdict banner (rent vs own) */
+
+.verdict-box {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.verdict-buy {
+    background: #31f38f;
+    color: #065f46;
+}
+
+.verdict-rent {
+    background: #e96359;
+    color: #562201;
+}
+
+
+/* Financial advice cards (rent vs own) */
+
+.advice-item {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border-left: 50px solid #000202;
+    font-size: 1rem;
+    background: #cce8ea;
+}
+
+.advice-good {
+    border-left-color: #1a7f37;
+}
+
+.advice-warning {
+    border-left-color: #f8b305;
+}
+
+.advice-danger {
+    border-left-color: #c0392b;
+}
+
+
+/*Saved Data*/
+
+.assumptions-card {
+    background: #a1caff;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 16px 18px;
+}
+
+.assumptions-card h4 {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #000000;
+    font-weight: 700;
+}
+
+.date-saved {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #080278;
+    margin-bottom: 10px;
+}
+
+.assumption-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25rem;
+    padding: 4px 0;
+    border-bottom: 1px solid #ffffff;
+}
+
+.assumption-row:last-child {
+    border-bottom: none;
+}
+
+.assumption-lbl {
+    font-weight: 500;
+    color: #000000;
+}
+
+.assumption-val {
+    font-weight: 700;
+    color: #000000;
+}
+
+
+/* Amortization schedule table  */
+
+.amort-note {
+    color: #617082;
+    margin: 0 0 0.7rem;
+    font-size: 1rem;
+}
+
+.amort-scroll {
+    overflow-x: auto;
+}
+
+.amort-table {
+    width: 100%;
+    max-width: 560px;
+    border-collapse: collapse;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    border: 1px solid #fbf5ea;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.amort-table thead th {
+    text-align: right;
+    padding: 0.65rem 0.9rem;
+    color: #ffffff;
+    background: #0c5b5f;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.amort-table thead th:first-child {
+    text-align: left;
+}
+
+.amort-table tbody td {
+    padding: 0.55rem 0.9rem;
+    text-align: right;
+    border-bottom: 1px solid rgba(36, 59, 85, 0.12);
+    color: #1a2430;
+    white-space: nowrap;
+}
+
+.amort-table tbody td:first-child {
+    text-align: left;
+    font-weight: 700;
+    color: #07363c;
+}
+
+.amort-table tbody tr:nth-child(even) {
+    background: rgba(12, 91, 95, 0.06);
+}
+
+.amort-table tbody tr:hover {
+    background: rgba(220, 139, 71, 0.16);
+}
+
+.amort-principal {
+    color: #0c5b5f;
+    font-weight: 600;
+}
+
+.amort-interest {
+    color: #9f3838;
+}
+
+.amort-table tfoot td {
+    padding: 0.7rem 0.9rem;
+    text-align: right;
+    border-top: 2px solid #0c5b5f;
+    font-weight: 700;
+    color: #07363c;
+    white-space: nowrap;
+    background: rgba(12, 91, 95, 0.08);
+}
+
+.amort-table tfoot td:first-child {
+    text-align: left;
+}

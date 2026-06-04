@@ -2,62 +2,347 @@
 
 {% block content %}
 <style>
-  .budget-wrap { max-width:100%; margin:0; padding:40px 40px 60px; font-family:'Segoe UI',sans-serif; }
+  .budget-wrap {
+    max-width: 100%;
+    margin: 0;
+    padding: 40px 40px 60px;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
   /* TOP BAR */
-  .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
-  .top-bar h1 { margin:0; font-size:2rem; color:#002D62; font-weight:900; }
-  .top-actions { display:flex; gap:10px; }
-  .btn-primary { background:#002D62; color:white; padding:10px 22px; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.88rem; }
-  .btn-secondary { background:white; color:#002D62; padding:10px 22px; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.88rem; border:2px solid #002D62; }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .top-bar h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #002D62;
+    font-weight: 900;
+  }
+
+  .top-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-primary {
+    background: #001d29;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .btn-secondary {
+    background: rgb(78, 220, 128);
+    color: #002D62;
+    padding: 10px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 2px solid #083569;
+  }
 
   /* SUMMARY BANNER */
-  .summary-banner { display:flex; width:100%; border-radius:16px; overflow:hidden; margin-bottom:36px; box-shadow:0 4px 20px rgba(0,0,0,0.1); }
-  .banner-block { flex:1; padding:30px 36px; }
-  .banner-assets { background:#002D62; color:white; }
-  .banner-liabilities { background:#7f1d1d; color:white; }
-  .banner-working { background:#f0f4ff; color:#111; border-left:1px solid #e5e7eb; }
-  .banner-block .lbl { font-size:0.72rem; text-transform:uppercase; letter-spacing:1.2px; opacity:0.75; margin:0 0 8px; font-weight:700; }
-  .banner-block .amt { font-size:2.6rem; font-weight:900; margin:0; line-height:1; }
-  .banner-block .sub { font-size:0.82rem; margin:8px 0 0; opacity:0.7; }
-  .banner-working .lbl { color:#6b7280; opacity:1; }
-  .banner-working .amt { color:#002D62; }
-  .banner-working.neg .amt { color:#dc2626; }
-  .banner-working .sub { color:#6b7280; opacity:1; }
+  .summary-banner {
+    display: flex;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 35px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .banner-block {
+    flex: 1;
+    padding: 30px 36px;
+  }
+
+  .banner-assets {
+    background: #022a59;
+    color: white;
+  }
+
+  .banner-liabilities {
+    background: #5a1818;
+    color: white;
+  }
+
+  .banner-working {
+    background: #f9fafb;
+    color: #111;
+    border-left: 1px solid #e5e7eb;
+  }
+
+  .banner-block .lbl {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: white;
+    margin: 0 0 8px;
+    font-weight: 700;
+  }
+
+  .banner-block .amt {
+    font-size: 2.6rem;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .banner-block .sub {
+    font-size: 0.8rem;
+    margin: 8px 0 0;
+    opacity: 0.7;
+  }
+
+  .banner-working .lbl {
+    color: #000000;
+    opacity: 1;
+  }
+
+  .banner-working .amt {
+    color: #002D62;
+  }
+
+  .banner-working.neg .amt {
+    color: #dc2626;
+  }
+
+  .banner-working .sub {
+    color: #1a2a4a;
+    opacity: 1;
+  }
 
   /* WALLET */
-  .wallet-title-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-  .wallet-title { font-size:1.3rem; font-weight:900; color:#002D62; margin:0; }
-  .wallet-cols { display:flex; gap:24px; }
-  .wallet-col { flex:1; display:flex; flex-direction:column; gap:16px; }
-  .col-head { font-size:0.7rem; font-weight:900; text-transform:uppercase; letter-spacing:1.2px; padding-bottom:10px; margin-bottom:4px; }
-  .col-head.a { color:#047857; border-bottom:2px solid #d1fae5; }
-  .col-head.l { color:#b91c1c; border-bottom:2px solid #fee2e2; }
+  .wallet-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 
-  .group-block { border-radius:10px; border:1px solid #e5e7eb; overflow:hidden; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
-  .group-hdr { display:flex; justify-content:space-between; align-items:center; padding:11px 18px; background:#f9fafb; border-bottom:1px solid #e5e7eb; }
-  .group-name { font-size:0.82rem; font-weight:700; color:#374151; }
-  .group-tot { font-size:0.82rem; font-weight:700; }
-  .g-a { color:#047857; } .g-l { color:#b91c1c; }
+  .wallet-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #002D62;
+    margin: 0;
+  }
 
-  .acc-row { display:flex; align-items:center; padding:13px 18px; border-bottom:1px solid #f3f4f6; gap:12px; }
-  .acc-row:last-child { border-bottom:none; }
-  .acc-info { flex:1; }
-  .acc-name { font-size:0.92rem; font-weight:600; color:#111; }
-  .acc-sub { font-size:0.74rem; color:#6b7280; margin-top:1px; }
-  .acc-bal { font-size:0.95rem; font-weight:700; margin-right:12px; white-space:nowrap; }
-  .bal-a { color:#047857; } .bal-l { color:#b91c1c; }
-  .btn-edit { font-size:0.74rem; color:#002D62; text-decoration:none; font-weight:700; background:#e8edf7; padding:4px 11px; border-radius:6px; white-space:nowrap; }
-  .btn-edit:hover { background:#d1daf0; }
+  .wallet-cols {
+    display: flex;
+    gap: 24px;
+  }
 
-  .credit-bar-bg { background:#fee2e2; border-radius:3px; height:4px; margin-top:5px; }
-  .credit-bar-fill { background:#b91c1c; border-radius:3px; height:4px; }
-  .credit-lbl { font-size:0.68rem; color:#9ca3af; margin-top:2px; }
+  .wallet-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
 
-  .empty-col { text-align:center; color:#9ca3af; font-size:0.85rem; padding:30px 16px; background:white; border-radius:10px; border:1px dashed #e5e7eb; }
+  .col-head {
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding-bottom: 10px;
+    margin-bottom: 4px;
+  }
 
-  .msg-ok  { background:#d1fae5; color:#065f46; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:0.88rem; }
-  .msg-err { background:#fee2e2; color:#991b1b; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:0.88rem; }
+  .col-head.a {
+    color: #047857;
+    border-bottom: 2px solid #d1fae5;
+  }
+
+  .col-head.l {
+    color: #b91c1c;
+    border-bottom: 2px solid #fee2e2;
+  }
+
+  /* Current Liabilities column shown as a light red box */
+  .wallet-col.liab-col {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  /* Dark red title box for the Current Liabilities column */
+  .wallet-col.liab-col .col-head.l {
+    background: #7f1d1d;
+    color: #ffffff;
+    border-bottom: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+
+  /* Current Assets column shown as a light green box */
+  .wallet-col.asset-col {
+    background: #d1fae5;
+    border: 1px solid #6ee7b7;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  /* Dark green title box for the Current Assets column */
+  .wallet-col.asset-col .col-head.a {
+    background: #065f46;
+    color: #ffffff;
+    border-bottom: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+
+  .group-block {
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .group-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 18px;
+    background: #374151;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .group-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .group-tot {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .g-a {
+    color: #ffffff;
+  }
+
+  .g-l {
+    color: #ffffff;
+  }
+
+  .acc-row {
+    display: flex;
+    align-items: center;
+    padding: 13px 18px;
+    border-bottom: 1px solid #f3f4f6;
+    gap: 12px;
+  }
+
+  .acc-row:last-child {
+    border-bottom: none;
+  }
+
+  .acc-info {
+    flex: 1;
+  }
+
+  .acc-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .acc-sub {
+    font-size: 1rem;
+    color: #000000;
+    margin-top: 1px;
+  }
+
+  .acc-bal {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-right: 12px;
+    white-space: nowrap;
+  }
+
+  .bal-a {
+    color: #047857;
+  }
+
+  .bal-l {
+    color: #b91c1c;
+  }
+
+  .btn-edit {
+    font-size: 0.75rem;
+    color: #002D62;
+    text-decoration: none;
+    font-weight: 700;
+    background: #e8edf7;
+    padding: 4px 11px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .btn-edit:hover {
+    background: #ffffff;
+  }
+
+  .credit-bar-bg {
+    background: #ffdfdf;
+    border-radius: 3px;
+    height: 4px;
+    margin-top: 5px;
+  }
+
+  .credit-bar-fill {
+    background: #c4b1b1;
+    border-radius: 3px;
+    height: 4px;
+  }
+
+  .credit-lbl {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-top: 2px;
+  }
+
+  .empty-col {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.8rem;
+    padding: 30px 16px;
+    background: white;
+    border-radius: 10px;
+    border: 1px dashed #e5e7eb;
+  }
+
+  .msg-ok {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+  }
+
+  .msg-err {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+  }
 </style>
 
 <div class="budget-wrap">
@@ -75,7 +360,7 @@
   <!-- TOP BAR -->
   <div class="top-bar">
     <div>
-      <p style="margin:0;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">EZ Households</p>
+      <p style="margin:0;font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">EZ Households</p>
       <h1>My Budget</h1>
     </div>
     <div class="top-actions">
@@ -112,7 +397,7 @@
   <div class="wallet-cols">
 
     <!-- LEFT: CURRENT ASSETS -->
-    <div class="wallet-col">
+    <div class="wallet-col asset-col">
       <p class="col-head a">Current Assets</p>
 
       {% if asset_groups %}
@@ -150,7 +435,7 @@
     </div>
 
     <!-- RIGHT: CURRENT LIABILITIES -->
-    <div class="wallet-col">
+    <div class="wallet-col liab-col">
       <p class="col-head l">Current Liabilities</p>
 
       {% if liability_groups %}
@@ -174,9 +459,13 @@
             <div class="acc-sub">{{ account.currency }} &middot; {{ account.get_account_type_display }}</div>
             {% if account.credit_limit %}
             <div class="credit-bar-bg">
-              <div class="credit-bar-fill" style="width:{% widthratio account.initial_balance account.credit_limit 100 %}%;"></div>
+              <div class="credit-bar-fill"
+                style="width:{% widthratio account.initial_balance account.credit_limit 100 %}%;"></div>
             </div>
-            <div class="credit-lbl">{{ account.initial_balance|floatformat:2 }} NOK of {{ account.credit_limit|floatformat:2 }} NOK used</div>
+            <div class="credit-lbl">
+              {{ account.initial_balance|floatformat:2 }} NOK
+              of {{ account.credit_limit|floatformat:2 }} NOK used
+            </div>
             {% endif %}
           </div>
           <span class="acc-bal bal-l">{{ account.initial_balance|floatformat:2 }} NOK</span>

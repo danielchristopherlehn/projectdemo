@@ -2,64 +2,22 @@
 
 {% block content %}
 <style>
-    .form-field {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 7px;
-        font-size: 0.9rem;
-        box-sizing: border-box;
-    }
-
-    .form-field:focus {
-        outline: none;
-        border-color: #002D62;
-    }
-
-    .lbl {
-        display: block;
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: #374151;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-    }
-
-    .fw {
-        margin-bottom: 14px;
-    }
-
-    .divider {
-        border: none;
-        border-top: 1px solid #e5e7eb;
-        margin: 16px 0;
-    }
-
-    .hint {
-        font-size: 0.72rem;
-        color: #9ca3af;
-        margin-top: 3px;
-    }
-
-    .err {
-        color: #dc2626;
-        font-size: 0.75rem;
-        margin-top: 3px;
-    }
+    /* Shared form styles live in site.css. Keep only the section accent. */
+    .form-field:focus { border-color:#002D62; }   /* budget navy accent */
 </style>
 
 <div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
-    <a href="{% url 'transactions_list' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My
+    <a href="{% url 'transactions_list' %}" style="font-size:0.8rem;color:#6b7280;text-decoration:none;">← My
         Transactions</a>
     <h2 style="margin:8px 0 4px;color:#002D62;font-size:1.6rem;font-weight:800;">Edit Transaction</h2>
-    <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">{{ transaction.date }} · {{
-        transaction.get_transaction_type_display }}</p>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:0.9rem;">
+      {{ transaction.date }} · {{ transaction.get_transaction_type_display }}
+    </p>
 
     {% if messages %}
     {% for m in messages %}
     <div
-        style="background:{% if m.tags == 'error' %}#fee2e2;color:#991b1b{% else %}#d1fae5;color:#065f46{% endif %};padding:11px 15px;border-radius:7px;margin-bottom:14px;font-size:0.86rem;">
+        style="background:{% if m.tags == 'error' %}#fee2e2;color:#991b1b{% else %}#d1fae5;color:#065f46{% endif %};padding:11px 15px;border-radius:7px;margin-bottom:14px;font-size:0.9rem;">
         {{ m }}</div>
     {% endfor %}
     {% endif %}

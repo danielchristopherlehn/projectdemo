@@ -7,7 +7,7 @@ from datetime import date as today_date
 from .models import Transaction, Account
 from .forms import TransactionForm, AccountForm, TransferForm, PayCardForm
 
-# Labels and order I use to group the accounts on the budget dashboard.
+
 ASSET_TYPE_LABELS = {
     'CASH': 'Physical Cash',
     'CHECKING': 'Checking Accounts',
@@ -217,7 +217,7 @@ def transactions_list(request):
         user=request.user
     ).exclude(transaction_type='TRANSFER')
 
-    # --- FILTERS ---
+    # FILTERS
     account_filter = request.GET.get('account', '')
     type_filter = request.GET.get('type', '')
     country_filter = request.GET.get('country', '')
@@ -318,7 +318,6 @@ def pay_card(request):
 
     form = PayCardForm(request.POST, user=request.user)
     if not form.is_valid():
-        # Something was wrong with the form, show the first error.
         for field in form.errors:
             messages.error(request, form.errors[field][0])
         return redirect('transfers_list')
@@ -402,10 +401,16 @@ def pay_card(request):
 
 @login_required
 def edit_transaction(request, pk):
-    transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
+    # 1. Get the transaction instance that the form will modify
+    transaction_to_edit = get_object_or_404(
+        Transaction, pk=pk, user=request.user)
+
+    # 2. Get a completely separate copy from the database to represent the "old" state
+    old_transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
+
     if request.method == 'POST':
         form = TransactionForm(
-            request.POST, instance=transaction, user=request.user)
+            request.POST, instance=transaction_to_edit, user=request.user)
         if form.is_valid():
             updated = form.save(commit=False)
             error = check_funds(
@@ -416,19 +421,20 @@ def edit_transaction(request, pk):
             if error:
                 messages.error(request, error)
             else:
-                # Undo the old version first, then apply the new one so the
-                # balances stay correct.
-                undo_from_balance(transaction)
+                # 3. Undo the OLD version using the untouched database copy!
+                undo_from_balance(old_transaction)
+
+                # 4. Save and apply the NEW version
                 updated.save()
                 apply_to_balance(updated)
                 messages.success(request, 'Transaction updated.')
                 return redirect('transactions_list')
     else:
-        form = TransactionForm(instance=transaction, user=request.user)
+        form = TransactionForm(instance=transaction_to_edit, user=request.user)
 
     return render(request, 'budget/edit_transaction.html', {
         'form': form,
-        'transaction': transaction,
+        'transaction': transaction_to_edit,
     })
 
 

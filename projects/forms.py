@@ -14,7 +14,7 @@ class ProjectForm(forms.ModelForm):
             self.fields['linked_asset'].queryset = Asset.objects.filter(
                 user=user,
                 asset_type='Property & Land',
-                active_Status=True
+                active_status=True
             )
         self.fields['linked_asset'].required = False
         self.fields['linked_asset'].empty_label = "No — I'll enter data manually"

@@ -86,12 +86,16 @@ def manage_assets(request):
     long_term_assets = long_term_assets.order_by(
         sort_map.get(sort, '-value_estimate'))
 
+    # Grand total = long-term assets + current assets (cash/bank accounts).
+    total_all_assets = float(long_term_total) + float(current_assets_total)
+
     context = {
         'long_term_assets': long_term_assets,
         'long_term_total': long_term_total,
         'allocation_bar': allocation_bar,
         'current_asset_groups': current_asset_groups,
         'current_assets_total': current_assets_total,
+        'total_all_assets': total_all_assets,
         'current_sort': sort,
         'ca_sort': ca_sort,
     }
@@ -101,7 +105,7 @@ def manage_assets(request):
 @login_required
 def add_asset(request):
     if request.method == 'POST':
-        form = AssetForm(user=request.user, data=request.POST)
+        form = AssetForm(data=request.POST)
         if form.is_valid():
             asset = form.save(commit=False)
             asset.user = request.user
@@ -117,7 +121,7 @@ def add_asset(request):
 def edit_asset(request, pk):
     asset = get_object_or_404(Asset, pk=pk, user=request.user)
     if request.method == 'POST':
-        form = AssetForm(request.POST, instance=asset, user=request.user)
+        form = AssetForm(request.POST, instance=asset)
         if form.is_valid():
             form.save()
             messages.success(request, f"'{asset.asset_name}' updated.")

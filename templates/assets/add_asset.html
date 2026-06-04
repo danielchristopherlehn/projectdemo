@@ -1,55 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-  .form-field {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    box-sizing: border-box;
-  }
-
-  .form-field:focus {
-    outline: none;
-    border-color: #002D62;
-  }
-
-  .lbl {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #374151;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-
-  .fw {
-    margin-bottom: 14px;
-  }
-
-  .row2 {
-    display: flex;
-    gap: 14px;
-  }
-
-  .row2>div {
-    flex: 1;
-  }
-
-  .divider {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-    margin: 18px 0;
-  }
-
-  .err {
-    color: #dc2626;
-    font-size: 0.75rem;
-    margin-top: 3px;
-  }
-
+  /* Page-specific: checkbox row. Shared form styles live in site.css. */
   .check-row {
     display: flex;
     align-items: center;
@@ -58,7 +10,7 @@
   }
 
   .check-row label {
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #374151;
     cursor: pointer;
@@ -66,14 +18,14 @@
 </style>
 
 <div style="max-width:520px;margin:40px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
-  <a href="{% url 'manage_assets' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My Assets</a>
+  <a href="{% url 'manage_assets' %}" style="font-size:0.8rem;color:#6b7280;text-decoration:none;">← My Assets</a>
   <h2 style="margin:8px 0 20px;color:#002D62;font-size:1.6rem;font-weight:800;">
     {% if editing %}Edit: {{ asset.asset_name }}{% else %}Register Asset{% endif %}
   </h2>
 
   {% if messages %}{% for m in messages %}
   <div
-    style="background:#d1fae5;color:#065f46;padding:10px 14px;border-radius:7px;margin-bottom:14px;font-size:0.85rem;">
+    style="background:#d1fae5;color:#065f46;padding:10px 14px;border-radius:7px;margin-bottom:14px;font-size:0.8rem;">
     {{ m }}</div>
   {% endfor %}{% endif %}
 
@@ -126,9 +78,10 @@
         <label class="lbl">Notes</label>
         {{ form.notes }}
       </div>
+
       <div class="check-row">
-        {{ form.active_Status }}
-        <label for="{{ form.active_Status.id_for_label }}">Active asset</label>
+        {{ form.active_status }}
+        <label for="{{ form.active_status.id_for_label }}">Active asset</label>
       </div>
 
       <div style="display:flex;gap:12px;margin-top:16px;">

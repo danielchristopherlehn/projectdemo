@@ -73,6 +73,9 @@ def manage_liabilities(request):
     current_liabilities_total = current_liabilities.aggregate(
         total=Sum('initial_balance'))['total'] or 0
 
+    # Grand total = long-term liabilities + current liabilities (credit cards etc).
+    total_all_liabilities = float(long_term_total) + float(current_liabilities_total)
+
     context = {
         'form': form,
         'long_term': long_term,
@@ -80,6 +83,7 @@ def manage_liabilities(request):
         'allocation_bar': allocation_bar,
         'current_groups': current_groups,
         'current_liabilities_total': current_liabilities_total,
+        'total_all_liabilities': total_all_liabilities,
     }
     return render(request, 'liabilities/manage_liabilities.html', context)
 

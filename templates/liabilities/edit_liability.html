@@ -2,46 +2,15 @@
 
 {% block content %}
 <style>
-    .form-field {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 7px;
-        font-size: 0.9rem;
-        box-sizing: border-box;
-    }
-
-    .form-field:focus {
-        outline: none;
-        border-color: #7f1d1d;
-    }
-
-    .lbl {
-        display: block;
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: #374151;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-    }
-
-    .fw {
-        margin-bottom: 14px;
-    }
-
-    .divider {
-        border: none;
-        border-top: 1px solid #e5e7eb;
-        margin: 18px 0;
-    }
+    /* Shared form styles live in site.css. Keep only the section accent. */
+    .form-field:focus { border-color:#7f1d1d; }   /* liabilities red accent */
 </style>
 
 <div style="max-width:520px;margin:50px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
-    <a href="{% url 'liabilities:manage_liabilities' %}" style="font-size:0.82rem;color:#6b7280;text-decoration:none;">← My
+    <a href="{% url 'liabilities:manage_liabilities' %}" style="font-size:0.8rem;color:#6b7280;text-decoration:none;">← My
         Liabilities</a>
     <h2 style="margin:8px 0 4px;color:#7f1d1d;font-size:1.6rem;font-weight:800;">Edit Liability</h2>
-    <p style="margin:0 0 20px;color:#6b7280;font-size:0.88rem;">{{ liability.liability_name }}</p>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:0.9rem;">{{ liability.liability_name }}</p>
 
     <div
         style="background:white;border-radius:14px;padding:30px;border:1px solid #e5e7eb;box-shadow:0 4px 16px rgba(0,0,0,0.06);">

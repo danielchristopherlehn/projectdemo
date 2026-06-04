@@ -26,8 +26,7 @@ class Liability(models.Model):
     interest_rate = models.DecimalField(
         max_digits=5, decimal_places=2, help_text="e.g. 5.5 for 5.5%")
     # Optional extra info about the loan.
-    monthly_payment = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=True)
+    monthly_payment = models.DecimalField(max_digits=10, decimal_places=2)
     term_months = models.PositiveIntegerField(
         null=True, blank=True, help_text="Total loan term in months, e.g. 360 for 30 years")
     start_date = models.DateField(null=True, blank=True)

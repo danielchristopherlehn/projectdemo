@@ -1,88 +1,394 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width: 1200px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #333;">
+<style>
+  .wrap {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
-    <div
-        style="background: #002D62; color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-            <div>
-                <p style="margin: 0; opacity: 0.8; text-transform: uppercase; font-size: 0.8rem;">Total Household Equity
-                </p>
-                <h2 style="margin: 5px 0 0 0; font-size: 3rem;">{{ total_equity|default:"0.00"|floatformat:2 }} NOK</h2>
-            </div>
-            <div style="text-align: right;">
-                <p style="margin: 0; font-weight: bold;">{{ equities.count }} Equity Sources</p>
-            </div>
-        </div>
+  .header-card {
+    background: #442200;
+    color: white;
+    padding: 28px 32px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 24px rgba(68, 34, 0, 0.18);
+  }
 
-        <div style="margin-top: 25px;">
+  .header-card h1 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-            <!-- ONLY THIS COLOR WAS CHANGED -->
-            <p style="margin-bottom: 10px; font-size: 0.9rem; font-weight: bold; color: white;">
-                Allocation by Source:
-            </p>
+  .big-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
 
-            <div
-                style="display: flex; height: 12px; width: 100%; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;">
-                {% for item in type_counts %}
-                <div style="height: 100%; width: 25%; background: #4da6ff; border-right: 1px solid #002D62;"
-                    title="{{ item.equity_type }}"></div>
-                {% endfor %}
-            </div>
-        </div>
+  .sub {
+    font-size: 1rem;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .alloc-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.2);
+    margin-top: 18px;
+  }
+
+  .alloc-legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .alloc-legend span {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .layout {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .sidebar {
+    flex: 0 0 170px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6b7280;
+    margin: 0 0 4px;
+  }
+
+  .add-btn {
+    display: block;
+    text-align: center;
+    background: #442200;
+    color: white;
+    padding: 13px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .add-btn:hover {
+    background: #5c3416;
+  }
+
+  .main {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background: white;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .card-head h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #442200;
+    font-weight: 700;
+  }
+
+  .badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #442200;
+    background: #f0e6d8;
+    padding: 3px 9px;
+    border-radius: 16px;
+  }
+
+  .sort-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 16px;
+    background: #fafafa;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .sort-bar span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+  }
+
+  .sort-bar select {
+    padding: 5px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    background: white;
+  }
+
+  .btn-sort {
+    background: #442200;
+    color: white;
+    padding: 5px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn-reset {
+    color: #6b7280;
+    font-size: 0.8rem;
+    text-decoration: none;
+    padding: 5px 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    background: white;
+  }
+
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .tbl td {
+    padding: 12px 16px;
+    border-bottom: 2px solid #e5e7eb;
+    vertical-align: middle;
+  }
+
+  .tbl tr:last-child td {
+    border-bottom: none;
+  }
+
+  .tbl tr:hover td {
+    background: #fafafa;
+  }
+
+  .name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .meta {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  .amt {
+    font-weight: 700;
+    color: #442200;
+    white-space: nowrap;
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    background: #f0e6d8;
+    color: #442200;
+    padding: 2px 7px;
+    border-radius: 8px;
+  }
+
+  .link-edit {
+    color: #442200;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .link-del {
+    color: #dc2626;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+
+  .empty {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 28px;
+    font-size: 1rem;
+  }
+
+  .msg-ok {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 10px 14px;
+    border-radius: 7px;
+    margin-bottom: 14px;
+    font-size: 1rem;
+  }
+
+  .msg-err {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 7px;
+    margin-bottom: 14px;
+    font-size: 1rem;
+  }
+</style>
+
+<div class="wrap">
+
+  {% if messages %}
+  {% for m in messages %}
+  {% if m.tags == 'error' %}
+  <div class="msg-err">{{ m }}</div>
+  {% else %}
+  <div class="msg-ok">{{ m }}</div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  <div class="header-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h1>My Equity</h1>
+        <p class="big-number">{{ total_equity|floatformat:2 }} NOK</p>
+        <p class="sub">Total household equity</p>
+      </div>
+      <div style="text-align:right;">
+        <p style="margin:0;font-size:0.8rem;opacity:0.7;">Equity Sources</p>
+        <p style="margin:4px 0 0;font-size:1.5rem;font-weight:700;">{{ source_count }}</p>
+        <p style="margin:8px 0 0;font-size:0.8rem;opacity:0.7;">Types Recorded</p>
+        <p style="margin:4px 0 0;font-size:1.5rem;font-weight:700;">{{ allocation_bar|length }}</p>
+      </div>
+    </div>
+    {% if allocation_bar %}
+    <div class="alloc-bar">
+      {% for item in allocation_bar %}
+      {% if item.percentage > 0 %}
+      <div style="width:{{ item.percentage }}%;background:{{ item.color }};"></div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <div class="alloc-legend">
+      {% for item in allocation_bar %}
+      <span>
+        <span class="dot" style="background:{{ item.color }};"></span>
+        {{ item.name }}: <strong>{{ item.total|floatformat:2 }} NOK</strong>
+      </span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="layout">
+
+    <div class="sidebar">
+      <p class="sidebar-label">Register</p>
+      <a href="{% url 'add_equity' %}" class="add-btn">+ Add Equity</a>
     </div>
 
-    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-        <div
-            style="flex: 1; min-width: 320px; background: white; padding: 25px; border: 1px solid #ddd; border-radius: 12px;">
-            <h3 style="margin-top: 0; color: #002D62;">+ Register Equity</h3>
-            <form method="POST">
-                {% csrf_token %}
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    {{ form.as_p }}
+    <div class="main">
+
+      <div class="card">
+        <div class="card-head">
+          <h4>Equity Records</h4>
+          <span class="badge">{{ total_equity|floatformat:2 }} NOK</span>
+        </div>
+        <form method="GET" action="{% url 'manage_equity' %}">
+          <div class="sort-bar">
+            <span>Sort</span>
+            <select name="sort">
+              <option value="amount_desc" {% if current_sort == 'amount_desc' %}selected{% endif %}>Amount ↓</option>
+              <option value="amount_asc" {% if current_sort == 'amount_asc' %}selected{% endif %}>Amount ↑</option>
+              <option value="name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Name A–Z</option>
+              <option value="type_asc" {% if current_sort == 'type_asc' %}selected{% endif %}>Type A–Z</option>
+            </select>
+            <button type="submit" class="btn-sort">Apply</button>
+            <a href="{% url 'manage_equity' %}" class="btn-reset">Reset</a>
+          </div>
+        </form>
+        <table class="tbl">
+          <tbody>
+            {% for equity in equity_records %}
+            <tr>
+              <td style="width:28px;">
+                {% if equity.location %}
+                <img src="https://flagcdn.com/w20/{{ equity.location }}.png" alt="">
+                {% else %}
+                🏛️
+                {% endif %}
+              </td>
+              <td>
+                <div class="name">{{ equity.equity_name }}</div>
+                <div class="meta">
+                  <span class="tag">{{ equity.get_equity_type_display }}</span>
+                  &nbsp;· {{ equity.date_recorded|date:"M Y" }}
                 </div>
-                <button type="submit"
-                    style="width: 100%; background: #004080; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer;">
-                    SAVE EQUITY
-                </button>
-            </form>
-        </div>
+              </td>
+              <td class="amt">{{ equity.amount|floatformat:2 }} NOK</td>
+              <td style="text-align:right;white-space:nowrap;">
+                <a href="{% url 'edit_equity' equity.pk %}" class="link-edit">Edit</a>
+                <form method="POST" action="{% url 'delete_equity' equity.pk %}" style="display:inline;"
+                  onsubmit="return confirm('Delete {{ equity.equity_name }}?')">
+                  {% csrf_token %}
+                  <button type="submit" class="link-del">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="empty">No equity recorded yet. Click "+ Add Equity" to register one.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-        <div
-            style="flex: 2; min-width: 600px; background: white; border-radius: 12px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead style="background: #f8f9fa; border-bottom: 2px solid #002D62;">
-                    <tr>
-                        <th style="padding: 15px; text-align: left;">Name</th>
-                        <th style="padding: 15px; text-align: left;">Type</th>
-                        <th style="padding: 15px; text-align: left;">Amount</th>
-                        <th style="padding: 15px; text-align: center;">Manage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for equity in equities %}
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 15px; font-weight: 600;">{{ equity.equity_name }}</td>
-                        <td style="padding: 15px;">{{ equity.equity_type }}</td>
-                        <td style="padding: 15px; color: #002D62; font-weight: bold;">{{ equity.amount|floatformat:2 }} NOK</td>
-                        <td style="padding: 15px; text-align: center;">
-                            <a href="{% url 'edit_equity' equity.pk %}"
-                                style="color: #0056b3; text-decoration: none; font-weight: bold; margin-right: 10px;">Edit</a>
-                            <a href="{% url 'delete_equity' equity.pk %}"
-                                style="color: #dc3545; text-decoration: none; font-weight: bold;"
-                                onclick="return confirm('Delete this equity record?')">Del</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" style="padding: 30px; text-align: center; color: #999;">No equity recorded yet.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
     </div>
+  </div>
 </div>
 {% endblock %}

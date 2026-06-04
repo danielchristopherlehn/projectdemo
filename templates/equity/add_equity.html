@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  /* Shared form styles live in site.css. Keep only the section accent. */
+  .form-field:focus { border-color:#442200; }   /* equity brown accent */
+</style>
+
+<div style="max-width:520px;margin:40px auto;padding:0 20px;font-family:'Segoe UI',sans-serif;">
+  <a href="{% url 'manage_equity' %}" style="font-size:0.8rem;color:#6b7280;text-decoration:none;">← My Equity</a>
+  <h2 style="margin:8px 0 20px;color:#442200;font-size:1.6rem;font-weight:800;">
+    {% if editing %}Edit: {{ equity.equity_name }}{% else %}Register Equity{% endif %}
+  </h2>
+
+  {% if messages %}{% for m in messages %}
+  <div
+    style="background:#d1fae5;color:#065f46;padding:10px 14px;border-radius:7px;margin-bottom:14px;font-size:0.8rem;">
+    {{ m }}</div>
+  {% endfor %}{% endif %}
+
+  <div
+    style="background:white;border-radius:12px;padding:26px;border:1px solid #e5e7eb;box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="fw">
+        <label class="lbl">Equity Name</label>
+        {{ form.equity_name }}
+        {% if form.equity_name.errors %}<p class="err">{{ form.equity_name.errors.0 }}</p>{% endif %}
+      </div>
+
+      <div class="row2">
+        <div class="fw">
+          <label class="lbl">Type</label>
+          {{ form.equity_type }}
+          {% if form.equity_type.errors %}<p class="err">{{ form.equity_type.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="fw">
+          <label class="lbl">Country</label>
+          {{ form.location }}
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="fw" style="max-width:48%;">
+        <label class="lbl">Amount (NOK)</label>
+        {{ form.amount }}
+        {% if form.amount.errors %}<p class="err">{{ form.amount.errors.0 }}</p>{% endif %}
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button type="submit"
+          style="flex:2;background:#442200;color:white;padding:12px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">
+          {% if editing %}UPDATE{% else %}SAVE{% endif %} EQUITY
+        </button>
+        <a href="{% url 'manage_equity' %}"
+          style="flex:1;text-align:center;text-decoration:none;background:#f8f9fa;color:#6b7280;padding:12px;border:1px solid #e5e7eb;border-radius:8px;font-weight:600;">CANCEL</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

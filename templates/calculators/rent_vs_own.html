@@ -1,104 +1,163 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Rent vs Own Calculator{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/calculators.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="card calculator-shell">
+<div class="calc-wrap">
+  <section class="card calculator-shell">
+
     <div class="calculator-head">
-        <div>
-            <span class="page-kicker">Calculator</span>
-            <h1>Rent vs Own Calculator</h1>
-        </div>
-        <span class="project-badge">Project: {{ project.name }}</span>
+      <div>
+        <span class="page-kicker">Simulator</span>
+        <h1>Rent vs Own</h1>
+      </div>
+      <span class="project-badge">{{ project.name }}</span>
     </div>
 
-    <div class="calculator-grid">
-        <div class="form-panel">
-            <h2>Compare Renting and Buying</h2>
-            <form method="post" class="stack-form">
-                {% csrf_token %}
+    <div class="calc-grid">
 
-                <h3>Rent Scenario</h3>
+      <!-- LEFT: input form -->
+      <div class="form-panel">
+        <h2>Compare Renting &amp; Buying</h2>
+        <form method="post" class="stack-form">
+          {% csrf_token %}
 
-                <label for="rent">
-                    {% if glossary_terms.monthly_rent %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_rent.slug %}">Monthly Rent</a>
-                    {% else %}
-                        Monthly Rent
-                    {% endif %}
-                </label>
-                <input type="number" id="rent" name="rent" value="{{ form_data.rent }}" required>
+          <p class="calc-section-head">Renting</p>
 
-                <label for="rent_increase">
-                    {% if glossary_terms.rent_increase %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.rent_increase.slug %}">Rent Increase %</a>
-                    {% else %}
-                        Rent Increase %
-                    {% endif %}
-                </label>
-                <input type="number" step="0.01" id="rent_increase" name="rent_increase" value="{{ form_data.rent_increase }}" required>
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.rent.id_for_label }}">Monthly Rent (NOK)</label>
+            {{ form.rent }}
+          </div>
 
-                <h3>Buy Scenario</h3>
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.rent_increase.id_for_label }}">Annual Rent Increase (%)</label>
+            {{ form.rent_increase }}
+          </div>
 
-                <label for="price">
-                    {% if glossary_terms.house_price %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.house_price.slug %}">House Price</a>
-                    {% else %}
-                        House Price
-                    {% endif %}
-                </label>
-                <input type="number" id="price" name="price" value="{{ form_data.price }}" required>
+          <p class="calc-section-head">Buying</p>
 
-                <label for="down_payment">
-                    {% if glossary_terms.down_payment %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.down_payment.slug %}">Down Payment</a>
-                    {% else %}
-                        Down Payment
-                    {% endif %}
-                </label>
-                <input type="number" id="down_payment" name="down_payment" value="{{ form_data.down_payment }}" required>
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.price.id_for_label }}">House Price (NOK)</label>
+            {{ form.price }}
+          </div>
 
-                <label for="rate">
-                    {% if glossary_terms.mortgage %}
-                        <a class="term-link" href="{% url 'glossary_detail' glossary_terms.mortgage.slug %}">Mortgage Rate (%)</a>
-                    {% else %}
-                        Mortgage Rate (%)
-                    {% endif %}
-                </label>
-                <input type="number" step="0.01" id="rate" name="rate" value="{{ form_data.rate }}" required>
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.down_payment.id_for_label }}">Down Payment (NOK)</label>
+            {{ form.down_payment }}
+          </div>
 
-                <button type="submit">Compare Outcomes</button>
-            </form>
-        </div>
+          <div class="fw">
+            <label class="calc-lbl" for="{{ form.rate.id_for_label }}">Mortgage Rate (%)</label>
+            {{ form.rate }}
+          </div>
 
-        <aside class="sidebar-panel">
-            <h2>Planning Focus</h2>
-            <ul>
-                <li>See whether renting or buying is cheaper over a 10-year horizon.</li>
-                <li>Compare rising rent against mortgage repayment costs.</li>
-                <li>Use glossary-linked housing terms to strengthen the educational angle.</li>
-            </ul>
-        </aside>
-    </div>
+          <p class="calc-section-head">Time Horizon</p>
 
-    {% if result %}
+          <div class="row2">
+            <div class="fw">
+              <label class="calc-lbl" for="{{ form.years.id_for_label }}">Years to Compare</label>
+              {{ form.years }}
+            </div>
+            <div class="fw">
+              <label class="calc-lbl" for="{{ form.start_year.id_for_label }}">Start Year</label>
+              {{ form.start_year }}
+            </div>
+          </div>
+
+          <button type="submit" class="calc-btn">Compare &amp; Save</button>
+        </form>
+      </div>
+
+      <!-- RIGHT: results, advice, and saved assumptions stacked -->
+      <div class="results-col">
+
         <div class="results-panel">
-            {% if result.error %}
-                <p><strong>{{ result.error }}</strong></p>
-            {% else %}
-                <h2>Results</h2>
-
-                <p><strong>{% if glossary_terms.monthly_payment %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.monthly_payment.slug %}">Monthly Mortgage Payment</a>{% else %}Monthly Mortgage Payment{% endif %}:</strong> <span class="result-highlight">{{ result.monthly_payment }} NOK</span></p>
-                <p><strong>{% if glossary_terms.total_rent_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_rent_cost.slug %}">Total Rent Cost (10 years)</a>{% else %}Total Rent Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.rent_cost }} NOK</span></p>
-                <p><strong>{% if glossary_terms.total_buy_cost %}<a class="term-link" href="{% url 'glossary_detail' glossary_terms.total_buy_cost.slug %}">Total Buy Cost (10 years)</a>{% else %}Total Buy Cost (10 years){% endif %}:</strong> <span class="result-highlight">{{ result.buy_cost }} NOK</span></p>
-
-                {% if result.rent_cost < result.buy_cost %}
-                    <p><strong>Renting is cheaper.</strong></p>
-                {% else %}
-                    <p><strong>Buying is cheaper.</strong></p>
-                {% endif %}
-            {% endif %}
+          <h2>Results</h2>
+          {% if result %}
+          <div class="result-row">
+            <span class="result-key">Monthly Mortgage Payment</span>
+            <span class="result-val">{{ result.monthly_mortgage|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Total Rent Cost ({{ result.years }} yrs)</span>
+            <span class="result-val">{{ result.total_rent_cost|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Total Buy Cost ({{ result.years }} yrs)</span>
+            <span class="result-val">{{ result.total_own_cost|floatformat:"0" }} NOK</span>
+          </div>
+          {% if result.verdict == "Buying is cheaper" %}
+          <div class="verdict-box verdict-buy">
+            Buying is cheaper over {{ result.years }} years.
+          </div>
+          {% else %}
+          <div class="verdict-box verdict-rent">
+            Renting is cheaper over {{ result.years }} years.
+          </div>
+          {% endif %}
+          {% else %}
+          <p class="amort-note">Fill in the details on the left and click Compare to see results.</p>
+          {% endif %}
         </div>
-    {% endif %}
-</section>
+
+        {% if result.advice %}
+        <div class="results-panel">
+          <h2>Financial Advice</h2>
+          {% for item in result.advice %}
+          <div class="advice-item advice-{{ item.level }}">
+            <strong>{{ item.title }}</strong><br>
+            {{ item.message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if saved %}
+        <div class="assumptions-card">
+          <h4>Saved Assumptions</h4>
+          <p class="date-saved">
+            Created: {{ saved.created_at|date:"d M Y, H:i" }}<br>
+            Last updated: {{ saved.updated_at|date:"d M Y, H:i" }}
+          </p>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Monthly Rent</span>
+            <span class="assumption-val">{{ saved.rent|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Rent Increase</span>
+            <span class="assumption-val">{{ saved.rent_increase }}% / yr</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">House Price</span>
+            <span class="assumption-val">{{ saved.price|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Down Payment</span>
+            <span class="assumption-val">{{ saved.down_payment|floatformat:"0" }} NOK</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Mortgage Rate</span>
+            <span class="assumption-val">{{ saved.rate }}%</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Years</span>
+            <span class="assumption-val">{{ saved.years }}</span>
+          </div>
+          <div class="assumption-row">
+            <span class="assumption-lbl">Start Year</span>
+            <span class="assumption-val">{{ saved.start_year }}</span>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </section>
+</div>
 {% endblock %}
